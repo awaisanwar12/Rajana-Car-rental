@@ -1,0 +1,12 @@
+{
+  "name": "Rajana Car Rental",
+  "short_name": "Rajana Rental",
+  "description": "24/7 chauffeur-driven car rental in Lahore, airport transfers and one-way travel across Pakistan.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#0b2235",
+  "icons": [
+    { "src": "/images/rajana-logo.jpg", "sizes": "541x357", "type": "image/jpeg" }
+  ]
+}

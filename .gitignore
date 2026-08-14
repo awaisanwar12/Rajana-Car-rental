@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env*.local
+.tools/
+.qa/
+*.log
+*.tsbuildinfo
+pdf-preview.png
+rajana-hostinger-static.zip
