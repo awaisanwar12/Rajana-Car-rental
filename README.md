@@ -29,7 +29,7 @@ can serve the invoice path:
 
 - `www.rajanacarrental.com/invoice/*`
 - `rajanacarrental.com/invoice/*`
-- The production `*.pages.dev/invoice/*` hostname
+- The production `*.workers.dev/invoice/*` hostname
 
 Create one `Allow` policy:
 
@@ -43,16 +43,16 @@ Cloudflare must deny it before launch.
 
 ## Production hosting — lowest-cost option
 
-Use Cloudflare Pages with the existing domain. This project is a static export, so the normal hosting bill should be **Rs 0/month** at this traffic level. The only recurring cost should be the existing domain renewal.
+Use Cloudflare Workers with static assets and the existing domain. This project is a static export, so the normal hosting bill should be **Rs 0/month** at this traffic level. The only recurring cost should be the existing domain renewal.
 
-Cloudflare Pages settings:
+Cloudflare Workers Builds settings:
 
-- Framework preset: `Next.js (Static HTML Export)`
 - Build command: `npm run build`
-- Build output directory: `out`
+- Deploy command: `npx wrangler deploy`
+- Production branch: `master`
 - Environment variable: `NEXT_PUBLIC_WHATSAPP_NUMBER=923036565672`
 
-After deployment, add both `rajanacarrental.com` and `www.rajanacarrental.com` as custom domains, choose one as canonical, and redirect the other to it.
+The `wrangler.jsonc` file publishes the generated `out` directory as static assets. After deployment, add both `rajanacarrental.com` and `www.rajanacarrental.com` as custom domains, choose one as canonical, and redirect the other to it.
 
 ## Checks
 

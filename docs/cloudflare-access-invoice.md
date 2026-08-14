@@ -17,7 +17,7 @@ or its JavaScript.
    `www.rajanacarrental.com/invoice/*`.
 5. Add equivalent applications or domains for:
    `rajanacarrental.com/invoice/*` and the production
-   `your-project.pages.dev/invoice/*` address.
+   `your-project.your-subdomain.workers.dev/invoice/*` address.
 6. Create an **Allow** policy named `Waqas only`.
 7. Under **Include**, choose **Emails** and enter exactly
    `Booknow@rajanacarrental.com`.
@@ -31,7 +31,7 @@ Before launch, test all three hostnames in a private browser window:
 
 - The allowed email receives a code and can open the invoice maker.
 - A different email is denied.
-- Opening the direct `pages.dev` URL does not bypass authentication.
+- Opening the direct `workers.dev` URL does not bypass authentication.
 - The public website contains no invoice-maker link.
 
 Hiding the navigation link is only a usability change. Cloudflare Access is the
