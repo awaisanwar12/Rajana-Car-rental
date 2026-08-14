@@ -1,6 +1,6 @@
 # Rajana Car Rental — Next.js website
 
-A fast, static website for Rajana Car Rental Lahore. Bookings open directly in WhatsApp and invoices are generated in the visitor's browser, so no database or paid server is required.
+A fast, static website for Rajana Car Rental Lahore. Bookings open directly in WhatsApp and authenticated invoice generation runs in the owner's browser, so no database or paid server is required.
 
 ## Run locally
 
@@ -20,26 +20,18 @@ Open `http://localhost:3000`.
 
 ## Private invoice access
 
-The invoice maker is intentionally absent from the public navigation and marked
-`noindex`. Its production URL must be protected by Cloudflare Access before the
-site is considered ready to launch.
+The invoice maker is absent from public navigation, marked `noindex`, and
+protected by the Worker before its static files are served. This avoids the
+payment-method requirement shown by the optional Cloudflare Zero Trust product.
 
-Create a **Self-hosted** Cloudflare Access application for every hostname that
-can serve the invoice path:
+Create these encrypted Worker secrets under **Settings → Variables and Secrets**:
 
-- `www.rajanacarrental.com/invoice/*`
-- `rajanacarrental.com/invoice/*`
-- Direct `workers.dev` and preview URLs are disabled after the custom domain is connected
+- `INVOICE_USERNAME`
+- `INVOICE_PASSWORD`
 
-Create one `Allow` policy:
-
-- Selector: `Emails`
-- Value: `Booknow@rajanacarrental.com`
-- Authentication method: `One-time PIN`
-
-Do not add an `Everyone`, `Emails ending in`, or unrestricted `One-time PIN`
-rule. Test the deployed page in a private browser window using another email;
-Cloudflare must deny it before launch.
+Never commit their values to GitHub. If either secret is missing, the Worker
+returns `503` and keeps the invoice maker closed. Invalid credentials receive
+`401`; valid credentials receive the static invoice tool.
 
 ## Production hosting — lowest-cost option
 
@@ -59,5 +51,6 @@ The `wrangler.jsonc` file publishes the generated `out` directory as static asse
 ```bash
 npm run typecheck
 npm run lint
+npm run test:worker
 npm run build
 ```

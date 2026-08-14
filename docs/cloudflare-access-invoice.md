@@ -1,37 +1,34 @@
-# Protecting the Rajana invoice maker
+# Protecting the Rajana invoice maker without Zero Trust billing
 
-The invoice tool is a static browser application. Its access control must be
-enforced at Cloudflare's edge so unauthorized visitors cannot download the page
-or its JavaScript.
-
-## Allowed user
-
-`Booknow@rajanacarrental.com`
+The invoice tool is a static browser application. Its access control is
+enforced in the Worker before Cloudflare serves the page.
 
 ## Cloudflare setup
 
-1. Open **Cloudflare Dashboard → Zero Trust → Access controls → Applications**.
-2. Choose **Add an application → Self-hosted**.
-3. Name it `Rajana Invoice Maker`.
-4. Add the production invoice path:
-   `www.rajanacarrental.com/invoice/*`.
-5. Redirect `rajanacarrental.com` to `www.rajanacarrental.com`, and disable
-   direct production and preview `workers.dev` URLs so they cannot bypass Access.
-6. Create an **Allow** policy named `Waqas only`.
-7. Under **Include**, choose **Emails** and enter exactly
-   `Booknow@rajanacarrental.com`.
-8. Enable **One-time PIN** as the login method.
-9. Choose a short session duration such as 8 or 12 hours.
-10. Save the application.
+1. Open **Workers & Pages → rajana-car-rental → Settings**.
+2. Under **Variables and Secrets**, select **Add**.
+3. Add `INVOICE_USERNAME` with type **Secret** and a private username.
+4. Add `INVOICE_PASSWORD` with type **Secret** and a unique password of at
+   least 16 characters.
+5. Select **Deploy**.
+
+Do not send the password in chat, add it to `wrangler.jsonc`, or commit it to
+GitHub. Cloudflare stores secret values encrypted and does not display them
+again.
+
+The Worker runs before `/invoice` and `/invoice/*`, verifies HTTP Basic
+credentials, and only then fetches the invoice asset. Direct production and
+preview `workers.dev` URLs are disabled.
 
 ## Required verification
 
-Before launch, test all three hostnames in a private browser window:
+Before launch, test in a private browser window:
 
-- The allowed email receives a code and can open the invoice maker.
-- A different email is denied.
+- Missing or incorrect credentials receive `401 Unauthorized`.
+- The chosen username and password open the invoice maker.
 - Direct production and preview `workers.dev` URLs are disabled.
 - The public website contains no invoice-maker link.
 
-Hiding the navigation link is only a usability change. Cloudflare Access is the
-security boundary.
+The Worker authentication check is the security boundary. The generated PDF
+still runs in the authenticated user's browser and is not a cryptographically
+signed accounting record.
