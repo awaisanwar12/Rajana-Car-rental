@@ -2,6 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "rajana-car-rental",
   "compatibility_date": "2026-08-14",
+  "keep_vars": true,
   "main": "./worker/index.mjs",
   "workers_dev": false,
   "preview_urls": false,
