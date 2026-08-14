@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { FileIcon } from "./Icons";
 import { site } from "@/lib/site";
 
-type LineItem = { id: number; description: string; quantity: number; rate: number };
+type NumericInput = number | "";
+type LineItem = { id: number; description: string; quantity: NumericInput; rate: NumericInput };
 type InvoiceData = {
   invoiceNumber: string;
   date: string;
@@ -13,7 +14,7 @@ type InvoiceData = {
   customerEmail: string;
   customerAddress: string;
   notes: string;
-  paid: number;
+  paid: NumericInput;
   items: LineItem[];
 };
 
@@ -21,11 +22,12 @@ const today = () => new Date().toISOString().slice(0, 10);
 const emptyInvoice = (): InvoiceData => ({
   invoiceNumber: `INV-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}`,
   date: today(), customerName: "", customerPhone: "", customerEmail: "", customerAddress: "",
-  notes: "Thank you for choosing Rajana Car Rental.", paid: 0,
-  items: [{ id: Date.now(), description: "", quantity: 1, rate: 0 }],
+  notes: "Thank you for choosing Rajana Car Rental.", paid: "",
+  items: [{ id: Date.now(), description: "", quantity: 1, rate: "" }],
 });
 
-const money = (value: number) => new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(value || 0);
+const numberValue = (value: NumericInput) => value === "" ? 0 : value;
+const money = (value: NumericInput) => new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(numberValue(value));
 
 export function InvoiceBuilder() {
   const [data, setData] = useState<InvoiceData>(emptyInvoice);
@@ -41,12 +43,12 @@ export function InvoiceBuilder() {
     return () => window.clearTimeout(timer);
   }, []);
 
-  const total = useMemo(() => data.items.reduce((sum, item) => sum + Number(item.quantity || 0) * Number(item.rate || 0), 0), [data.items]);
-  const balance = Math.max(total - Number(data.paid || 0), 0);
+  const total = useMemo(() => data.items.reduce((sum, item) => sum + numberValue(item.quantity) * numberValue(item.rate), 0), [data.items]);
+  const balance = Math.max(total - numberValue(data.paid), 0);
 
   const setField = <K extends keyof InvoiceData>(field: K, value: InvoiceData[K]) => setData((current) => ({ ...current, [field]: value }));
   const updateItem = (id: number, field: keyof LineItem, value: string | number) => setData((current) => ({ ...current, items: current.items.map((item) => item.id === id ? { ...item, [field]: value } : item) }));
-  const addItem = () => setData((current) => ({ ...current, items: [...current.items, { id: Date.now(), description: "", quantity: 1, rate: 0 }] }));
+  const addItem = () => setData((current) => ({ ...current, items: [...current.items, { id: Date.now(), description: "", quantity: 1, rate: "" }] }));
   const removeItem = (id: number) => setData((current) => ({ ...current, items: current.items.length === 1 ? current.items : current.items.filter((item) => item.id !== id) }));
 
   function saveDraft() {
@@ -102,7 +104,7 @@ export function InvoiceBuilder() {
         if (y + rowHeight > 250) { doc.addPage(); addPageHeader(); y = 42; tableHead(); }
         doc.setDrawColor(220, 224, 227); doc.rect(margin, y, 178, rowHeight);
         doc.setTextColor(...navy); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-        doc.text(lines, margin + 3, y + 6); doc.text(String(item.quantity || 0), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(item.quantity * item.rate), 191, y + 6, { align: "right" }); y += rowHeight;
+        doc.text(lines, margin + 3, y + 6); doc.text(String(numberValue(item.quantity)), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, y + 6, { align: "right" }); y += rowHeight;
       }
       if (y > 226) { doc.addPage(); addPageHeader(); y = 45; }
       y += 7;
@@ -138,9 +140,9 @@ export function InvoiceBuilder() {
         </div>
         <div className="invoice-line-editor">
           <div className="line-editor-head"><h3>Services</h3><button type="button" onClick={addItem}>+ Add line</button></div>
-          {data.items.map((item, index) => <div className="line-editor-row" key={item.id}><label className="line-description">Description<textarea rows={2} value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Honda BR-V — Lahore Airport pickup" : "Trip or service details"} /></label><label>Qty<input type="number" min="0" step="1" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", Number(e.target.value))} /></label><label>Rate (Rs)<input type="number" min="0" step="1" value={item.rate} onChange={(e) => updateItem(item.id, "rate", Number(e.target.value))} /></label><button className="remove-line" type="button" onClick={() => removeItem(item.id)} aria-label={`Remove service ${index + 1}`}>×</button></div>)}
+          {data.items.map((item, index) => <div className="line-editor-row" key={item.id}><label className="line-description">Description<textarea rows={2} value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Honda BR-V — Lahore Airport pickup" : "Trip or service details"} /></label><label>Qty<input type="number" min="0" step="1" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Rate (Rs)<input type="number" min="0" step="1" value={item.rate} onChange={(e) => updateItem(item.id, "rate", e.target.value === "" ? "" : Number(e.target.value))} /></label><button className="remove-line" type="button" onClick={() => removeItem(item.id)} aria-label={`Remove service ${index + 1}`}>×</button></div>)}
         </div>
-        <div className="invoice-fields two-columns"><label>Paid amount (Rs)<input type="number" min="0" value={data.paid} onChange={(e) => setField("paid", Number(e.target.value))} /></label><label>Note<input value={data.notes} onChange={(e) => setField("notes", e.target.value)} /></label></div>
+        <div className="invoice-fields two-columns"><label>Paid amount (Rs)<input type="number" min="0" value={data.paid} onChange={(e) => setField("paid", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Note<input value={data.notes} onChange={(e) => setField("notes", e.target.value)} /></label></div>
         <div className="invoice-actions"><button className="button button-primary" type="button" onClick={downloadPdf} disabled={generating}><FileIcon /> {generating ? "Generating…" : "Download PDF"}</button><button className="button button-dark" type="button" onClick={() => window.print()}>Print / Save as PDF</button><button className="button button-outline" type="button" onClick={saveDraft}>Save draft</button><button className="button button-text" type="button" onClick={clearDraft}>Clear</button></div>
         <p className="invoice-status" role="status">{status}</p>
       </section>
@@ -150,7 +152,7 @@ export function InvoiceBuilder() {
           <div className="invoice-paper-head"><div><strong>RAJANA</strong><span>CAR RENTAL</span></div><h2>INVOICE</h2></div>
           <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.email}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
-          <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{item.quantity}</td><td>{money(item.rate)}</td><td>{money(item.quantity * item.rate)}</td></tr>)}</tbody></table></div>
+          <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
           <div className="invoice-summary"><dl><dt>Total</dt><dd>Rs {money(total)}</dd><dt>Paid</dt><dd>Rs {money(data.paid)}</dd><dt className="balance-label">Balance</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
           <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Rajana Car Rental."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
         </div>
