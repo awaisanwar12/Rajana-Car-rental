@@ -29,7 +29,7 @@ can serve the invoice path:
 
 - `www.rajanacarrental.com/invoice/*`
 - `rajanacarrental.com/invoice/*`
-- The production `*.workers.dev/invoice/*` hostname
+- Direct `workers.dev` and preview URLs are disabled after the custom domain is connected
 
 Create one `Allow` policy:
 
@@ -52,7 +52,7 @@ Cloudflare Workers Builds settings:
 - Production branch: `master`
 - Environment variable: `NEXT_PUBLIC_WHATSAPP_NUMBER=923036565672`
 
-The `wrangler.jsonc` file publishes the generated `out` directory as static assets. After deployment, add both `rajanacarrental.com` and `www.rajanacarrental.com` as custom domains, choose one as canonical, and redirect the other to it.
+The `wrangler.jsonc` file publishes the generated `out` directory as static assets and disables direct `workers.dev` and preview URLs. Connect `www.rajanacarrental.com` as the custom domain and redirect the root domain to it.
 
 ## Checks
 
