@@ -68,3 +68,16 @@ test("passes public pages through to static assets", async () => {
 
   assert.equal(response.status, 200);
 });
+
+test("redirects the bare domain to the canonical www website", async () => {
+  const response = await worker.fetch(
+    new Request("http://rajanacarrental.com/fleet/?source=google"),
+    configuredEnvironment,
+  );
+
+  assert.equal(response.status, 301);
+  assert.equal(
+    response.headers.get("Location"),
+    "https://www.rajanacarrental.com/fleet/?source=google",
+  );
+});

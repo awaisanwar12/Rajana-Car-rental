@@ -10,12 +10,16 @@
     {
       "pattern": "www.rajanacarrental.com",
       "custom_domain": true
+    },
+    {
+      "pattern": "rajanacarrental.com/*",
+      "zone_name": "rajanacarrental.com"
     }
   ],
   "assets": {
     "directory": "./out",
     "not_found_handling": "404-page",
     "binding": "ASSETS",
-    "run_worker_first": ["/invoice", "/invoice/*"]
+    "run_worker_first": true
   }
 }

@@ -58,7 +58,16 @@ async function hasValidCredentials(request, env) {
 
 const worker = {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url);
+    const url = new URL(request.url);
+
+    if (url.hostname === "rajanacarrental.com") {
+      url.protocol = "https:";
+      url.hostname = "www.rajanacarrental.com";
+      url.port = "";
+      return Response.redirect(url.toString(), 301);
+    }
+
+    const { pathname } = url;
     const isInvoicePath = pathname === "/invoice" || pathname.startsWith("/invoice/");
 
     if (!isInvoicePath) {
