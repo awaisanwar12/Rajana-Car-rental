@@ -116,7 +116,7 @@ export default function Home() {
       <section className="cta-band">
         <div className="shell cta-band-inner">
           <div><small>Need a car today?</small><h2>Tell us your route. We’ll handle the ride.</h2></div>
-          <a className="button button-light" href={whatsappUrl("Hello Rajana Car Rental, I need a car today. My pickup location is: ")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Message on WhatsApp</a>
+          <a className="button button-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I need a car today. My pickup location is: ")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Message on WhatsApp</a>
         </div>
       </section>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />

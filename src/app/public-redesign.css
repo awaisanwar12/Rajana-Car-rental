@@ -361,6 +361,10 @@ p {
   color: #087448;
 }
 
+.cta-band {
+  background: var(--navy-2);
+}
+
 .faq-list summary {
   min-height: 52px;
   align-items: center;
