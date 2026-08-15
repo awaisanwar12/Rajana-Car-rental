@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FleetCard } from "@/components/FleetCard";
+import { FleetExplorer } from "@/components/FleetExplorer";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/Icons";
-import { fleet, whatsappUrl } from "@/lib/site";
+import { whatsappUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Car Rental Fleet & Rates in Lahore",
@@ -21,7 +21,8 @@ export default function FleetPage() {
       </section>
       <section className="section fleet-page-section">
         <div className="shell">
-          <div className="fleet-grid fleet-grid-all">{fleet.map((car) => <FleetCard key={car.name} car={car} />)}</div>
+          <div className="fleet-page-intro"><p>Filter by vehicle type, then open WhatsApp from any car to check its availability for your route and date.</p></div>
+          <FleetExplorer />
           <div className="rate-box">
             <div><p className="eyebrow"><span /> Before you book</p><h2>What affects the final price?</h2></div>
             <ul><li><CheckIcon /> Pickup and destination</li><li><CheckIcon /> Trip duration and dates</li><li><CheckIcon /> Fuel, tolls and applicable taxes</li><li><CheckIcon /> Vehicle availability and waiting time</li></ul>

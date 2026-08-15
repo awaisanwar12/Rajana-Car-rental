@@ -85,6 +85,14 @@ const worker = {
     }
 
     const { pathname } = url;
+
+    if (pathname === "/contact-us" || pathname === "/contact-us/") {
+      url.protocol = "https:";
+      url.pathname = "/";
+      url.port = "";
+      return Response.redirect(url.toString(), 301);
+    }
+
     const isInvoicePath = pathname === "/invoice" || pathname.startsWith("/invoice/");
 
     if (!isInvoicePath) {

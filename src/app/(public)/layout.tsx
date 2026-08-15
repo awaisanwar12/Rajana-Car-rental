@@ -2,7 +2,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { site } from "@/lib/site";
-import "../contact-float.css";
+import "../public-redesign.css";
 
 export default function PublicLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const structuredData = {

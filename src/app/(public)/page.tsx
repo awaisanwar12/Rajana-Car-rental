@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookingForm } from "@/components/BookingForm";
 import { FleetCard } from "@/components/FleetCard";
-import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PhoneIcon, PlaneIcon, ShieldIcon, UsersIcon, WhatsAppIcon } from "@/components/Icons";
-import { fleet, site, whatsappUrl } from "@/lib/site";
+import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, UsersIcon, WhatsAppIcon } from "@/components/Icons";
+import { fleet, whatsappUrl } from "@/lib/site";
 
 const faqs = [
   ["Do your rental cars come with a driver?", "Yes. Rajana provides chauffeur-driven car rental so you can travel without worrying about routes, parking or driving fatigue."],
@@ -24,8 +24,8 @@ export default function Home() {
             <h1>Rent a car in Lahore.<br /><em>Driver included.</em></h1>
             <p className="hero-lead">Clean cars, experienced drivers and honest trip pricing—available 24/7 for airport pickups, family travel, business trips and one-way drops.</p>
             <div className="hero-actions">
-              <a className="button button-primary" href={whatsappUrl("Hello Rajana Car Rental, I need a car in Lahore. Please share availability and price.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a WhatsApp quote</a>
-              <a className="button button-ghost" href={`tel:${site.phoneHref}`}><PhoneIcon /> Call {site.phoneDisplay}</a>
+              <a className="button button-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I need a car in Lahore. Please share availability and price.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a WhatsApp quote</a>
+              <Link className="button button-ghost" href="/fleet/">View fleet & rates <ArrowIcon /></Link>
             </div>
             <div className="hero-assurances">
               <span><CheckIcon /> 24/7 booking</span>
@@ -35,7 +35,7 @@ export default function Home() {
           </div>
           <div className="hero-visual">
             <div className="hero-image-wrap">
-              <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Rajana Car Rental on the road" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
+              <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Rajana Car Rental on the road" fill preload sizes="(max-width: 900px) 100vw, 50vw" />
             </div>
             <div className="route-card">
               <span className="route-icon"><MapPinIcon /></span>

@@ -16,7 +16,7 @@ export default function LahoreServicePage() {
       <section className="location-hero">
         <div className="shell location-hero-grid">
           <div className="location-copy"><p className="eyebrow eyebrow-light"><span /> Lahore chauffeur service</p><h1>Rent a car in Lahore without the driving stress.</h1><p>From early airport pickups to late-night family events, Rajana provides a car and experienced driver when you need one.</p><div className="hero-actions"><a className="button button-primary" href={whatsappUrl("Hello Rajana, I need a chauffeur-driven car in Lahore.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a Lahore quote</a></div></div>
-          <div className="location-image"><Image src="/images/toyota-fortuner.jpg" alt="Toyota Fortuner chauffeur rental in Lahore" fill priority sizes="(max-width: 850px) 100vw, 45vw" /></div>
+          <div className="location-image"><Image src="/images/toyota-fortuner.jpg" alt="Toyota Fortuner chauffeur rental in Lahore" fill preload sizes="(max-width: 850px) 100vw, 45vw" /></div>
         </div>
       </section>
       <section className="section location-services">

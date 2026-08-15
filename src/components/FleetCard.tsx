@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { UsersIcon, WhatsAppIcon } from "./Icons";
 import { whatsappUrl } from "@/lib/site";
+import { UsersIcon, WhatsAppIcon } from "./Icons";
 
 type FleetCardProps = {
   car: {
@@ -22,12 +22,10 @@ export function FleetCard({ car, featured = false }: FleetCardProps) {
         <span>{car.category}</span>
       </div>
       <div className="fleet-content">
-        <div>
-          <h3>{car.name}</h3>
-          <p><UsersIcon size={17} /> {car.seats}</p>
-        </div>
-        <strong>{car.priceLabel}</strong>
-        <a className="text-link" href={whatsappUrl(`Hello Rajana Car Rental, please share availability and a final quote for ${car.name}.`)} target="_blank" rel="noreferrer">
+        <div className="fleet-card-heading"><h3>{car.name}</h3></div>
+        <p className="fleet-meta"><UsersIcon size={17} /> {car.seats} <span aria-hidden="true">·</span> Driver included</p>
+        <strong className="fleet-price"><small>Starting at</small>{car.priceLabel.replace("From ", "")}</strong>
+        <a className="button fleet-card-action" href={whatsappUrl(`Hello Rajana Car Rental, please share availability and a final quote for ${car.name}.`)} target="_blank" rel="noreferrer" aria-label={`Check ${car.name} availability on WhatsApp`}>
           <WhatsAppIcon size={18} /> Check availability
         </a>
       </div>

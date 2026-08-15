@@ -94,3 +94,16 @@ test("redirects www to the canonical bare domain", async () => {
     "https://rajanacarrental.com/fleet/?source=google",
   );
 });
+
+test("permanently redirects the legacy contact page to the homepage", async () => {
+  const response = await worker.fetch(
+    new Request("https://rajanacarrental.com/contact-us/?source=legacy"),
+    configuredEnvironment,
+  );
+
+  assert.equal(response.status, 301);
+  assert.equal(
+    response.headers.get("Location"),
+    "https://rajanacarrental.com/?source=legacy",
+  );
+});

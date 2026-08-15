@@ -6,6 +6,7 @@ import { ArrowIcon, WhatsAppIcon } from "./Icons";
 
 export function BookingForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState("");
+  const idPrefix = compact ? "compact-booking" : "booking";
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,7 +23,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
       `Details: ${form.get("details") || "Not provided"}`,
     ].join("\n");
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
-    setStatus("Your details are ready in WhatsApp. Send the message to confirm your request.");
+    setStatus("Your trip details are ready in WhatsApp. Send the message to request confirmation.");
   }
 
   return (
@@ -30,18 +31,18 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
       <div className="form-heading">
         <span><WhatsAppIcon size={19} /> Fastest response</span>
         <h2>Get your trip price</h2>
-        <p>No payment needed. We confirm the final rate on WhatsApp.</p>
+        <p>No payment needed. We confirm availability and the final rate on WhatsApp.</p>
       </div>
       <div className="form-grid">
-        <label>Full name<input name="name" autoComplete="name" placeholder="Your name" required /></label>
-        <label>Phone number<input name="phone" type="tel" autoComplete="tel" placeholder="03xx xxxxxxx" required /></label>
-        <label>Pickup location<input name="pickup" placeholder="e.g. DHA Lahore" required /></label>
-        <label>Destination<input name="destination" placeholder="e.g. Lahore Airport" required /></label>
-        <label>Pickup date<input name="date" type="date" required /></label>
-        <label>Choose a car<select name="car" defaultValue=""><option value="" disabled>Select a vehicle</option>{fleet.map((car) => <option key={car.name}>{car.name}</option>)}<option>Other / recommend a car</option></select></label>
-        {!compact && <label className="field-wide">Trip details<textarea name="details" rows={3} placeholder="Passengers, return date, special requests…" /></label>}
+        <label htmlFor={`${idPrefix}-name`}>Full name<input id={`${idPrefix}-name`} name="name" autoComplete="name" placeholder="Your name" required /></label>
+        <label htmlFor={`${idPrefix}-phone`}>Phone number<input id={`${idPrefix}-phone`} name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="03xx xxxxxxx" required /></label>
+        <label htmlFor={`${idPrefix}-pickup`}>Pickup location<input id={`${idPrefix}-pickup`} name="pickup" autoComplete="street-address" placeholder="e.g. DHA Lahore" required /></label>
+        <label htmlFor={`${idPrefix}-destination`}>Destination<input id={`${idPrefix}-destination`} name="destination" placeholder="e.g. Lahore Airport" required /></label>
+        <label htmlFor={`${idPrefix}-date`}>Pickup date<input id={`${idPrefix}-date`} name="date" type="date" required /></label>
+        <label htmlFor={`${idPrefix}-car`}>Choose a car<select id={`${idPrefix}-car`} name="car" defaultValue=""><option value="" disabled>Select a vehicle</option>{fleet.map((car) => <option key={car.name}>{car.name}</option>)}<option>Other / recommend a car</option></select></label>
+        {!compact && <label className="field-wide" htmlFor={`${idPrefix}-details`}>Trip details<textarea id={`${idPrefix}-details`} name="details" rows={3} placeholder="Passengers, return date, special requests" /></label>}
       </div>
-      <button className="button button-primary button-block" type="submit">Continue on WhatsApp <ArrowIcon /></button>
+      <button className="button button-whatsapp button-block" type="submit"><WhatsAppIcon /> Continue on WhatsApp <ArrowIcon /></button>
       {status && <p className="form-status" role="status">{status}</p>}
     </form>
   );

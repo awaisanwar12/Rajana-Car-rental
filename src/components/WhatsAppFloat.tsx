@@ -1,16 +1,11 @@
-import { PhoneIcon, WhatsAppIcon } from "./Icons";
-import { site, whatsappUrl } from "@/lib/site";
+import { whatsappUrl } from "@/lib/site";
+import { WhatsAppIcon } from "./Icons";
 
 export function WhatsAppFloat() {
   return (
-    <nav className="contact-float" aria-label="Quick contact">
-      <a className="call-float" href={`tel:${site.phoneHref}`} aria-label={`Call Rajana Car Rental at ${site.phoneDisplay}`}>
-        <PhoneIcon size={22} />
-        <span>Call now</span>
-      </a>
-      <a className="whatsapp-float" href={whatsappUrl("Hello Rajana Car Rental, I would like a quote.")} target="_blank" rel="noreferrer" aria-label="Ask Rajana Car Rental for a quote on WhatsApp">
-        <WhatsAppIcon size={23} />
-        <span>WhatsApp</span>
+    <nav className="mobile-booking-bar" aria-label="Quick booking">
+      <a href={whatsappUrl("Hello Rajana Car Rental, I would like to book a car. Please share availability and price.")} target="_blank" rel="noreferrer" aria-label="Book a car with Rajana Car Rental on WhatsApp">
+        <WhatsAppIcon /> Book Now on WhatsApp
       </a>
     </nav>
   );
