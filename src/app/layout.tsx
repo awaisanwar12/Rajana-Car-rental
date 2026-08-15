@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { site } from "@/lib/site";
 import "./globals.css";
+import "./contact-float.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
