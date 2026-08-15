@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { FileIcon } from "./Icons";
+import { FileIcon, WhatsAppIcon } from "./Icons";
 import { site } from "@/lib/site";
 
 type NumericInput = number | "";
@@ -28,6 +29,41 @@ const emptyInvoice = (): InvoiceData => ({
 
 const numberValue = (value: NumericInput) => value === "" ? 0 : value;
 const money = (value: NumericInput) => new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(numberValue(value));
+const logoPath = "/images/rajana-logo.jpg";
+
+function invoiceFilename(invoiceNumber: string) {
+  return `${invoiceNumber || "Rajana-Invoice"}.pdf`.replace(/[^a-z0-9-_.]/gi, "-");
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+}
+
+async function loadImageDataUrl(path: string) {
+  const response = await fetch(path);
+  if (!response.ok) throw new Error("Logo could not be loaded.");
+  const blob = await response.blob();
+
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error ?? new Error("Logo could not be read."));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function whatsappNumber(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("0")) return `92${digits.slice(1)}`;
+  return digits;
+}
 
 export function InvoiceBuilder() {
   const [data, setData] = useState<InvoiceData>(emptyInvoice);
@@ -63,11 +99,9 @@ export function InvoiceBuilder() {
     setStatus("Invoice cleared.");
   }
 
-  async function downloadPdf() {
-    setGenerating(true);
-    setStatus("Preparing PDF…");
-    try {
+  async function createPdf() {
       const { jsPDF } = await import("jspdf");
+      const logo = await loadImageDataUrl(logoPath);
       const doc = new jsPDF({ unit: "mm", format: "a4" });
       const navy = [11, 34, 53] as const;
       const red = [184, 41, 49] as const;
@@ -75,10 +109,11 @@ export function InvoiceBuilder() {
       const pageWidth = 210;
       const margin = 16;
       const addPageHeader = () => {
-        doc.setFillColor(...navy); doc.rect(0, 0, pageWidth, 31, "F");
-        doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.text("RAJANA", margin, 13);
-        doc.setFontSize(8); doc.setCharSpace(1.7); doc.text("CAR RENTAL", margin, 20); doc.setCharSpace(0);
-        doc.setFontSize(22); doc.text("INVOICE", 194, 18, { align: "right" });
+        doc.setFillColor(255, 255, 255); doc.rect(0, 0, pageWidth, 31, "F");
+        doc.addImage(logo, "JPEG", margin, 3.5, 42, 30);
+        doc.setFillColor(...navy); doc.rect(137, 0, 73, 31, "F");
+        doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.text("INVOICE", 194, 18, { align: "right" });
+        doc.setFillColor(...red); doc.rect(0, 31, pageWidth, 2, "F");
       };
       addPageHeader();
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
@@ -118,11 +153,48 @@ export function InvoiceBuilder() {
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.text(doc.splitTextToSize(data.notes || "Thank you for choosing Rajana Car Rental.", 105), margin, noteY + 6);
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.text("Mian Waqas", 194, noteY, { align: "right" }); doc.setFont("helvetica", "normal"); doc.setTextColor(...muted); doc.text("Authorized signature", 194, noteY + 6, { align: "right" });
       doc.setFillColor(...red); doc.rect(0, 292, pageWidth, 5, "F");
-      const filename = `${data.invoiceNumber || "Rajana-Invoice"}.pdf`.replace(/[^a-z0-9-_\.]/gi, "-");
-      doc.save(filename);
+      return { blob: doc.output("blob"), filename: invoiceFilename(data.invoiceNumber) };
+  }
+
+  async function downloadPdf() {
+    setGenerating(true);
+    setStatus("Preparing PDF…");
+    try {
+      const { blob, filename } = await createPdf();
+      downloadBlob(blob, filename);
       setStatus(`PDF downloaded as ${filename}`);
-    } catch {
+    } catch (error) {
+      console.error(error);
       setStatus("The PDF could not be generated. Please try Print / Save as PDF.");
+    } finally { setGenerating(false); }
+  }
+
+  async function sharePdf() {
+    setGenerating(true);
+    setStatus("Preparing invoice for WhatsApp…");
+    try {
+      const { blob, filename } = await createPdf();
+      const file = new File([blob], filename, { type: "application/pdf" });
+      const message = `Invoice ${data.invoiceNumber} from Rajana Car Rental. Total: Rs ${money(total)}. Paid: Rs ${money(data.paid)}. Balance: Rs ${money(balance)}.`;
+
+      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        await navigator.share({ title: `Rajana invoice ${data.invoiceNumber}`, text: message, files: [file] });
+        setStatus("Invoice shared. Choose WhatsApp from your phone's share menu.");
+        return;
+      }
+
+      downloadBlob(blob, filename);
+      const customerNumber = whatsappNumber(data.customerPhone);
+      const text = `${message}\n\nThe PDF ${filename} has been downloaded. Please attach it to this WhatsApp chat.`;
+      window.open(`https://wa.me/${customerNumber}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+      setStatus("PDF downloaded and WhatsApp opened. Attach the downloaded PDF to the chat.");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setStatus("Sharing cancelled. Your invoice was not sent.");
+      } else {
+        console.error(error);
+        setStatus("The invoice could not be shared. Please download the PDF and attach it in WhatsApp.");
+      }
     } finally { setGenerating(false); }
   }
 
@@ -143,13 +215,13 @@ export function InvoiceBuilder() {
           {data.items.map((item, index) => <div className="line-editor-row" key={item.id}><label className="line-description">Description<textarea rows={2} value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Honda BR-V — Lahore Airport pickup" : "Trip or service details"} /></label><label>Qty<input type="number" min="0" step="1" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Rate (Rs)<input type="number" min="0" step="1" value={item.rate} onChange={(e) => updateItem(item.id, "rate", e.target.value === "" ? "" : Number(e.target.value))} /></label><button className="remove-line" type="button" onClick={() => removeItem(item.id)} aria-label={`Remove service ${index + 1}`}>×</button></div>)}
         </div>
         <div className="invoice-fields two-columns"><label>Paid amount (Rs)<input type="number" min="0" value={data.paid} onChange={(e) => setField("paid", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Note<input value={data.notes} onChange={(e) => setField("notes", e.target.value)} /></label></div>
-        <div className="invoice-actions"><button className="button button-primary" type="button" onClick={downloadPdf} disabled={generating}><FileIcon /> {generating ? "Generating…" : "Download PDF"}</button><button className="button button-dark" type="button" onClick={() => window.print()}>Print / Save as PDF</button><button className="button button-outline" type="button" onClick={saveDraft}>Save draft</button><button className="button button-text" type="button" onClick={clearDraft}>Clear</button></div>
+        <div className="invoice-actions"><button className="button button-primary" type="button" onClick={downloadPdf} disabled={generating}><FileIcon /> {generating ? "Generating…" : "Download PDF"}</button><button className="button button-whatsapp" type="button" onClick={sharePdf} disabled={generating}><WhatsAppIcon /> Share on WhatsApp</button><button className="button button-dark" type="button" onClick={() => window.print()}>Print / Save as PDF</button><button className="button button-outline" type="button" onClick={saveDraft}>Save draft</button><button className="button button-text" type="button" onClick={clearDraft}>Clear</button></div>
         <p className="invoice-status" role="status">{status}</p>
       </section>
 
       <section className="invoice-preview" aria-label="Invoice preview">
         <div className="invoice-paper">
-          <div className="invoice-paper-head"><div><strong>RAJANA</strong><span>CAR RENTAL</span></div><h2>INVOICE</h2></div>
+          <div className="invoice-paper-head"><Image className="invoice-logo" src={logoPath} alt="Rajana Car Rental" width={559} height={400} priority /><h2>INVOICE</h2></div>
           <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.email}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
