@@ -11,6 +11,13 @@ export const site = {
   shortAddress: "H Block Market, DHA Phase 1, Lahore",
 };
 
+export const paymentDetails = {
+  accountTitle: "MUHAMMAD WAQAS ANWAR",
+  bankName: "Faisal Bank",
+  bankAccountNumber: "3233301000008602",
+  jazzCashNumber: "03036565672",
+};
+
 export const fleet = [
   {
     name: "Honda Civic RS",

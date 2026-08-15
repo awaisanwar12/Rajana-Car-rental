@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { FileIcon, WhatsAppIcon } from "./Icons";
-import { site } from "@/lib/site";
+import { paymentDetails, site } from "@/lib/site";
 
 type NumericInput = number | "";
 type LineItem = { id: number; description: string; quantity: NumericInput; rate: NumericInput };
@@ -220,14 +220,20 @@ export function InvoiceBuilder() {
         doc.setTextColor(...navy); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
         doc.text(lines, margin + 3, y + 6); doc.text(String(numberValue(item.quantity)), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, y + 6, { align: "right" }); y += rowHeight;
       }
-      if (y > 226) { doc.addPage(); addPageHeader(); y = 50; }
+      if (y > 180) { doc.addPage(); addPageHeader(); y = 50; }
       y += 7;
       const labelX = 150;
       doc.setFontSize(9); doc.setTextColor(...muted); doc.text("Total", labelX, y); doc.setTextColor(...navy); doc.text(`Rs ${money(total)}`, 194, y, { align: "right" }); y += 8;
       doc.setTextColor(...muted); doc.text("Advance", labelX, y); doc.setTextColor(...navy); doc.text(`Rs ${money(data.paid)}`, 194, y, { align: "right" }); y += 4;
       doc.setDrawColor(...red); doc.line(labelX, y, 194, y); y += 8;
       doc.setFont("helvetica", "bold"); doc.setTextColor(...navy); doc.setFontSize(10); doc.text("REMAINING", labelX, y); doc.setTextColor(...red); doc.text(`Rs ${money(balance)}`, 194, y, { align: "right" });
-      const noteY = Math.max(y + 18, 246);
+      const paymentY = Math.max(y + 16, 188);
+      doc.setFillColor(245, 247, 248); doc.roundedRect(margin, paymentY, 178, 34, 1.5, 1.5, "F");
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT METHODS", margin + 4, paymentY + 6);
+      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.text("BANK TRANSFER", margin + 4, paymentY + 13); doc.text("JAZZCASH", 132, paymentY + 13);
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.text(paymentDetails.bankName, margin + 4, paymentY + 19); doc.text(paymentDetails.jazzCashNumber, 132, paymentY + 19);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.text(`Account title: ${paymentDetails.accountTitle}`, margin + 4, paymentY + 25); doc.text(`Account: ${paymentDetails.bankAccountNumber}`, margin + 4, paymentY + 30); doc.text(paymentDetails.accountTitle, 132, paymentY + 25);
+      const noteY = Math.max(paymentY + 44, 250);
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PLEASE NOTE", margin, noteY);
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.text(doc.splitTextToSize(data.notes || "Thank you for choosing Rajana Car Rental.", 105), margin, noteY + 6);
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.text("Mian Waqas", 194, noteY, { align: "right" }); doc.setFont("helvetica", "normal"); doc.setTextColor(...muted); doc.text("Authorized signature", 194, noteY + 6, { align: "right" });
@@ -259,7 +265,8 @@ export function InvoiceBuilder() {
         pickupDateTime || data.pickupLocation ? `Pickup: ${[pickupDateTime, data.pickupLocation].filter(Boolean).join(" - ")}` : "",
         dropoffDateTime || data.dropoffLocation ? `Drop-off: ${[dropoffDateTime, data.dropoffLocation].filter(Boolean).join(" - ")}` : "",
       ].filter(Boolean).join("\n");
-      const message = [`Invoice ${data.invoiceNumber} from Rajana Car Rental.`, tripSummary, `Total: Rs ${money(total)}. Advance: Rs ${money(data.paid)}. Remaining: Rs ${money(balance)}.`].filter(Boolean).join("\n");
+      const paymentSummary = `Payment: ${paymentDetails.bankName} ${paymentDetails.bankAccountNumber} or JazzCash ${paymentDetails.jazzCashNumber} (${paymentDetails.accountTitle}).`;
+      const message = [`Invoice ${data.invoiceNumber} from Rajana Car Rental.`, tripSummary, `Total: Rs ${money(total)}. Advance: Rs ${money(data.paid)}. Remaining: Rs ${money(balance)}.`, paymentSummary].filter(Boolean).join("\n");
 
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
         await navigator.share({ title: `Rajana invoice ${data.invoiceNumber}`, text: message, files: [file] });
@@ -340,6 +347,7 @@ export function InvoiceBuilder() {
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}
           <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
           <div className="invoice-summary"><dl><dt>Total</dt><dd>Rs {money(total)}</dd><dt>Advance</dt><dd>Rs {money(data.paid)}</dd><dt className="balance-label">Remaining</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
+          <div className="invoice-payment-methods"><small>PAYMENT METHODS</small><div><section><span>Bank transfer</span><strong>{paymentDetails.bankName}</strong><p>Account title: {paymentDetails.accountTitle}</p><p>Account: {paymentDetails.bankAccountNumber}</p></section><section><span>JazzCash</span><strong>{paymentDetails.jazzCashNumber}</strong><p>{paymentDetails.accountTitle}</p></section></div></div>
           <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Rajana Car Rental."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
         </div>
       </section>
