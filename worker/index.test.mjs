@@ -18,7 +18,7 @@ const authorization = (username, password) =>
 
 test("denies invoice access when secrets are missing", async () => {
   const response = await worker.fetch(
-    new Request("https://www.rajanacarrental.com/invoice/"),
+    new Request("https://rajanacarrental.com/invoice/"),
     { ASSETS: assets },
   );
 
@@ -27,7 +27,7 @@ test("denies invoice access when secrets are missing", async () => {
 
 test("challenges invoice requests without credentials", async () => {
   const response = await worker.fetch(
-    new Request("https://www.rajanacarrental.com/invoice/"),
+    new Request("https://rajanacarrental.com/invoice/"),
     configuredEnvironment,
   );
 
@@ -37,7 +37,7 @@ test("challenges invoice requests without credentials", async () => {
 
 test("rejects incorrect credentials", async () => {
   const response = await worker.fetch(
-    new Request("https://www.rajanacarrental.com/invoice/", {
+    new Request("https://rajanacarrental.com/invoice/", {
       headers: { Authorization: authorization("waqas", "wrong") },
     }),
     configuredEnvironment,
@@ -48,7 +48,7 @@ test("rejects incorrect credentials", async () => {
 
 test("serves the invoice after valid authentication", async () => {
   const response = await worker.fetch(
-    new Request("https://www.rajanacarrental.com/invoice/", {
+    new Request("https://rajanacarrental.com/invoice/", {
       headers: {
         Authorization: authorization("waqas", "correct horse battery staple"),
       },
@@ -62,22 +62,22 @@ test("serves the invoice after valid authentication", async () => {
 
 test("passes public pages through to static assets", async () => {
   const response = await worker.fetch(
-    new Request("https://www.rajanacarrental.com/"),
+    new Request("https://rajanacarrental.com/"),
     configuredEnvironment,
   );
 
   assert.equal(response.status, 200);
 });
 
-test("redirects the bare domain to the canonical www website", async () => {
+test("redirects www to the canonical bare domain", async () => {
   const response = await worker.fetch(
-    new Request("http://rajanacarrental.com/fleet/?source=google"),
+    new Request("http://www.rajanacarrental.com/fleet/?source=google"),
     configuredEnvironment,
   );
 
   assert.equal(response.status, 301);
   assert.equal(
     response.headers.get("Location"),
-    "https://www.rajanacarrental.com/fleet/?source=google",
+    "https://rajanacarrental.com/fleet/?source=google",
   );
 });

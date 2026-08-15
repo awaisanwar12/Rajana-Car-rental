@@ -1,7 +1,7 @@
 export const site = {
   name: "Rajana Car Rental",
   shortName: "Rajana",
-  url: "https://www.rajanacarrental.com",
+  url: "https://rajanacarrental.com",
   phoneDisplay: "+92 303 6565672",
   phoneHref: "+923036565672",
   whatsapp:

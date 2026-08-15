@@ -60,9 +60,9 @@ const worker = {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (url.hostname === "rajanacarrental.com") {
+    if (url.hostname === "www.rajanacarrental.com") {
       url.protocol = "https:";
-      url.hostname = "www.rajanacarrental.com";
+      url.hostname = "rajanacarrental.com";
       url.port = "";
       return Response.redirect(url.toString(), 301);
     }
