@@ -28,6 +28,23 @@ function unauthorized() {
   });
 }
 
+async function fetchAsset(request, env, pathname) {
+  const response = await env.ASSETS.fetch(request);
+  const headers = new Headers(response.headers);
+
+  if (pathname.startsWith("/_next/static/")) {
+    headers.set("Cache-Control", "public, max-age=31536000, immutable");
+  } else if (pathname.startsWith("/images/")) {
+    headers.set("Cache-Control", "public, max-age=604800, stale-while-revalidate=86400");
+  }
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 async function hasValidCredentials(request, env) {
   const authorization = request.headers.get("Authorization");
 
@@ -71,7 +88,7 @@ const worker = {
     const isInvoicePath = pathname === "/invoice" || pathname.startsWith("/invoice/");
 
     if (!isInvoicePath) {
-      return env.ASSETS.fetch(request);
+      return fetchAsset(request, env, pathname);
     }
 
     if (!env.INVOICE_USERNAME || !env.INVOICE_PASSWORD) {
@@ -89,7 +106,7 @@ const worker = {
       return unauthorized();
     }
 
-    return env.ASSETS.fetch(request);
+    return fetchAsset(request, env, pathname);
   },
 };
 

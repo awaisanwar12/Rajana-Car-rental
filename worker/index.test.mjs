@@ -69,6 +69,19 @@ test("passes public pages through to static assets", async () => {
   assert.equal(response.status, 200);
 });
 
+test("adds long-lived browser caching to hashed Next.js assets", async () => {
+  const response = await worker.fetch(
+    new Request("https://rajanacarrental.com/_next/static/chunks/example.js"),
+    configuredEnvironment,
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(
+    response.headers.get("Cache-Control"),
+    "public, max-age=31536000, immutable",
+  );
+});
+
 test("redirects www to the canonical bare domain", async () => {
   const response = await worker.fetch(
     new Request("http://www.rajanacarrental.com/fleet/?source=google"),

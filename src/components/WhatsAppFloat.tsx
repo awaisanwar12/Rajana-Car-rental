@@ -1,14 +1,7 @@
-"use client";
-
-import { usePathname } from "next/navigation";
 import { PhoneIcon, WhatsAppIcon } from "./Icons";
 import { site, whatsappUrl } from "@/lib/site";
 
 export function WhatsAppFloat() {
-  const pathname = usePathname();
-
-  if (pathname.startsWith("/invoice")) return null;
-
   return (
     <nav className="contact-float" aria-label="Quick contact">
       <a className="call-float" href={`tel:${site.phoneHref}`} aria-label={`Call Rajana Car Rental at ${site.phoneDisplay}`}>
