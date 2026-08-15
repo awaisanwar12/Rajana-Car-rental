@@ -217,8 +217,10 @@ export function InvoiceBuilder() {
         const rowHeight = Math.max(12, lines.length * 4.5 + 5);
         if (y + rowHeight > 250) { doc.addPage(); addPageHeader(); y = 50; tableHead(); }
         doc.setDrawColor(220, 224, 227); doc.rect(margin, y, 178, rowHeight);
-        doc.setTextColor(...navy); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-        doc.text(lines, margin + 3, y + 6); doc.text(String(numberValue(item.quantity)), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, y + 6, { align: "right" }); y += rowHeight;
+        doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5);
+        doc.text(lines, margin + 3, y + 6);
+        doc.setFont("helvetica", "normal");
+        doc.text(String(numberValue(item.quantity)), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, y + 6, { align: "right" }); y += rowHeight;
       }
       if (y > 180) { doc.addPage(); addPageHeader(); y = 50; }
       y += 7;

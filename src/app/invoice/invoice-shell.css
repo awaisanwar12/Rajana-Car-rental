@@ -69,6 +69,11 @@
   padding: 12px 14px;
 }
 
+.invoice-table-wrap tbody td:first-child {
+  color: var(--navy);
+  font-weight: 700;
+}
+
 .invoice-payment-methods > small {
   color: var(--navy);
   display: block;
