@@ -57,17 +57,48 @@ function downloadBlob(blob: Blob, filename: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }
 
-async function loadImageDataUrl(path: string) {
+async function loadCircularLogoDataUrl(path: string) {
   const response = await fetch(path);
   if (!response.ok) throw new Error("Logo could not be loaded.");
   const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
 
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error ?? new Error("Logo could not be read."));
-    reader.readAsDataURL(blob);
-  });
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const element = new window.Image();
+      element.onload = () => resolve(element);
+      element.onerror = () => reject(new Error("Logo could not be read."));
+      element.src = objectUrl;
+    });
+    const size = 420;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Logo could not be prepared.");
+
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, size, size);
+    context.save();
+    context.beginPath();
+    context.arc(size / 2, size / 2, 200, 0, Math.PI * 2);
+    context.clip();
+    context.fillStyle = "#f8f7f2";
+    context.fillRect(0, 0, size, size);
+    const logoWidth = 364;
+    const logoHeight = logoWidth * (image.height / image.width);
+    context.drawImage(image, (size - logoWidth) / 2, (size - logoHeight) / 2, logoWidth, logoHeight);
+    context.restore();
+    context.strokeStyle = "#0b2235";
+    context.lineWidth = 7;
+    context.beginPath();
+    context.arc(size / 2, size / 2, 196.5, 0, Math.PI * 2);
+    context.stroke();
+
+    return canvas.toDataURL("image/jpeg", 0.9);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 function whatsappNumber(phone: string) {
@@ -136,7 +167,7 @@ export function InvoiceBuilder() {
 
   async function createPdf() {
       const { jsPDF } = await import("jspdf");
-      const logo = await loadImageDataUrl(logoPath);
+      const logo = await loadCircularLogoDataUrl(logoPath);
       const doc = new jsPDF({ unit: "mm", format: "a4" });
       const navy = [11, 34, 53] as const;
       const red = [184, 41, 49] as const;
@@ -144,24 +175,24 @@ export function InvoiceBuilder() {
       const pageWidth = 210;
       const margin = 16;
       const addPageHeader = () => {
-        doc.setFillColor(255, 255, 255); doc.rect(0, 0, pageWidth, 31, "F");
-        doc.addImage(logo, "JPEG", margin, 3.5, 42, 30);
-        doc.setFillColor(...navy); doc.rect(137, 0, 73, 31, "F");
-        doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.text("INVOICE", 194, 18, { align: "right" });
-        doc.setFillColor(...red); doc.rect(0, 31, pageWidth, 2, "F");
+        doc.setFillColor(255, 255, 255); doc.rect(0, 0, pageWidth, 40, "F");
+        doc.addImage(logo, "JPEG", 18, 4, 32, 32);
+        doc.setFillColor(...navy); doc.rect(137, 0, 73, 40, "F");
+        doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.text("INVOICE", 194, 23, { align: "right" });
+        doc.setFillColor(...red); doc.rect(0, 40, pageWidth, 2, "F");
       };
       addPageHeader();
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-      doc.text([site.address, site.phoneDisplay, site.email, site.url], margin, 39);
-      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("BILL TO", margin, 60);
-      doc.setFontSize(12); doc.text(data.customerName || "Customer", margin, 68);
+      doc.text([site.address, site.phoneDisplay, site.email, site.url], margin, 49);
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("BILL TO", margin, 70);
+      doc.setFontSize(12); doc.text(data.customerName || "Customer", margin, 78);
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
       const customer = [data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean);
-      if (customer.length) doc.text(customer, margin, 74);
+      if (customer.length) doc.text(customer, margin, 84);
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(9);
-      doc.text("INVOICE NO.", 142, 60); doc.text("DATE", 142, 70);
-      doc.setFont("helvetica", "normal"); doc.text(data.invoiceNumber, 194, 60, { align: "right" }); doc.text(data.date, 194, 70, { align: "right" });
-      let y = 88;
+      doc.text("INVOICE NO.", 142, 70); doc.text("DATE", 142, 80);
+      doc.setFont("helvetica", "normal"); doc.text(data.invoiceNumber, 194, 70, { align: "right" }); doc.text(data.date, 194, 80, { align: "right" });
+      let y = 98;
       const tripLines = [
         data.city ? `City: ${data.city}` : "",
         pickupDateTime || data.pickupLocation ? `Pickup: ${[pickupDateTime, data.pickupLocation].filter(Boolean).join(" - ")}` : "",
@@ -184,12 +215,12 @@ export function InvoiceBuilder() {
       for (const item of data.items) {
         const lines = doc.splitTextToSize(item.description || "Service", 102) as string[];
         const rowHeight = Math.max(12, lines.length * 4.5 + 5);
-        if (y + rowHeight > 250) { doc.addPage(); addPageHeader(); y = 42; tableHead(); }
+        if (y + rowHeight > 250) { doc.addPage(); addPageHeader(); y = 50; tableHead(); }
         doc.setDrawColor(220, 224, 227); doc.rect(margin, y, 178, rowHeight);
         doc.setTextColor(...navy); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
         doc.text(lines, margin + 3, y + 6); doc.text(String(numberValue(item.quantity)), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, y + 6, { align: "right" }); y += rowHeight;
       }
-      if (y > 226) { doc.addPage(); addPageHeader(); y = 45; }
+      if (y > 226) { doc.addPage(); addPageHeader(); y = 50; }
       y += 7;
       const labelX = 150;
       doc.setFontSize(9); doc.setTextColor(...muted); doc.text("Total", labelX, y); doc.setTextColor(...navy); doc.text(`Rs ${money(total)}`, 194, y, { align: "right" }); y += 8;
@@ -303,7 +334,7 @@ export function InvoiceBuilder() {
 
       <section className="invoice-preview" aria-label="Invoice preview">
         <div className="invoice-paper">
-          <div className="invoice-paper-head"><Image className="invoice-logo" src={logoPath} alt="Rajana Car Rental" width={559} height={400} priority /><h2>INVOICE</h2></div>
+          <div className="invoice-paper-head"><div className="invoice-logo-mark"><Image className="invoice-logo" src={logoPath} alt="Rajana Car Rental" width={559} height={400} priority /></div><h2>INVOICE</h2></div>
           <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.email}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}

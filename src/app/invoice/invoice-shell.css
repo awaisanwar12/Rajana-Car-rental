@@ -34,3 +34,44 @@
   height: 36px;
   width: 36px;
 }
+
+.invoice-paper .invoice-paper-head {
+  height: 124px;
+  overflow: visible;
+}
+
+.invoice-logo-mark {
+  align-items: center;
+  background: #f8f7f2;
+  border: 2px solid var(--navy);
+  border-radius: 50%;
+  display: flex;
+  flex: 0 0 94px;
+  height: 94px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 9px;
+  position: relative;
+  width: 94px;
+}
+
+.invoice-logo-mark .invoice-logo {
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  width: 100%;
+}
+
+@media print {
+  .invoice-paper .invoice-paper-head {
+    height: 36mm;
+    padding-block: 3mm;
+  }
+
+  .invoice-logo-mark {
+    flex-basis: 29mm;
+    height: 29mm;
+    padding: 2.5mm;
+    width: 29mm;
+  }
+}
