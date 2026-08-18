@@ -211,33 +211,66 @@ export function InvoiceBuilder() {
         doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(8);
         doc.text("DESCRIPTION", margin + 3, y + 6); doc.text("QTY", 143, y + 6, { align: "right" }); doc.text("RATE", 168, y + 6, { align: "right" }); doc.text("AMOUNT", 191, y + 6, { align: "right" }); y += 9;
       };
+
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5);
+      const noteLines = doc.splitTextToSize(data.notes || "Thank you for choosing Rajana Car Rental.", 105) as string[];
+      const noteBlockHeight = 6 + noteLines.length * 3.4;
+      const pageContentBottom = 286;
+      const detailsGap = 6;
+      const detailsHeight = 34;
+      const noteGap = 9;
+      const maxTableBottom = pageContentBottom - detailsGap - detailsHeight - noteGap - noteBlockHeight;
+
       tableHead();
-      for (const item of data.items) {
-        const lines = doc.splitTextToSize(item.description || "Service", 102) as string[];
-        const rowHeight = Math.max(12, lines.length * 4.5 + 5);
-        if (y + rowHeight > 250) { doc.addPage(); addPageHeader(); y = 50; tableHead(); }
-        doc.setDrawColor(220, 224, 227); doc.rect(margin, y, 178, rowHeight);
-        doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5);
-        doc.text(lines, margin + 3, y + 6);
-        doc.setFont("helvetica", "normal");
-        doc.text(String(numberValue(item.quantity)), 143, y + 6, { align: "right" }); doc.text(money(item.rate), 168, y + 6, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, y + 6, { align: "right" }); y += rowHeight;
+      const availableRowsHeight = Math.max(1, maxTableBottom - y);
+      let rowFontSize = 8.5;
+      let rowPadding = 4.4;
+      let minimumRowHeight = 10;
+      const buildRows = () => {
+        doc.setFont("helvetica", "bold"); doc.setFontSize(rowFontSize);
+        const lineHeight = rowFontSize * 0.3528 * 1.2;
+        return data.items.map((item) => {
+          const lines = doc.splitTextToSize(item.description || "Service", 102) as string[];
+          return { item, lines, height: Math.max(minimumRowHeight, lines.length * lineHeight + rowPadding) };
+        });
+      };
+      let rows = buildRows();
+      for (let attempt = 0; attempt < 4; attempt += 1) {
+        const rowsHeight = rows.reduce((sum, row) => sum + row.height, 0);
+        if (rowsHeight <= availableRowsHeight) break;
+        const scale = availableRowsHeight / rowsHeight;
+        rowFontSize *= scale;
+        rowPadding *= scale;
+        minimumRowHeight *= scale;
+        rows = buildRows();
       }
-      if (y > 180) { doc.addPage(); addPageHeader(); y = 50; }
-      y += 7;
+
+      for (const { item, lines, height: rowHeight } of rows) {
+        doc.setDrawColor(220, 224, 227); doc.rect(margin, y, 178, rowHeight);
+        const textY = y + rowFontSize * 0.42 + rowPadding * 0.4;
+        doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(rowFontSize);
+        doc.text(lines, margin + 3, textY, { lineHeightFactor: 1.2 });
+        doc.setFont("helvetica", "normal");
+        doc.text(String(numberValue(item.quantity)), 143, textY, { align: "right" }); doc.text(money(item.rate), 168, textY, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, textY, { align: "right" }); y += rowHeight;
+      }
+
+      const detailsY = y + detailsGap;
+      doc.setFillColor(245, 247, 248); doc.roundedRect(margin, detailsY, 122, detailsHeight, 1.5, 1.5, "F");
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT METHODS", margin + 4, detailsY + 6);
+      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.text("BANK TRANSFER", margin + 4, detailsY + 13); doc.text("JAZZCASH", 101, detailsY + 13);
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text(paymentDetails.bankName, margin + 4, detailsY + 19); doc.text(paymentDetails.jazzCashNumber, 101, detailsY + 19);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.text(`Account title: ${paymentDetails.accountTitle}`, margin + 4, detailsY + 25); doc.text(`Account: ${paymentDetails.bankAccountNumber}`, margin + 4, detailsY + 30); doc.text(doc.splitTextToSize(paymentDetails.accountTitle, 33), 101, detailsY + 25, { lineHeightFactor: 1.1 });
+
       const labelX = 150;
-      doc.setFontSize(9); doc.setTextColor(...muted); doc.text("Total", labelX, y); doc.setTextColor(...navy); doc.text(`Rs ${money(total)}`, 194, y, { align: "right" }); y += 8;
-      doc.setTextColor(...muted); doc.text("Advance", labelX, y); doc.setTextColor(...navy); doc.text(`Rs ${money(data.paid)}`, 194, y, { align: "right" }); y += 4;
-      doc.setDrawColor(...red); doc.line(labelX, y, 194, y); y += 8;
-      doc.setFont("helvetica", "bold"); doc.setTextColor(...navy); doc.setFontSize(10); doc.text("REMAINING", labelX, y); doc.setTextColor(...red); doc.text(`Rs ${money(balance)}`, 194, y, { align: "right" });
-      const paymentY = Math.max(y + 16, 188);
-      doc.setFillColor(245, 247, 248); doc.roundedRect(margin, paymentY, 178, 34, 1.5, 1.5, "F");
-      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT METHODS", margin + 4, paymentY + 6);
-      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.text("BANK TRANSFER", margin + 4, paymentY + 13); doc.text("JAZZCASH", 132, paymentY + 13);
-      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.text(paymentDetails.bankName, margin + 4, paymentY + 19); doc.text(paymentDetails.jazzCashNumber, 132, paymentY + 19);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.text(`Account title: ${paymentDetails.accountTitle}`, margin + 4, paymentY + 25); doc.text(`Account: ${paymentDetails.bankAccountNumber}`, margin + 4, paymentY + 30); doc.text(paymentDetails.accountTitle, 132, paymentY + 25);
-      const noteY = Math.max(paymentY + 44, 250);
+      let summaryY = detailsY + 6;
+      doc.setFontSize(8.5); doc.setTextColor(...muted); doc.text("Total", labelX, summaryY); doc.setTextColor(...navy); doc.text(`Rs ${money(total)}`, 194, summaryY, { align: "right" }); summaryY += 8;
+      doc.setTextColor(...muted); doc.text("Advance", labelX, summaryY); doc.setTextColor(...navy); doc.text(`Rs ${money(data.paid)}`, 194, summaryY, { align: "right" }); summaryY += 4;
+      doc.setDrawColor(...red); doc.line(labelX, summaryY, 194, summaryY); summaryY += 8;
+      doc.setFont("helvetica", "bold"); doc.setTextColor(...navy); doc.setFontSize(9); doc.text("REMAINING", labelX, summaryY); doc.setTextColor(...red); doc.text(`Rs ${money(balance)}`, 194, summaryY, { align: "right" });
+
+      const noteY = detailsY + detailsHeight + noteGap;
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PLEASE NOTE", margin, noteY);
-      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.text(doc.splitTextToSize(data.notes || "Thank you for choosing Rajana Car Rental.", 105), margin, noteY + 6);
+      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.text(noteLines, margin, noteY + 6, { lineHeightFactor: 1.1 });
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.text("Mian Waqas", 194, noteY, { align: "right" }); doc.setFont("helvetica", "normal"); doc.setTextColor(...muted); doc.text("Authorized signature", 194, noteY + 6, { align: "right" });
       doc.setFillColor(...red); doc.rect(0, 292, pageWidth, 5, "F");
       return { blob: doc.output("blob"), filename: invoiceFilename(data.invoiceNumber) };
