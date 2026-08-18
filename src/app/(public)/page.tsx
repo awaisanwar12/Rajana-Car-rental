@@ -104,6 +104,22 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section home-services-section">
+        <div className="shell">
+          <div className="section-heading heading-split">
+            <div><p className="eyebrow"><span /> Travel services</p><h2>Choose the page that fits your trip.</h2></div>
+            <div><p>Useful booking guidance for airport travel, driver-led rentals, weddings, corporate travel and Lahore to Islamabad journeys.</p></div>
+          </div>
+          <div className="home-service-links">
+            <Link href="/car-rental-with-driver-lahore/"><strong>Car rental with driver</strong><span>City and intercity travel <ArrowIcon /></span></Link>
+            <Link href="/lahore-airport-car-rental/"><strong>Lahore airport transfer</strong><span>Pickup and drop-off planning <ArrowIcon /></span></Link>
+            <Link href="/lahore-to-islamabad-car-rental/"><strong>Lahore to Islamabad</strong><span>One-way and return travel <ArrowIcon /></span></Link>
+            <Link href="/wedding-car-rental-lahore/"><strong>Wedding car rental</strong><span>Transport for events and guests <ArrowIcon /></span></Link>
+            <Link href="/corporate-car-rental-lahore/"><strong>Corporate car rental</strong><span>Client, office and business travel <ArrowIcon /></span></Link>
+          </div>
+        </div>
+      </section>
+
       <section className="section faq-section">
         <div className="shell faq-grid">
           <div className="section-heading sticky-heading"><p className="eyebrow"><span /> Good to know</p><h2>Frequently asked questions</h2><p>For an exact trip price, send your route and travel date on WhatsApp.</p></div>

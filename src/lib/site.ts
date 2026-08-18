@@ -29,7 +29,7 @@ export const fleet = [
     alt: "Black Honda Civic RS available for rent in Lahore",
   },
   {
-    name: "Toyota Altis X",
+    name: "Toyota Corolla Altis X",
     category: "Comfort sedan",
     seats: "4 passengers",
     price: 7000,
