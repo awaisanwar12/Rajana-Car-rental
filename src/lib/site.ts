@@ -20,6 +20,7 @@ export const paymentDetails = {
 
 export const fleet = [
   {
+    id: "honda-civic-rs",
     name: "Honda Civic RS",
     category: "Executive sedan",
     seats: "4 passengers",
@@ -29,6 +30,7 @@ export const fleet = [
     alt: "Black Honda Civic RS available for rent in Lahore",
   },
   {
+    id: "toyota-corolla-altis-x",
     name: "Toyota Corolla Altis X",
     category: "Comfort sedan",
     seats: "4 passengers",
@@ -38,6 +40,7 @@ export const fleet = [
     alt: "Toyota Corolla Altis X chauffeur car rental Lahore",
   },
   {
+    id: "toyota-yaris-corolla-gli",
     name: "Toyota Yaris / Corolla GLi",
     category: "Economy sedan",
     seats: "4 passengers",
@@ -47,6 +50,7 @@ export const fleet = [
     alt: "Toyota Yaris economy rental car in Lahore",
   },
   {
+    id: "jaecoo-j5-2026",
     name: "Jaecoo J5 2026",
     category: "Modern SUV",
     seats: "5 passengers",
@@ -56,6 +60,7 @@ export const fleet = [
     alt: "Jaecoo J5 2026 SUV for rent with driver in Lahore",
   },
   {
+    id: "honda-br-v",
     name: "Honda BR-V",
     category: "Family 7-seater",
     seats: "6 passengers",
@@ -65,6 +70,7 @@ export const fleet = [
     alt: "White Honda BR-V seven seater rental in Lahore",
   },
   {
+    id: "toyota-fortuner-prado",
     name: "Toyota Fortuner / Prado",
     category: "Premium SUV",
     seats: "6 passengers",
@@ -74,6 +80,7 @@ export const fleet = [
     alt: "Toyota Fortuner premium SUV car rental Lahore",
   },
   {
+    id: "grand-cabin",
     name: "Grand Cabin",
     category: "Group van",
     seats: "13+ passengers",
@@ -83,6 +90,7 @@ export const fleet = [
     alt: "Grand Cabin van for group travel from Lahore",
   },
   {
+    id: "land-cruiser-v8",
     name: "Land Cruiser V8",
     category: "Luxury SUV",
     seats: "6 passengers",
@@ -92,6 +100,23 @@ export const fleet = [
     alt: "Land Cruiser V8 luxury chauffeur rental Lahore",
   },
 ] as const;
+
+export type FleetVehicle = (typeof fleet)[number];
+export const lahoreIslamabadRouteRateKey = "lahore-to-islamabad";
+export const defaultLahoreIslamabadRouteRate = 25000;
+export type PublishedRateKey = FleetVehicle["id"] | typeof lahoreIslamabadRouteRateKey;
+export type VehicleRateMap = Partial<Record<PublishedRateKey, number>>;
+
+export function rateLabel(price: number) {
+  return `From Rs ${new Intl.NumberFormat("en-PK").format(price)}/day`;
+}
+
+export function withLiveRates<T extends readonly FleetVehicle[]>(vehicles: T, rates: VehicleRateMap) {
+  return vehicles.map((vehicle) => {
+    const price = rates[vehicle.id] ?? vehicle.price;
+    return { ...vehicle, price, priceLabel: rateLabel(price) };
+  });
+}
 
 export const whatsappUrl = (message: string) =>
   `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`;

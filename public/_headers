@@ -10,3 +10,7 @@
 /invoice/*
   X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: private, no-store
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: private, no-store

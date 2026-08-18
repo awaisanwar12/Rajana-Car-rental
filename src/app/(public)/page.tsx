@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookingForm } from "@/components/BookingForm";
-import { FleetCard } from "@/components/FleetCard";
+import { FleetPreview } from "@/components/FleetPreview";
+import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, UsersIcon, WhatsAppIcon } from "@/components/Icons";
-import { fleet, whatsappUrl } from "@/lib/site";
+import { whatsappUrl } from "@/lib/site";
 
 const faqs = [
   ["Do your rental cars come with a driver?", "Yes. Rajana provides chauffeur-driven car rental so you can travel without worrying about routes, parking or driving fatigue."],
   ["Can I book a Lahore Airport pickup?", "Yes. Share your flight time, pickup date and passenger count on WhatsApp. We will confirm the car, driver and final price before the trip."],
-  ["Do you offer one-way Lahore to Islamabad trips?", "Yes. One-way intercity drops are available. The current advertised Lahore to Islamabad starting rate is Rs 25,000; confirm the final all-inclusive quote before booking."],
+  ["Do you offer one-way Lahore to Islamabad trips?", "Yes. One-way intercity drops are available. The public starting price is updated regularly; confirm the final all-inclusive quote before booking."],
   ["How do I reserve a vehicle?", "Send your route, date, passenger count and preferred vehicle on WhatsApp or call us. We will confirm availability and any advance required."],
 ];
 
@@ -39,7 +40,7 @@ export default function Home() {
             </div>
             <div className="route-card">
               <span className="route-icon"><MapPinIcon /></span>
-              <div><small>Popular one-way route</small><strong>Lahore → Islamabad</strong><span>From Rs 25,000*</span></div>
+              <div><small>Popular one-way route</small><strong>Lahore → Islamabad</strong><span><RouteStartingRate /></span></div>
             </div>
             <span className="hero-index" aria-hidden="true">24/7</span>
           </div>
@@ -61,9 +62,7 @@ export default function Home() {
             <div><p className="eyebrow"><span /> Choose your ride</p><h2>Cars for every kind of trip</h2></div>
             <div><p>Economy sedans, family 7-seaters, premium SUVs and group vans—all available with a professional driver.</p><Link className="text-link" href="/fleet/">View the full fleet <ArrowIcon /></Link></div>
           </div>
-          <div className="fleet-grid">
-            {fleet.slice(0, 6).map((car, index) => <FleetCard key={car.name} car={car} featured={index === 0} />)}
-          </div>
+          <FleetPreview />
           <p className="price-note">*Displayed rates are starting prices from the current rate card. Fuel, tolls, taxes, route and seasonal availability may affect the final quote.</p>
         </div>
       </section>

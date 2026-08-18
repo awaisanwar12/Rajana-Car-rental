@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { fleet } from "@/lib/site";
+import { useEffect, useState } from "react";
+import { fleet, type VehicleRateMap, withLiveRates } from "@/lib/site";
 import { FleetCard } from "./FleetCard";
 
 const filters = ["All", "Sedan", "SUV", "7 Seater", "Van"] as const;
@@ -16,7 +16,20 @@ function vehicleGroup(category: string): Exclude<Filter, "All"> {
 
 export function FleetExplorer() {
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
-  const visibleFleet = activeFilter === "All" ? fleet : fleet.filter((car) => vehicleGroup(car.category) === activeFilter);
+  const [rates, setRates] = useState<VehicleRateMap>({});
+  const liveFleet = withLiveRates(fleet, rates);
+  const visibleFleet = activeFilter === "All" ? liveFleet : liveFleet.filter((car) => vehicleGroup(car.category) === activeFilter);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/rates", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload: { rates?: VehicleRateMap } | null) => {
+        if (active && payload?.rates) setRates(payload.rates);
+      })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, []);
 
   return (
     <div className="fleet-explorer">
@@ -29,7 +42,7 @@ export function FleetExplorer() {
       </div>
       <p className="fleet-result-count" aria-live="polite">Showing {visibleFleet.length} {visibleFleet.length === 1 ? "vehicle" : "vehicles"}</p>
       <div className="fleet-grid fleet-grid-all">
-        {visibleFleet.map((car) => <FleetCard key={car.name} car={car} />)}
+        {visibleFleet.map((car) => <FleetCard key={car.id} car={car} />)}
       </div>
     </div>
   );

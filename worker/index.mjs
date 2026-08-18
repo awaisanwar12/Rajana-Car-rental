@@ -1,4 +1,8 @@
 const encoder = new TextEncoder();
+const rateKeys = new Set([
+  "honda-civic-rs", "toyota-corolla-altis-x", "toyota-yaris-corolla-gli", "jaecoo-j5-2026",
+  "honda-br-v", "toyota-fortuner-prado", "grand-cabin", "land-cruiser-v8", "lahore-to-islamabad",
+]);
 
 async function secureEqual(left, right) {
   const [leftHash, rightHash] = await Promise.all([
@@ -22,10 +26,45 @@ function unauthorized() {
     headers: {
       "Cache-Control": "private, no-store",
       "Content-Type": "text/plain; charset=utf-8",
-      "WWW-Authenticate": 'Basic realm="Rajana Invoice Maker", charset="UTF-8"',
+      "WWW-Authenticate": 'Basic realm="Rajana Business Tools", charset="UTF-8"',
       "X-Robots-Tag": "noindex, nofollow, noarchive",
     },
   });
+}
+
+function privateResponse(response) {
+  const headers = new Headers(response.headers);
+  headers.set("Cache-Control", "private, no-store");
+  headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
+function json(data, status = 200, headers = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ...headers },
+  });
+}
+
+function validRates(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const entries = Object.entries(value);
+  if (entries.length < 1 || entries.length > 20) return null;
+
+  const cleaned = {};
+  for (const [key, amount] of entries) {
+    if (!rateKeys.has(key) || typeof amount !== "number" || !Number.isFinite(amount) || amount < 1000 || amount > 500000) return null;
+    cleaned[key] = Math.round(amount);
+  }
+  return cleaned;
+}
+
+async function readRates(env) {
+  if (!env.RATES_KV) return { rates: {}, updatedAt: null };
+  const saved = await env.RATES_KV.get("vehicle-rates", "json");
+  if (!saved || typeof saved !== "object") return { rates: {}, updatedAt: null };
+  const rates = validRates(saved.rates) || {};
+  return { rates, updatedAt: typeof saved.updatedAt === "string" ? saved.updatedAt : null };
 }
 
 async function fetchAsset(request, env, pathname) {
@@ -94,8 +133,15 @@ const worker = {
     }
 
     const isInvoicePath = pathname === "/invoice" || pathname.startsWith("/invoice/");
+    const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+    const isRatesApi = pathname === "/api/rates";
 
-    if (!isInvoicePath) {
+    if (isRatesApi) {
+      if (request.method !== "GET") return new Response("Method not allowed.", { status: 405, headers: { Allow: "GET" } });
+      return json(await readRates(env));
+    }
+
+    if (!isInvoicePath && !isAdminPath) {
       return fetchAsset(request, env, pathname);
     }
 
@@ -114,7 +160,24 @@ const worker = {
       return unauthorized();
     }
 
-    return fetchAsset(request, env, pathname);
+    if (pathname === "/admin/api/rates") {
+      if (request.method === "GET") return privateResponse(json(await readRates(env)));
+      if (request.method !== "PUT") return privateResponse(new Response("Method not allowed.", { status: 405, headers: { Allow: "GET, PUT" } }));
+      if (!env.RATES_KV) return privateResponse(json({ error: "Rate storage is not configured yet." }, 503));
+
+      try {
+        const body = await request.json();
+        const rates = validRates(body?.rates);
+        if (!rates) return privateResponse(json({ error: "Enter valid starting rates between Rs 1,000 and Rs 500,000." }, 400));
+        const updatedAt = new Date().toISOString();
+        await env.RATES_KV.put("vehicle-rates", JSON.stringify({ rates, updatedAt }));
+        return privateResponse(json({ rates, updatedAt }));
+      } catch {
+        return privateResponse(json({ error: "Could not read the rate update." }, 400));
+      }
+    }
+
+    return privateResponse(await fetchAsset(request, env, pathname));
   },
 };
 

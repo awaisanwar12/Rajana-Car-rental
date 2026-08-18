@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookingForm } from "@/components/BookingForm";
+import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/Icons";
 import { services, type ServicePage } from "@/lib/services";
 import { site, whatsappUrl } from "@/lib/site";
@@ -43,7 +44,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
           </div>
           <div className="service-hero-image">
             <Image src={service.image} alt={service.imageAlt} fill preload sizes="(max-width: 850px) 100vw, 42vw" />
-            <span>{service.imageNote}</span>
+            <span>{service.slug === "lahore-to-islamabad-car-rental" ? <RouteStartingRate /> : service.imageNote}</span>
           </div>
         </div>
       </section>

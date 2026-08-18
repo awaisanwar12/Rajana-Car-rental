@@ -13,6 +13,17 @@ const configuredEnvironment = {
   INVOICE_PASSWORD: "correct horse battery staple",
 };
 
+function createRateStore() {
+  const values = new Map();
+  return {
+    get: async (key, type) => {
+      const value = values.get(key);
+      return type === "json" && value ? JSON.parse(value) : value ?? null;
+    },
+    put: async (key, value) => values.set(key, value),
+  };
+}
+
 const authorization = (username, password) =>
   `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
@@ -58,6 +69,48 @@ test("serves the invoice after valid authentication", async () => {
 
   assert.equal(response.status, 200);
   assert.equal(await response.text(), "asset");
+});
+
+test("protects the admin dashboard with the same credentials as invoices", async () => {
+  const denied = await worker.fetch(new Request("https://rajanacarrental.com/admin/"), configuredEnvironment);
+  assert.equal(denied.status, 401);
+
+  const allowed = await worker.fetch(new Request("https://rajanacarrental.com/admin/", {
+    headers: { Authorization: authorization("waqas", "correct horse battery staple") },
+  }), configuredEnvironment);
+  assert.equal(allowed.status, 200);
+  assert.equal(allowed.headers.get("X-Robots-Tag"), "noindex, nofollow, noarchive");
+});
+
+test("allows authenticated rate updates and returns them to the public fleet", async () => {
+  const environment = { ...configuredEnvironment, RATES_KV: createRateStore() };
+  const request = new Request("https://rajanacarrental.com/admin/api/rates", {
+    method: "PUT",
+    headers: { Authorization: authorization("waqas", "correct horse battery staple"), "Content-Type": "application/json" },
+    body: JSON.stringify({ rates: { "toyota-corolla-altis-x": 8500, "honda-civic-rs": 11000, "lahore-to-islamabad": 28000 } }),
+  });
+  const saved = await worker.fetch(request, environment);
+  assert.equal(saved.status, 200);
+  assert.equal((await saved.json()).rates["toyota-corolla-altis-x"], 8500);
+
+  const publicRates = await worker.fetch(new Request("https://rajanacarrental.com/api/rates"), environment);
+  assert.equal(publicRates.status, 200);
+  const publicRatePayload = await publicRates.json();
+  assert.equal(publicRatePayload.rates["honda-civic-rs"], 11000);
+  assert.equal(publicRatePayload.rates["lahore-to-islamabad"], 28000);
+});
+
+test("refuses unauthenticated or invalid rate updates", async () => {
+  const environment = { ...configuredEnvironment, RATES_KV: createRateStore() };
+  const denied = await worker.fetch(new Request("https://rajanacarrental.com/admin/api/rates", { method: "PUT", body: "{}" }), environment);
+  assert.equal(denied.status, 401);
+
+  const invalid = await worker.fetch(new Request("https://rajanacarrental.com/admin/api/rates", {
+    method: "PUT",
+    headers: { Authorization: authorization("waqas", "correct horse battery staple"), "Content-Type": "application/json" },
+    body: JSON.stringify({ rates: { "toyota-corolla-altis-x": 1 } }),
+  }), environment);
+  assert.equal(invalid.status, 400);
 });
 
 test("passes public pages through to static assets", async () => {

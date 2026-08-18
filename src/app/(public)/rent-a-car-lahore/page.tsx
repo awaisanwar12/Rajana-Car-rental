@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { BookingForm } from "@/components/BookingForm";
+import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, WhatsAppIcon } from "@/components/Icons";
 import { whatsappUrl } from "@/lib/site";
 
@@ -32,7 +33,7 @@ export default function LahoreServicePage() {
       </section>
       <section className="section route-section">
         <div className="shell route-grid">
-          <div><p className="eyebrow"><span /> Popular intercity route</p><h2>Lahore to Islamabad with a professional driver</h2><p>A direct one-way drop lets you travel on your schedule without switching vehicles. Share your pickup point and travel date for final availability.</p><ul className="plain-checks"><li><CheckIcon /> Door-to-door pickup and drop</li><li><CheckIcon /> Starting from Rs 25,000*</li><li><CheckIcon /> Vehicle options for families and business travel</li></ul><a className="button button-whatsapp" href={whatsappUrl("Hello Rajana, please quote a Lahore to Islamabad one-way drop.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Quote this route</a><small>*Confirm fuel, tolls, taxes and waiting-time terms in your final quote.</small></div>
+          <div><p className="eyebrow"><span /> Popular intercity route</p><h2>Lahore to Islamabad with a professional driver</h2><p>A direct one-way drop lets you travel on your schedule without switching vehicles. Share your pickup point and travel date for final availability.</p><ul className="plain-checks"><li><CheckIcon /> Door-to-door pickup and drop</li><li><CheckIcon /> <RouteStartingRate /></li><li><CheckIcon /> Vehicle options for families and business travel</li></ul><a className="button button-whatsapp" href={whatsappUrl("Hello Rajana, please quote a Lahore to Islamabad one-way drop.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Quote this route</a><small>*Confirm fuel, tolls, taxes and waiting-time terms in your final quote.</small></div>
           <BookingForm compact />
         </div>
       </section>
