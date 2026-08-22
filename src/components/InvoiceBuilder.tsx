@@ -7,6 +7,7 @@ import { paymentDetails, site } from "@/lib/site";
 
 type NumericInput = number | "";
 type LineItem = { id: number; description: string; quantity: NumericInput; rate: NumericInput };
+type AdvancePayment = { id: number; description: string; amount: NumericInput };
 type InvoiceData = {
   invoiceNumber: string;
   date: string;
@@ -22,9 +23,10 @@ type InvoiceData = {
   dropoffDate: string;
   dropoffTime: string;
   notes: string;
-  paid: NumericInput;
+  advancePayments: AdvancePayment[];
   items: LineItem[];
 };
+type StoredInvoiceData = Partial<InvoiceData> & { paid?: NumericInput };
 
 const today = () => new Date().toISOString().slice(0, 10);
 const emptyInvoice = (): InvoiceData => ({
@@ -34,13 +36,14 @@ const emptyInvoice = (): InvoiceData => ({
   city: "", pickupLocation: "", dropoffLocation: "",
   pickupDate: "", pickupTime: "", dropoffDate: "", dropoffTime: "",
   notes: "Thank you for choosing Rajana Car Rental.",
-  paid: "",
+  advancePayments: [{ id: Date.now(), description: "", amount: "" }],
   items: [{ id: Date.now(), description: "", quantity: 1, rate: "" }],
 });
 
 const numberValue = (value: NumericInput) => value === "" ? 0 : value;
 const money = (value: NumericInput) => new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(numberValue(value));
 const logoPath = "/images/rajana-logo.jpg";
+const maxAdvancePayments = 3;
 
 function invoiceFilename(invoiceNumber: string) {
   return `${invoiceNumber || "Rajana-Invoice"}.pdf`.replace(/[^a-z0-9-_.]/gi, "-");
@@ -133,9 +136,14 @@ export function InvoiceBuilder() {
     if (!saved) return;
     const timer = window.setTimeout(() => {
       try {
-        const savedData = JSON.parse(saved) as Partial<InvoiceData>;
+        const savedData = JSON.parse(saved) as StoredInvoiceData;
         const fresh = emptyInvoice();
-        setData({ ...fresh, ...savedData, items: savedData.items?.length ? savedData.items : fresh.items });
+        const advancePayments = savedData.advancePayments?.length
+          ? savedData.advancePayments.slice(0, maxAdvancePayments)
+          : savedData.paid === undefined || savedData.paid === ""
+            ? fresh.advancePayments
+            : [{ id: Date.now(), description: "Advance payment", amount: savedData.paid }];
+        setData({ ...fresh, ...savedData, advancePayments, items: savedData.items?.length ? savedData.items : fresh.items });
         setStatus("Saved draft restored from this device.");
       } catch { /* Ignore invalid storage */ }
     }, 0);
@@ -143,7 +151,9 @@ export function InvoiceBuilder() {
   }, []);
 
   const total = useMemo(() => data.items.reduce((sum, item) => sum + numberValue(item.quantity) * numberValue(item.rate), 0), [data.items]);
-  const balance = Math.max(total - numberValue(data.paid), 0);
+  const advanceTotal = useMemo(() => data.advancePayments.reduce((sum, payment) => sum + numberValue(payment.amount), 0), [data.advancePayments]);
+  const populatedAdvancePayments = useMemo(() => data.advancePayments.filter((payment) => numberValue(payment.amount) > 0).slice(0, maxAdvancePayments), [data.advancePayments]);
+  const balance = Math.max(total - advanceTotal, 0);
   const pickupDateTime = tripDateTime(data.pickupDate, data.pickupTime);
   const dropoffDateTime = tripDateTime(data.dropoffDate, data.dropoffTime);
   const hasTripDetails = Boolean(data.city || data.pickupLocation || data.dropoffLocation || pickupDateTime || dropoffDateTime);
@@ -152,6 +162,9 @@ export function InvoiceBuilder() {
   const updateItem = (id: number, field: keyof LineItem, value: string | number) => setData((current) => ({ ...current, items: current.items.map((item) => item.id === id ? { ...item, [field]: value } : item) }));
   const addItem = () => setData((current) => ({ ...current, items: [...current.items, { id: Date.now(), description: "", quantity: 1, rate: "" }] }));
   const removeItem = (id: number) => setData((current) => ({ ...current, items: current.items.length === 1 ? current.items : current.items.filter((item) => item.id !== id) }));
+  const updateAdvancePayment = (id: number, field: keyof Omit<AdvancePayment, "id">, value: string | number) => setData((current) => ({ ...current, advancePayments: current.advancePayments.map((payment) => payment.id === id ? { ...payment, [field]: value } : payment) }));
+  const addAdvancePayment = () => setData((current) => current.advancePayments.length >= maxAdvancePayments ? current : ({ ...current, advancePayments: [...current.advancePayments, { id: Date.now(), description: "", amount: "" }] }));
+  const removeAdvancePayment = (id: number) => setData((current) => ({ ...current, advancePayments: current.advancePayments.length === 1 ? current.advancePayments : current.advancePayments.filter((payment) => payment.id !== id) }));
 
   function saveDraft() {
     localStorage.setItem("rajana-invoice-draft", JSON.stringify(data));
@@ -166,6 +179,9 @@ export function InvoiceBuilder() {
   }
 
   async function createPdf() {
+      const advancePaymentsForInvoice: AdvancePayment[] = populatedAdvancePayments.length
+        ? populatedAdvancePayments
+        : [{ id: 0, description: "Advance payment", amount: "" }];
       const { jsPDF } = await import("jspdf");
       const logo = await loadCircularLogoDataUrl(logoPath);
       const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -217,7 +233,7 @@ export function InvoiceBuilder() {
       const noteBlockHeight = 6 + noteLines.length * 3.4;
       const pageContentBottom = 286;
       const detailsGap = 6;
-      const detailsHeight = 34;
+      const detailsHeight = Math.max(34, 20 + advancePaymentsForInvoice.length * 6);
       const noteGap = 9;
       const maxTableBottom = pageContentBottom - detailsGap - detailsHeight - noteGap - noteBlockHeight;
 
@@ -264,7 +280,13 @@ export function InvoiceBuilder() {
       const labelX = 150;
       let summaryY = detailsY + 6;
       doc.setFontSize(8.5); doc.setTextColor(...muted); doc.text("Total", labelX, summaryY); doc.setTextColor(...navy); doc.text(`Rs ${money(total)}`, 194, summaryY, { align: "right" }); summaryY += 8;
-      doc.setTextColor(...muted); doc.text("Advance", labelX, summaryY); doc.setTextColor(...navy); doc.text(`Rs ${money(data.paid)}`, 194, summaryY, { align: "right" }); summaryY += 4;
+      for (const payment of advancePaymentsForInvoice) {
+        const description = payment.description.trim() || "Advance payment";
+        const label = `Advance: ${description}`;
+        doc.setTextColor(...muted); doc.text((doc.splitTextToSize(label, 42) as string[])[0], labelX, summaryY);
+        doc.setTextColor(...navy); doc.text(`Rs ${money(payment.amount)}`, 194, summaryY, { align: "right" }); summaryY += 6;
+      }
+      summaryY -= 2;
       doc.setDrawColor(...red); doc.line(labelX, summaryY, 194, summaryY); summaryY += 8;
       doc.setFont("helvetica", "bold"); doc.setTextColor(...navy); doc.setFontSize(9); doc.text("REMAINING", labelX, summaryY); doc.setTextColor(...red); doc.text(`Rs ${money(balance)}`, 194, summaryY, { align: "right" });
 
@@ -301,7 +323,10 @@ export function InvoiceBuilder() {
         dropoffDateTime || data.dropoffLocation ? `Drop-off: ${[dropoffDateTime, data.dropoffLocation].filter(Boolean).join(" - ")}` : "",
       ].filter(Boolean).join("\n");
       const paymentSummary = `Payment: ${paymentDetails.bankName} ${paymentDetails.bankAccountNumber} or JazzCash ${paymentDetails.jazzCashNumber} (${paymentDetails.accountTitle}).`;
-      const message = [`Invoice ${data.invoiceNumber} from Rajana Car Rental.`, tripSummary, `Total: Rs ${money(total)}. Advance: Rs ${money(data.paid)}. Remaining: Rs ${money(balance)}.`, paymentSummary].filter(Boolean).join("\n");
+      const advanceSummary = populatedAdvancePayments.length
+        ? populatedAdvancePayments.map((payment) => `${payment.description.trim() || "Advance payment"}: Rs ${money(payment.amount)}`).join(", ")
+        : "No advance payment";
+      const message = [`Invoice ${data.invoiceNumber} from Rajana Car Rental.`, tripSummary, `Total: Rs ${money(total)}. Advance: Rs ${money(advanceTotal)} (${advanceSummary}). Remaining: Rs ${money(balance)}.`, paymentSummary].filter(Boolean).join("\n");
 
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
         await navigator.share({ title: `Rajana invoice ${data.invoiceNumber}`, text: message, files: [file] });
@@ -365,9 +390,10 @@ export function InvoiceBuilder() {
           {data.items.map((item, index) => <div className="line-editor-row" key={item.id}><label className="line-description">Description<textarea rows={2} value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Honda BR-V — Lahore Airport pickup" : "Trip or service details"} /></label><label>Qty<input type="number" min="0" step="1" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Rate (Rs)<input type="number" min="0" step="1" value={item.rate} onChange={(e) => updateItem(item.id, "rate", e.target.value === "" ? "" : Number(e.target.value))} /></label><button className="remove-line" type="button" onClick={() => removeItem(item.id)} aria-label={`Remove service ${index + 1}`}>×</button></div>)}
         </div>
 
-        <div className="invoice-form-section">
-          <div className="invoice-section-heading"><h3>Payment details</h3><p>Remaining payment is calculated automatically</p></div>
-          <div className="invoice-fields two-columns"><label>Advance payment (Rs)<input type="number" min="0" value={data.paid} onChange={(e) => setField("paid", e.target.value === "" ? "" : Number(e.target.value))} placeholder="Optional" /></label><label>Remaining payment (Rs)<input className="calculated-input" value={money(balance)} readOnly aria-readonly="true" /></label><label className="field-wide">Invoice note<input value={data.notes} onChange={(e) => setField("notes", e.target.value)} placeholder="Optional note" /></label></div>
+        <div className="invoice-form-section invoice-line-editor">
+          <div className="invoice-section-heading line-editor-head"><div><h3>Advance payments</h3><p>Up to three described payments keep the PDF on one printed page</p></div><button type="button" onClick={addAdvancePayment} disabled={data.advancePayments.length >= maxAdvancePayments} title={data.advancePayments.length >= maxAdvancePayments ? "Three advance-payment lines is the one-page invoice limit." : undefined}>+ Add advance</button></div>
+          {data.advancePayments.map((payment, index) => <div className="line-editor-row advance-payment-row" key={payment.id}><label className="line-description">Description<input value={payment.description} onChange={(e) => updateAdvancePayment(payment.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Advance received via JazzCash" : "Payment description"} /></label><label>Amount (Rs)<input type="number" min="0" step="1" value={payment.amount} onChange={(e) => updateAdvancePayment(payment.id, "amount", e.target.value === "" ? "" : Number(e.target.value))} placeholder="Optional" /></label><button className="remove-line" type="button" onClick={() => removeAdvancePayment(payment.id)} aria-label={`Remove advance payment ${index + 1}`}>×</button></div>)}
+          <div className="invoice-fields two-columns invoice-payment-totals"><label>Advance total (Rs)<input className="calculated-input" value={money(advanceTotal)} readOnly aria-readonly="true" /></label><label>Remaining payment (Rs)<input className="calculated-input" value={money(balance)} readOnly aria-readonly="true" /></label><label className="field-wide">Invoice note<input value={data.notes} onChange={(e) => setField("notes", e.target.value)} placeholder="Optional note" /></label></div>
         </div>
 
         <div className="invoice-actions"><button className="button button-primary" type="button" onClick={downloadPdf} disabled={generating}><FileIcon /> {generating ? "Generating…" : "Download PDF"}</button><button className="button button-whatsapp" type="button" onClick={sharePdf} disabled={generating}><WhatsAppIcon /> Share on WhatsApp</button><button className="button button-dark" type="button" onClick={() => window.print()}>Print / Save as PDF</button><button className="button button-outline" type="button" onClick={saveDraft}>Save draft</button><button className="button button-text" type="button" onClick={clearDraft}>Clear</button></div>
@@ -381,7 +407,7 @@ export function InvoiceBuilder() {
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}
           <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
-          <div className="invoice-summary"><dl><dt>Total</dt><dd>Rs {money(total)}</dd><dt>Advance</dt><dd>Rs {money(data.paid)}</dd><dt className="balance-label">Remaining</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
+          <div className="invoice-summary"><dl><dt>Total</dt><dd>Rs {money(total)}</dd>{populatedAdvancePayments.length ? populatedAdvancePayments.map((payment) => <div className="advance-summary-line" key={payment.id}><dt>{payment.description.trim() ? `Advance: ${payment.description}` : "Advance payment"}</dt><dd>Rs {money(payment.amount)}</dd></div>) : <><dt>Advance payment</dt><dd>Rs 0</dd></>}<dt className="balance-label">Remaining</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
           <div className="invoice-payment-methods"><small>PAYMENT METHODS</small><div><section><span>Bank transfer</span><strong>{paymentDetails.bankName}</strong><p>Account title: {paymentDetails.accountTitle}</p><p>Account: {paymentDetails.bankAccountNumber}</p></section><section><span>JazzCash</span><strong>{paymentDetails.jazzCashNumber}</strong><p>{paymentDetails.accountTitle}</p></section></div></div>
           <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Rajana Car Rental."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
         </div>

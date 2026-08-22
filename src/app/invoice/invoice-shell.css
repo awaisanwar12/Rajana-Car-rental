@@ -112,6 +112,27 @@
   margin: 0;
 }
 
+.advance-payment-row {
+  grid-template-columns: minmax(0, 1fr) 120px 28px;
+}
+
+.invoice-payment-totals {
+  margin-top: 14px;
+}
+
+.invoice-summary dl {
+  grid-template-columns: minmax(0, 1fr) 110px;
+  width: min(100%, 310px);
+}
+
+.invoice-summary .advance-summary-line {
+  display: contents;
+}
+
+.invoice-summary .advance-summary-line dt {
+  overflow-wrap: anywhere;
+}
+
 .invoice-paper .invoice-paper-foot {
   margin-top: 26px;
 }
@@ -132,4 +153,19 @@
   .invoice-payment-methods {
     margin-top: 8mm;
   }
+}
+
+@media (max-width: 600px) {
+  .advance-payment-row {
+    grid-template-columns: minmax(0, 1fr) 105px 28px;
+  }
+
+.advance-payment-row .line-description {
+    grid-column: auto;
+  }
+}
+
+.line-editor-head button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
