@@ -22,6 +22,9 @@ type InvoiceData = {
   pickupTime: string;
   dropoffDate: string;
   dropoffTime: string;
+  carName: string;
+  driverName: string;
+  driverContact: string;
   notes: string;
   advancePayments: AdvancePayment[];
   items: LineItem[];
@@ -35,6 +38,7 @@ const emptyInvoice = (): InvoiceData => ({
   customerName: "", customerPhone: "", customerEmail: "", customerAddress: "",
   city: "", pickupLocation: "", dropoffLocation: "",
   pickupDate: "", pickupTime: "", dropoffDate: "", dropoffTime: "",
+  carName: "", driverName: "", driverContact: "",
   notes: "Thank you for choosing Rajana Car Rental.",
   advancePayments: [{ id: Date.now(), description: "", amount: "" }],
   items: [{ id: Date.now(), description: "", quantity: 1, rate: "" }],
@@ -157,6 +161,11 @@ export function InvoiceBuilder() {
   const pickupDateTime = tripDateTime(data.pickupDate, data.pickupTime);
   const dropoffDateTime = tripDateTime(data.dropoffDate, data.dropoffTime);
   const hasTripDetails = Boolean(data.city || data.pickupLocation || data.dropoffLocation || pickupDateTime || dropoffDateTime);
+  const vehicleAndDriverLines = [
+    data.carName ? `Car: ${data.carName}` : "",
+    data.driverName ? `Driver: ${data.driverName}` : "",
+    data.driverContact ? `Driver contact: ${data.driverContact}` : "",
+  ].filter(Boolean);
 
   const setField = <K extends keyof InvoiceData>(field: K, value: InvoiceData[K]) => setData((current) => ({ ...current, [field]: value }));
   const updateItem = (id: number, field: keyof LineItem, value: string | number) => setData((current) => ({ ...current, items: current.items.map((item) => item.id === id ? { ...item, [field]: value } : item) }));
@@ -165,6 +174,7 @@ export function InvoiceBuilder() {
   const updateAdvancePayment = (id: number, field: keyof Omit<AdvancePayment, "id">, value: string | number) => setData((current) => ({ ...current, advancePayments: current.advancePayments.map((payment) => payment.id === id ? { ...payment, [field]: value } : payment) }));
   const addAdvancePayment = () => setData((current) => current.advancePayments.length >= maxAdvancePayments ? current : ({ ...current, advancePayments: [...current.advancePayments, { id: Date.now(), description: "", amount: "" }] }));
   const removeAdvancePayment = (id: number) => setData((current) => ({ ...current, advancePayments: current.advancePayments.length === 1 ? current.advancePayments : current.advancePayments.filter((payment) => payment.id !== id) }));
+  const itemDescription = (item: LineItem, index: number, fallback: string) => [item.description || fallback, ...(index === 0 ? vehicleAndDriverLines : [])].filter(Boolean).join("\n");
 
   function saveDraft() {
     localStorage.setItem("rajana-invoice-draft", JSON.stringify(data));
@@ -238,14 +248,14 @@ export function InvoiceBuilder() {
       ];
       doc.setFont("helvetica", "normal"); doc.setFontSize(8);
       const summaryRowsForPdf = summaryRows.map((row) => {
-        const lines = doc.splitTextToSize(row.kind === "advance" ? `Advance received: ${row.label}` : row.label, 116) as string[];
+        const lines = doc.splitTextToSize(row.kind === "advance" ? `Advance: ${row.label}` : row.label, 116) as string[];
         return { ...row, lines, height: Math.max(6.5, 2.6 + lines.length * 3.5) };
       });
       const summaryHeight = 8 + summaryRowsForPdf.reduce((sum, row) => sum + row.height, 0);
       const pageContentBottom = 286;
       const summaryGap = 6;
       const paymentMethodsGap = 6;
-      const paymentMethodsHeight = 27;
+      const paymentMethodsHeight = 30;
       const noteGap = 8;
       const maxTableBottom = pageContentBottom - summaryGap - summaryHeight - paymentMethodsGap - paymentMethodsHeight - noteGap - noteBlockHeight;
 
@@ -257,8 +267,8 @@ export function InvoiceBuilder() {
       const buildRows = () => {
         doc.setFont("helvetica", "bold"); doc.setFontSize(rowFontSize);
         const lineHeight = rowFontSize * 0.3528 * 1.2;
-        return data.items.map((item) => {
-          const lines = doc.splitTextToSize(item.description || "Service", 102) as string[];
+        return data.items.map((item, index) => {
+          const lines = doc.splitTextToSize(itemDescription(item, index, "Service"), 102) as string[];
           return { item, lines, height: Math.max(minimumRowHeight, lines.length * lineHeight + rowPadding) };
         });
       };
@@ -305,8 +315,9 @@ export function InvoiceBuilder() {
       doc.setFillColor(245, 247, 248); doc.roundedRect(margin, paymentMethodsY, 178, paymentMethodsHeight, 1.5, 1.5, "F");
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT METHODS", margin + 4, paymentMethodsY + 6);
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(6.8); doc.text("BANK TRANSFER", margin + 4, paymentMethodsY + 12); doc.text("JAZZCASH", 110, paymentMethodsY + 12);
-      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text(paymentDetails.bankName, margin + 4, paymentMethodsY + 18); doc.text(paymentDetails.jazzCashNumber, 110, paymentMethodsY + 18);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(6.2); doc.text(`A/c: ${paymentDetails.bankAccountNumber} · ${paymentDetails.accountTitle}`, margin + 4, paymentMethodsY + 23); doc.text(paymentDetails.accountTitle, 110, paymentMethodsY + 23);
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text(paymentDetails.bankName, margin + 4, paymentMethodsY + 18); doc.text("JazzCash", 110, paymentMethodsY + 18);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(6.2); doc.text(`Account title: ${paymentDetails.accountTitle}`, margin + 4, paymentMethodsY + 23); doc.text(`Account title: ${paymentDetails.accountTitle}`, 110, paymentMethodsY + 23);
+      doc.setFont("helvetica", "bold"); doc.text(`Account number: ${paymentDetails.bankAccountNumber}`, margin + 4, paymentMethodsY + 28); doc.text(`Account number: ${paymentDetails.jazzCashNumber}`, 110, paymentMethodsY + 28);
 
       const noteY = paymentMethodsY + paymentMethodsHeight + noteGap;
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PLEASE NOTE", margin, noteY);
@@ -406,11 +417,16 @@ export function InvoiceBuilder() {
         <div className="invoice-form-section invoice-line-editor">
           <div className="invoice-section-heading line-editor-head"><div><h3>Services and charges</h3><p>Add one line for each service</p></div><button type="button" onClick={addItem}>+ Add line</button></div>
           {data.items.map((item, index) => <div className="line-editor-row" key={item.id}><label className="line-description">Description<textarea rows={2} value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Honda BR-V — Lahore Airport pickup" : "Trip or service details"} /></label><label>Qty<input type="number" min="0" step="1" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Rate (Rs)<input type="number" min="0" step="1" value={item.rate} onChange={(e) => updateItem(item.id, "rate", e.target.value === "" ? "" : Number(e.target.value))} /></label><button className="remove-line" type="button" onClick={() => removeItem(item.id)} aria-label={`Remove service ${index + 1}`}>×</button></div>)}
+          <div className="invoice-fields two-columns invoice-vehicle-details">
+            <label>Car name<input value={data.carName} onChange={(e) => setField("carName", e.target.value)} placeholder="Optional, e.g. Grand Cabin 224" /></label>
+            <label>Driver name<input value={data.driverName} onChange={(e) => setField("driverName", e.target.value)} placeholder="Optional driver name" /></label>
+            <label className="field-wide">Driver contact<input inputMode="tel" value={data.driverContact} onChange={(e) => setField("driverContact", e.target.value)} placeholder="Optional, e.g. 0300 1234567" /></label>
+          </div>
         </div>
 
         <div className="invoice-form-section invoice-line-editor">
           <div className="invoice-section-heading line-editor-head"><div><h3>Advance payments</h3><p>Up to three described payments keep the PDF on one printed page</p></div><button type="button" onClick={addAdvancePayment} disabled={data.advancePayments.length >= maxAdvancePayments} title={data.advancePayments.length >= maxAdvancePayments ? "Three advance-payment lines is the one-page invoice limit." : undefined}>+ Add advance</button></div>
-          {data.advancePayments.map((payment, index) => <div className="line-editor-row advance-payment-row" key={payment.id}><label className="line-description">Description<input value={payment.description} onChange={(e) => updateAdvancePayment(payment.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Advance received via JazzCash" : "Payment description"} /></label><label>Amount (Rs)<input type="number" min="0" step="1" value={payment.amount} onChange={(e) => updateAdvancePayment(payment.id, "amount", e.target.value === "" ? "" : Number(e.target.value))} placeholder="Optional" /></label><button className="remove-line" type="button" onClick={() => removeAdvancePayment(payment.id)} aria-label={`Remove advance payment ${index + 1}`}>×</button></div>)}
+          {data.advancePayments.map((payment, index) => <div className="line-editor-row advance-payment-row" key={payment.id}><label className="line-description">Description<input value={payment.description} onChange={(e) => updateAdvancePayment(payment.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Booking token via JazzCash" : "Payment description"} /></label><label>Amount (Rs)<input type="number" min="0" step="1" value={payment.amount} onChange={(e) => updateAdvancePayment(payment.id, "amount", e.target.value === "" ? "" : Number(e.target.value))} placeholder="Optional" /></label><button className="remove-line" type="button" onClick={() => removeAdvancePayment(payment.id)} aria-label={`Remove advance payment ${index + 1}`}>×</button></div>)}
           <div className="invoice-fields two-columns invoice-payment-totals"><label>Advance total (Rs)<input className="calculated-input" value={money(advanceTotal)} readOnly aria-readonly="true" /></label><label>Remaining payment (Rs)<input className="calculated-input" value={money(balance)} readOnly aria-readonly="true" /></label><label className="field-wide">Invoice note<input value={data.notes} onChange={(e) => setField("notes", e.target.value)} placeholder="Optional note" /></label></div>
         </div>
 
@@ -424,9 +440,9 @@ export function InvoiceBuilder() {
           <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.email}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}
-          <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
-          <div className="invoice-summary"><small>PAYMENT SUMMARY</small><dl><dt>Total bill</dt><dd>Rs {money(total)}</dd>{populatedAdvancePayments.length ? populatedAdvancePayments.map((payment) => <div className="advance-summary-line" key={payment.id}><dt>{payment.description.trim() ? `Advance received: ${payment.description}` : "Advance payment"}</dt><dd>- Rs {money(payment.amount)}</dd></div>) : <><dt>Advance payment</dt><dd>Rs 0</dd></>}<dt className="balance-label">Remaining payment</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
-          <div className="invoice-payment-methods"><small>PAYMENT METHODS</small><div><section><span>Bank transfer</span><strong>{paymentDetails.bankName}</strong><p>Account title: {paymentDetails.accountTitle}</p><p>Account: {paymentDetails.bankAccountNumber}</p></section><section><span>JazzCash</span><strong>{paymentDetails.jazzCashNumber}</strong><p>{paymentDetails.accountTitle}</p></section></div></div>
+          <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item, index) => <tr key={item.id}><td>{itemDescription(item, index, "Service description")}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
+          <div className="invoice-summary"><small>PAYMENT SUMMARY</small><dl><dt>Total bill</dt><dd>Rs {money(total)}</dd>{populatedAdvancePayments.length ? populatedAdvancePayments.map((payment) => <div className="advance-summary-line" key={payment.id}><dt>{payment.description.trim() ? `Advance: ${payment.description}` : "Advance payment"}</dt><dd>- Rs {money(payment.amount)}</dd></div>) : <><dt>Advance payment</dt><dd>Rs 0</dd></>}<dt className="balance-label">Remaining payment</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
+          <div className="invoice-payment-methods"><small>PAYMENT METHODS</small><div><section><span>Bank transfer</span><strong>{paymentDetails.bankName}</strong><p>Account title: {paymentDetails.accountTitle}</p><p className="payment-account-number">Account number: <strong>{paymentDetails.bankAccountNumber}</strong></p></section><section><span>JazzCash</span><strong>JazzCash</strong><p>Account title: {paymentDetails.accountTitle}</p><p className="payment-account-number">Account number: <strong>{paymentDetails.jazzCashNumber}</strong></p></section></div></div>
           <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Rajana Car Rental."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
         </div>
       </section>

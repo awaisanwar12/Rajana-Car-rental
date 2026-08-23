@@ -85,7 +85,7 @@
 .invoice-payment-methods > div {
   display: grid;
   gap: 24px;
-  grid-template-columns: 1.35fr 0.65fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 9px;
 }
 
@@ -112,12 +112,28 @@
   margin: 0;
 }
 
+.invoice-payment-methods .payment-account-number {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.invoice-payment-methods .payment-account-number strong {
+  font-size: inherit;
+  margin: 0;
+}
+
 .advance-payment-row {
   grid-template-columns: minmax(0, 1fr) 120px 28px;
 }
 
 .invoice-payment-totals {
   margin-top: 14px;
+}
+
+.invoice-vehicle-details {
+  border-top: 1px solid var(--line);
+  margin-top: 14px;
+  padding-top: 14px;
 }
 
 .invoice-summary dl {
