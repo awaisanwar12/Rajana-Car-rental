@@ -231,11 +231,23 @@ export function InvoiceBuilder() {
       doc.setFont("helvetica", "normal"); doc.setFontSize(7.5);
       const noteLines = doc.splitTextToSize(data.notes || "Thank you for choosing Rajana Car Rental.", 105) as string[];
       const noteBlockHeight = 6 + noteLines.length * 3.4;
+      const summaryRows = [
+        { label: "Total bill", amount: total, kind: "total" },
+        ...advancePaymentsForInvoice.map((payment) => ({ label: payment.description.trim() || "Advance payment", amount: numberValue(payment.amount), kind: "advance" })),
+        { label: "Remaining payment", amount: balance, kind: "remaining" },
+      ];
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8);
+      const summaryRowsForPdf = summaryRows.map((row) => {
+        const lines = doc.splitTextToSize(row.kind === "advance" ? `Advance received: ${row.label}` : row.label, 116) as string[];
+        return { ...row, lines, height: Math.max(6.5, 2.6 + lines.length * 3.5) };
+      });
+      const summaryHeight = 8 + summaryRowsForPdf.reduce((sum, row) => sum + row.height, 0);
       const pageContentBottom = 286;
-      const detailsGap = 6;
-      const detailsHeight = Math.max(34, 20 + advancePaymentsForInvoice.length * 6);
-      const noteGap = 9;
-      const maxTableBottom = pageContentBottom - detailsGap - detailsHeight - noteGap - noteBlockHeight;
+      const summaryGap = 6;
+      const paymentMethodsGap = 6;
+      const paymentMethodsHeight = 27;
+      const noteGap = 8;
+      const maxTableBottom = pageContentBottom - summaryGap - summaryHeight - paymentMethodsGap - paymentMethodsHeight - noteGap - noteBlockHeight;
 
       tableHead();
       const availableRowsHeight = Math.max(1, maxTableBottom - y);
@@ -270,27 +282,33 @@ export function InvoiceBuilder() {
         doc.text(String(numberValue(item.quantity)), 143, textY, { align: "right" }); doc.text(money(item.rate), 168, textY, { align: "right" }); doc.text(money(numberValue(item.quantity) * numberValue(item.rate)), 191, textY, { align: "right" }); y += rowHeight;
       }
 
-      const detailsY = y + detailsGap;
-      doc.setFillColor(245, 247, 248); doc.roundedRect(margin, detailsY, 122, detailsHeight, 1.5, 1.5, "F");
-      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT METHODS", margin + 4, detailsY + 6);
-      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.text("BANK TRANSFER", margin + 4, detailsY + 13); doc.text("JAZZCASH", 101, detailsY + 13);
-      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text(paymentDetails.bankName, margin + 4, detailsY + 19); doc.text(paymentDetails.jazzCashNumber, 101, detailsY + 19);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.text(`Account title: ${paymentDetails.accountTitle}`, margin + 4, detailsY + 25); doc.text(`Account: ${paymentDetails.bankAccountNumber}`, margin + 4, detailsY + 30); doc.text(doc.splitTextToSize(paymentDetails.accountTitle, 33), 101, detailsY + 25, { lineHeightFactor: 1.1 });
-
-      const labelX = 150;
-      let summaryY = detailsY + 6;
-      doc.setFontSize(8.5); doc.setTextColor(...muted); doc.text("Total", labelX, summaryY); doc.setTextColor(...navy); doc.text(`Rs ${money(total)}`, 194, summaryY, { align: "right" }); summaryY += 8;
-      for (const payment of advancePaymentsForInvoice) {
-        const description = payment.description.trim() || "Advance payment";
-        const label = `Advance: ${description}`;
-        doc.setTextColor(...muted); doc.text((doc.splitTextToSize(label, 42) as string[])[0], labelX, summaryY);
-        doc.setTextColor(...navy); doc.text(`Rs ${money(payment.amount)}`, 194, summaryY, { align: "right" }); summaryY += 6;
+      const summaryY = y + summaryGap;
+      doc.setFillColor(...navy); doc.rect(margin, summaryY, 178, 8, "F");
+      doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT SUMMARY", margin + 4, summaryY + 5.4);
+      let summaryRowY = summaryY + 8;
+      for (const row of summaryRowsForPdf) {
+        const isRemaining = row.kind === "remaining";
+        doc.setFillColor(isRemaining ? 255 : 245, isRemaining ? 249 : 247, isRemaining ? 250 : 248);
+        doc.rect(margin, summaryRowY, 178, row.height, "F");
+        doc.setDrawColor(220, 224, 227); doc.rect(margin, summaryRowY, 178, row.height);
+        if (isRemaining) doc.setTextColor(...navy); else doc.setTextColor(...muted);
+        doc.setFont("helvetica", isRemaining || row.kind === "total" ? "bold" : "normal"); doc.setFontSize(8);
+        doc.text(row.lines, margin + 4, summaryRowY + 4.4, { lineHeightFactor: 1.15 });
+        if (isRemaining) doc.setTextColor(...red); else doc.setTextColor(...navy);
+        doc.setFont("helvetica", isRemaining ? "bold" : "normal");
+        const prefix = row.kind === "advance" ? "- " : "";
+        doc.text(`${prefix}Rs ${money(row.amount)}`, 190, summaryRowY + Math.min(row.height - 2.4, 4.4), { align: "right" });
+        summaryRowY += row.height;
       }
-      summaryY -= 2;
-      doc.setDrawColor(...red); doc.line(labelX, summaryY, 194, summaryY); summaryY += 8;
-      doc.setFont("helvetica", "bold"); doc.setTextColor(...navy); doc.setFontSize(9); doc.text("REMAINING", labelX, summaryY); doc.setTextColor(...red); doc.text(`Rs ${money(balance)}`, 194, summaryY, { align: "right" });
 
-      const noteY = detailsY + detailsHeight + noteGap;
+      const paymentMethodsY = summaryY + summaryHeight + paymentMethodsGap;
+      doc.setFillColor(245, 247, 248); doc.roundedRect(margin, paymentMethodsY, 178, paymentMethodsHeight, 1.5, 1.5, "F");
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PAYMENT METHODS", margin + 4, paymentMethodsY + 6);
+      doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(6.8); doc.text("BANK TRANSFER", margin + 4, paymentMethodsY + 12); doc.text("JAZZCASH", 110, paymentMethodsY + 12);
+      doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text(paymentDetails.bankName, margin + 4, paymentMethodsY + 18); doc.text(paymentDetails.jazzCashNumber, 110, paymentMethodsY + 18);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(6.2); doc.text(`A/c: ${paymentDetails.bankAccountNumber} · ${paymentDetails.accountTitle}`, margin + 4, paymentMethodsY + 23); doc.text(paymentDetails.accountTitle, 110, paymentMethodsY + 23);
+
+      const noteY = paymentMethodsY + paymentMethodsHeight + noteGap;
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.text("PLEASE NOTE", margin, noteY);
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.text(noteLines, margin, noteY + 6, { lineHeightFactor: 1.1 });
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.text("Mian Waqas", 194, noteY, { align: "right" }); doc.setFont("helvetica", "normal"); doc.setTextColor(...muted); doc.text("Authorized signature", 194, noteY + 6, { align: "right" });
@@ -407,7 +425,7 @@ export function InvoiceBuilder() {
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}
           <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item) => <tr key={item.id}><td>{item.description || "Service description"}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
-          <div className="invoice-summary"><dl><dt>Total</dt><dd>Rs {money(total)}</dd>{populatedAdvancePayments.length ? populatedAdvancePayments.map((payment) => <div className="advance-summary-line" key={payment.id}><dt>{payment.description.trim() ? `Advance: ${payment.description}` : "Advance payment"}</dt><dd>Rs {money(payment.amount)}</dd></div>) : <><dt>Advance payment</dt><dd>Rs 0</dd></>}<dt className="balance-label">Remaining</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
+          <div className="invoice-summary"><small>PAYMENT SUMMARY</small><dl><dt>Total bill</dt><dd>Rs {money(total)}</dd>{populatedAdvancePayments.length ? populatedAdvancePayments.map((payment) => <div className="advance-summary-line" key={payment.id}><dt>{payment.description.trim() ? `Advance received: ${payment.description}` : "Advance payment"}</dt><dd>- Rs {money(payment.amount)}</dd></div>) : <><dt>Advance payment</dt><dd>Rs 0</dd></>}<dt className="balance-label">Remaining payment</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
           <div className="invoice-payment-methods"><small>PAYMENT METHODS</small><div><section><span>Bank transfer</span><strong>{paymentDetails.bankName}</strong><p>Account title: {paymentDetails.accountTitle}</p><p>Account: {paymentDetails.bankAccountNumber}</p></section><section><span>JazzCash</span><strong>{paymentDetails.jazzCashNumber}</strong><p>{paymentDetails.accountTitle}</p></section></div></div>
           <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Rajana Car Rental."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
         </div>

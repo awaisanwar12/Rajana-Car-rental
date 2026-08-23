@@ -65,7 +65,7 @@
 .invoice-payment-methods {
   background: #f4f6f7;
   border-left: 3px solid var(--navy);
-  margin-top: 28px;
+  margin-top: 16px;
   padding: 12px 14px;
 }
 
@@ -121,8 +121,45 @@
 }
 
 .invoice-summary dl {
+  display: grid;
+  gap: 0;
   grid-template-columns: minmax(0, 1fr) 110px;
-  width: min(100%, 310px);
+  width: 100%;
+}
+
+.invoice-summary {
+  border: 1px solid var(--line);
+  display: block;
+  margin-top: 18px;
+  padding: 0;
+}
+
+.invoice-summary > small {
+  background: var(--navy);
+  color: #fff;
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 8px 12px;
+}
+
+.invoice-summary dt,
+.invoice-summary dd {
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+  padding: 9px 12px;
+}
+
+.invoice-summary dt {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.invoice-summary dd {
+  color: var(--navy);
+  text-align: right;
+  white-space: nowrap;
 }
 
 .invoice-summary .advance-summary-line {
@@ -131,6 +168,14 @@
 
 .invoice-summary .advance-summary-line dt {
   overflow-wrap: anywhere;
+}
+
+.invoice-summary .balance-label,
+.invoice-summary .balance-value {
+  background: #fff9fa;
+  border-bottom: 0;
+  border-top: 2px solid var(--red);
+  padding-top: 10px;
 }
 
 .invoice-paper .invoice-paper-foot {
