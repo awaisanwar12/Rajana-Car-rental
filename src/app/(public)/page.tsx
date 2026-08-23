@@ -28,6 +28,10 @@ export default function Home() {
               <a className="button button-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I need a car in Lahore. Please share availability and price.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a WhatsApp quote</a>
               <Link className="button button-ghost" href="/fleet/">View fleet & rates <ArrowIcon /></Link>
             </div>
+            <div className="route-card">
+              <span className="route-icon"><MapPinIcon /></span>
+              <div><small>Popular one-way route</small><strong>Lahore → Islamabad</strong><span><RouteStartingRate /></span></div>
+            </div>
             <div className="hero-assurances">
               <span><CheckIcon /> 24/7 booking</span>
               <span><CheckIcon /> Professional drivers</span>
@@ -37,10 +41,6 @@ export default function Home() {
           <div className="hero-visual">
             <div className="hero-image-wrap">
               <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Rajana Car Rental on the road" fill preload sizes="(max-width: 900px) 100vw, 50vw" />
-            </div>
-            <div className="route-card">
-              <span className="route-icon"><MapPinIcon /></span>
-              <div><small>Popular one-way route</small><strong>Lahore → Islamabad</strong><span><RouteStartingRate /></span></div>
             </div>
             <span className="hero-index" aria-hidden="true">24/7</span>
           </div>

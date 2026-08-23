@@ -8,3 +8,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
 body{overflow-x:clip}
 @media(max-width:600px){.shell{width:calc(100% - 28px)}.hero-copy{min-width:0;max-width:100%}.hero h1{font-size:3rem;overflow-wrap:break-word}}
+.route-card{position:static;left:auto;right:auto;bottom:auto;z-index:auto;max-width:360px;margin:0 0 24px;padding:14px 18px;border-left:4px solid var(--red);box-shadow:0 12px 28px rgba(11,34,53,.12)}
+@media(max-width:600px){.route-card{max-width:none;margin:0 0 22px}}
