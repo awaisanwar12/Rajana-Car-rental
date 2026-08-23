@@ -162,9 +162,9 @@ export function InvoiceBuilder() {
   const dropoffDateTime = tripDateTime(data.dropoffDate, data.dropoffTime);
   const hasTripDetails = Boolean(data.city || data.pickupLocation || data.dropoffLocation || pickupDateTime || dropoffDateTime);
   const vehicleAndDriverLines = [
-    data.carName ? `Car: ${data.carName}` : "",
-    data.driverName ? `Driver: ${data.driverName}` : "",
-    data.driverContact ? `Driver contact: ${data.driverContact}` : "",
+    data.carName ? `Car Name: ${data.carName}` : "",
+    data.driverName ? `Driver Name: ${data.driverName}` : "",
+    data.driverContact ? `Driver Contact: ${data.driverContact}` : "",
   ].filter(Boolean);
 
   const setField = <K extends keyof InvoiceData>(field: K, value: InvoiceData[K]) => setData((current) => ({ ...current, [field]: value }));
@@ -418,9 +418,9 @@ export function InvoiceBuilder() {
           <div className="invoice-section-heading line-editor-head"><div><h3>Services and charges</h3><p>Add one line for each service</p></div><button type="button" onClick={addItem}>+ Add line</button></div>
           {data.items.map((item, index) => <div className="line-editor-row" key={item.id}><label className="line-description">Description<textarea rows={2} value={item.description} onChange={(e) => updateItem(item.id, "description", e.target.value)} placeholder={index === 0 ? "e.g. Honda BR-V — Lahore Airport pickup" : "Trip or service details"} /></label><label>Qty<input type="number" min="0" step="1" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", e.target.value === "" ? "" : Number(e.target.value))} /></label><label>Rate (Rs)<input type="number" min="0" step="1" value={item.rate} onChange={(e) => updateItem(item.id, "rate", e.target.value === "" ? "" : Number(e.target.value))} /></label><button className="remove-line" type="button" onClick={() => removeItem(item.id)} aria-label={`Remove service ${index + 1}`}>×</button></div>)}
           <div className="invoice-fields two-columns invoice-vehicle-details">
-            <label>Car name<input value={data.carName} onChange={(e) => setField("carName", e.target.value)} placeholder="Optional, e.g. Grand Cabin 224" /></label>
-            <label>Driver name<input value={data.driverName} onChange={(e) => setField("driverName", e.target.value)} placeholder="Optional driver name" /></label>
-            <label className="field-wide">Driver contact<input inputMode="tel" value={data.driverContact} onChange={(e) => setField("driverContact", e.target.value)} placeholder="Optional, e.g. 0300 1234567" /></label>
+            <label>Car Name<input value={data.carName} onChange={(e) => setField("carName", e.target.value)} placeholder="Optional, e.g. Grand Cabin 224" /></label>
+            <label>Driver Name<input value={data.driverName} onChange={(e) => setField("driverName", e.target.value)} placeholder="Optional driver name" /></label>
+            <label className="field-wide">Driver Contact<input inputMode="tel" value={data.driverContact} onChange={(e) => setField("driverContact", e.target.value)} placeholder="Optional, e.g. 0300 1234567" /></label>
           </div>
         </div>
 
