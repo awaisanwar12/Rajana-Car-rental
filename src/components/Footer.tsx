@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ClockIcon, MapPinIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 import { site, whatsappUrl } from "@/lib/site";
@@ -7,9 +8,8 @@ export function Footer() {
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div className="footer-brand">
-          <Link className="wordmark wordmark-light" href="/">
-            <span className="wordmark-wheel" aria-hidden="true">R</span>
-            <span><strong>RAJANA</strong><small>CAR RENTAL</small></span>
+          <Link className="wordmark brand-logo-footer" href="/">
+            <Image className="brand-logo" src="/images/rajana-logo.jpg" alt="Rajana Car Rental" width={541} height={357} />
           </Link>
           <p>Reliable chauffeur-driven car rental for Lahore, airport transfers, intercity drops, weddings and business travel.</p>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -50,8 +51,7 @@ export function Header() {
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <div className="shell header-inner">
           <Link className="wordmark" href="/" aria-label="Rajana Car Rental home">
-            <span className="wordmark-wheel" aria-hidden="true">R</span>
-            <span><strong>RAJANA</strong><small>CAR RENTAL</small></span>
+            <Image className="brand-logo brand-logo-header" src="/images/rajana-logo.jpg" alt="Rajana Car Rental" width={541} height={357} priority />
           </Link>
           <nav id={menuId} className={`main-nav ${open ? "is-open" : ""}`} aria-label="Main navigation">
             {nav.map(([label, href], index) => (
