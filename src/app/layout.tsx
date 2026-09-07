@@ -28,16 +28,17 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b2235" };
 
-const googleTagId = process.env.NEXT_PUBLIC_GOOGLE_TAG_ID || "AW-6880083258";
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-37CKB9WDK1";
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-6880083258";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-PK">
       <head>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`} />
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleTagId}');`,
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaMeasurementId}');gtag('config','${googleAdsId}');`,
           }}
         />
       </head>
