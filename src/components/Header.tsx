@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { whatsappUrl } from "@/lib/site";
-import { CloseIcon, MenuIcon, WhatsAppIcon } from "./Icons";
+import { site, whatsappUrl } from "@/lib/site";
+import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 
 const nav = [
   ["Home", "/"],
@@ -65,9 +65,14 @@ export function Header() {
                 {label}
               </Link>
             ))}
-            <a className="button button-whatsapp nav-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I would like to book a car.")} target="_blank" rel="noreferrer">
-              <WhatsAppIcon /> Book Now on WhatsApp
-            </a>
+            <div className="nav-actions">
+              <a className="button nav-call" href={`tel:${site.phoneHref}`} aria-label={`Call Rajana Car Rental at ${site.phoneDisplay}`}>
+                <PhoneIcon size={16} /> Call
+              </a>
+              <a className="button button-whatsapp nav-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I would like to book a car.")} target="_blank" rel="noreferrer">
+                <WhatsAppIcon size={17} /> Book now on WhatsApp
+              </a>
+            </div>
           </nav>
           <button ref={menuButton} className="menu-button" type="button" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls={menuId} onClick={() => setOpen((value) => !value)}>
             {open ? <CloseIcon /> : <MenuIcon />}

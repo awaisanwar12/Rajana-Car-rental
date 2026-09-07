@@ -39,7 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleAdsId}');gtag('config','${gaMeasurementId}');`,
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleAdsId}');gtag('config','${gaMeasurementId}');document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('tel:')===0){gtag('event','phone_call',{event_category:'Contact',event_label:h,value:1});gtag('event','generate_lead',{method:'phone',phone_number:h});}else if(h.indexOf('wa.me')!==-1||h.indexOf('whatsapp.com')!==-1){gtag('event','whatsapp_click',{event_category:'Contact',event_label:a.getAttribute('aria-label')||'WhatsApp',value:1});gtag('event','generate_lead',{method:'whatsapp'});}},true);`,
           }}
         />
       </head>

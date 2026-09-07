@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { whatsappUrl } from "@/lib/site";
-import { UsersIcon, WhatsAppIcon } from "./Icons";
+import { site, whatsappUrl } from "@/lib/site";
+import { PhoneIcon, UsersIcon, WhatsAppIcon } from "./Icons";
 
 type FleetCardProps = {
   car: {
@@ -29,9 +29,14 @@ export function FleetCard({ car, featured = false }: FleetCardProps) {
         <strong className="fleet-price"><small>Starting at</small>{car.priceLabel.replace("From ", "")}</strong>
         {car.rateNote && <p className="fleet-rate-note">{car.rateNote}</p>}
         {car.terms && <p className="fleet-card-terms">{car.terms}</p>}
-        <a className="button fleet-card-action" href={whatsappUrl(`Hello Rajana Car Rental, please share availability and a final quote for ${car.name}.`)} target="_blank" rel="noreferrer" aria-label={`Check ${car.name} availability on WhatsApp`}>
-          <WhatsAppIcon size={18} /> Check availability
-        </a>
+        <div className="fleet-card-actions">
+          <a className="button fleet-card-action fleet-card-whatsapp" href={whatsappUrl(`Hello Rajana Car Rental, please share availability and a final quote for ${car.name}.`)} target="_blank" rel="noreferrer" aria-label={`Book ${car.name} on WhatsApp`}>
+            <WhatsAppIcon size={17} /> Book now on WhatsApp
+          </a>
+          <a className="button fleet-card-action fleet-card-call" href={`tel:${site.phoneHref}`} aria-label={`Call Rajana Car Rental for ${car.name}`}>
+            <PhoneIcon size={16} /> Call
+          </a>
+        </div>
       </div>
     </article>
   );

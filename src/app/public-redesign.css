@@ -62,6 +62,33 @@ p {
   border-color: var(--red);
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-call {
+  min-height: 46px;
+  padding-inline: 16px;
+  border-radius: 8px;
+  border: 1px solid #091f32;
+  background: #091f32;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(9, 31, 50, 0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-call:hover {
+  border-color: #12334f;
+  background: #12334f;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(9, 31, 50, 0.2);
+}
+
 .nav-whatsapp {
   min-height: 46px;
   padding-inline: 17px;
@@ -193,8 +220,11 @@ p {
 }
 
 .fleet-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   border-color: #d8dfe2;
-  border-radius: 5px;
+  border-radius: 8px;
   box-shadow: 0 8px 25px rgba(9, 31, 50, 0.045);
 }
 
@@ -204,17 +234,22 @@ p {
 }
 
 .fleet-image {
+  position: relative;
   height: 245px;
+  flex-shrink: 0;
 }
 
 .fleet-image > span {
   left: 14px;
   bottom: 14px;
-  border-radius: 3px;
+  border-radius: 4px;
   background: rgba(9, 31, 50, 0.93);
 }
 
 .fleet-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   padding: 24px;
 }
 
@@ -243,9 +278,10 @@ p {
 .fleet-content > .fleet-price {
   display: grid;
   gap: 1px;
-  margin: 17px 0 18px;
+  margin: 17px 0 14px;
   color: var(--navy);
-  font-size: 1.13rem;
+  font-size: 1.18rem;
+  font-weight: 800;
 }
 
 .fleet-price small {
@@ -257,35 +293,72 @@ p {
 }
 
 .fleet-rate-note {
-  margin: -10px 0 6px;
+  margin: 0 0 6px;
   color: var(--navy);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .fleet-card-terms {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
   color: var(--muted);
   font-size: 0.74rem;
   line-height: 1.4;
 }
 
-.fleet-card-action {
+.fleet-card-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 16px;
   width: 100%;
+}
+
+.fleet-card-action {
   min-height: 44px;
-  padding: 10px 14px;
-  border-color: #1fc45d;
+  padding: 10px 8px;
   border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: transform 0.18s, background-color 0.18s, box-shadow 0.18s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.fleet-card-whatsapp {
+  border-color: #1fc45d;
   background: var(--green);
   color: var(--green-ink);
   box-shadow: 0 8px 18px rgba(37, 211, 102, 0.15);
 }
 
-.fleet-card-action:hover {
+.fleet-card-whatsapp:hover {
   border-color: #20bf5d;
   background: #20c962;
   color: #052f1c;
+  transform: translateY(-2px);
   box-shadow: 0 11px 24px rgba(37, 211, 102, 0.23);
+}
+
+.fleet-card-call {
+  border-color: #091f32;
+  background: #091f32;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(9, 31, 50, 0.12);
+}
+
+.fleet-card-call:hover {
+  border-color: #12334f;
+  background: #12334f;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 11px 24px rgba(9, 31, 50, 0.2);
 }
 
 .fleet-page-section {
@@ -620,6 +693,54 @@ p {
   margin-bottom: 0;
 }
 
+.desktop-contact-float {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.desktop-float-call,
+.desktop-float-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  box-shadow: 0 10px 26px rgba(9, 31, 50, 0.16);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.desktop-float-call {
+  border: 1px solid #091f32;
+  background: #091f32;
+  color: #ffffff;
+}
+
+.desktop-float-call:hover {
+  background: #143552;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(9, 31, 50, 0.24);
+}
+
+.desktop-float-whatsapp {
+  border: 1px solid #1fc45d;
+  background: var(--green);
+  color: var(--green-ink);
+}
+
+.desktop-float-whatsapp:hover {
+  background: #20c962;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(37, 211, 102, 0.3);
+}
+
 .mobile-booking-bar {
   display: none;
 }
@@ -676,8 +797,20 @@ p {
     font-size: 0.91rem;
   }
 
+  .main-nav .nav-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .main-nav .nav-call,
   .main-nav .nav-whatsapp {
-    display: none;
+    width: 100%;
+    min-height: 46px;
+    justify-content: center;
   }
 
   .menu-backdrop {
@@ -740,14 +873,20 @@ p {
     padding-bottom: calc(76px + env(safe-area-inset-bottom));
   }
 
+  .desktop-contact-float {
+    display: none;
+  }
+
   .mobile-booking-bar {
     position: fixed;
-    right: auto;
+    right: 0;
     bottom: 0;
     left: 0;
     width: 100vw;
     z-index: 80;
-    display: block;
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 10px;
     padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(9, 31, 50, 0.14);
     background: rgba(255, 255, 255, 0.96);
@@ -758,17 +897,28 @@ p {
 
   .mobile-booking-bar a {
     display: flex;
-    min-height: 51px;
+    min-height: 48px;
     align-items: center;
     justify-content: center;
-    gap: 9px;
-    border: 1px solid #1fc45d;
+    gap: 8px;
     border-radius: 9px;
+    font-size: 0.86rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .mobile-bar-call {
+    border: 1px solid #091f32;
+    background: #091f32;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(9, 31, 50, 0.16);
+  }
+
+  .mobile-bar-whatsapp {
+    border: 1px solid #1fc45d;
     background: var(--green);
     color: var(--green-ink);
-    box-shadow: 0 8px 22px rgba(37, 211, 102, 0.22);
-    font-size: 0.85rem;
-    font-weight: 800;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.22);
   }
 }
 
@@ -921,6 +1071,7 @@ p {
 
 @media print {
   .mobile-booking-bar,
+  .desktop-contact-float,
   .menu-backdrop {
     display: none !important;
   }
