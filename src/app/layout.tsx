@@ -35,10 +35,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en-PK">
       <head>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`} />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaMeasurementId}');gtag('config','${googleAdsId}');`,
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleAdsId}');gtag('config','${gaMeasurementId}');`,
           }}
         />
       </head>
