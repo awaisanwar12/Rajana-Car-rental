@@ -2,6 +2,7 @@ const encoder = new TextEncoder();
 const rateKeys = new Set([
   "honda-civic-rs", "toyota-corolla-altis-x", "toyota-yaris-corolla-gli", "jaecoo-j5-2026",
   "honda-br-v", "toyota-fortuner-prado", "grand-cabin", "land-cruiser-v8", "lahore-to-islamabad",
+  "suzuki-wagon-r-cultus", "toyota-coaster",
 ]);
 
 async function secureEqual(left, right) {

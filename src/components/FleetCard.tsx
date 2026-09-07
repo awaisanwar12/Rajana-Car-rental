@@ -10,6 +10,8 @@ type FleetCardProps = {
     priceLabel: string;
     image: string;
     alt: string;
+    rateNote?: string;
+    terms?: string;
   };
   featured?: boolean;
 };
@@ -25,6 +27,8 @@ export function FleetCard({ car, featured = false }: FleetCardProps) {
         <div className="fleet-card-heading"><h3>{car.name}</h3></div>
         <p className="fleet-meta"><UsersIcon size={17} /> {car.seats} <span aria-hidden="true">·</span> Driver included</p>
         <strong className="fleet-price"><small>Starting at</small>{car.priceLabel.replace("From ", "")}</strong>
+        {car.rateNote && <p className="fleet-rate-note">{car.rateNote}</p>}
+        {car.terms && <p className="fleet-card-terms">{car.terms}</p>}
         <a className="button fleet-card-action" href={whatsappUrl(`Hello Rajana Car Rental, please share availability and a final quote for ${car.name}.`)} target="_blank" rel="noreferrer" aria-label={`Check ${car.name} availability on WhatsApp`}>
           <WhatsAppIcon size={18} /> Check availability
         </a>

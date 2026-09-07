@@ -99,6 +99,30 @@ export const fleet = [
     image: "/images/land-cruiser.jpeg",
     alt: "Land Cruiser V8 luxury chauffeur rental Lahore",
   },
+  {
+    id: "suzuki-wagon-r-cultus",
+    name: "Suzuki Wagon R / Cultus",
+    category: "Economy car",
+    seats: "4 passengers",
+    price: 5000,
+    priceLabel: "From Rs 5,000/day",
+    image: "/images/toyota-yaris.png",
+    alt: "Suzuki Wagon R and Cultus rental with driver in Lahore",
+    rateNote: "Local: Rs 5,000/day · Out of city: Rs 6,000/day",
+    terms: "Without fuel, tolls, parking, driver food and accommodation",
+  },
+  {
+    id: "toyota-coaster",
+    name: "Toyota Coaster",
+    category: "Group coaster",
+    seats: "22 to 29 passengers",
+    price: 25000,
+    priceLabel: "From Rs 25,000/day",
+    image: "/images/grand-cabin.jpg",
+    alt: "Toyota Coaster salon coaster rental in Lahore",
+    rateNote: "Out of city: Rs 25,000/day",
+    terms: "Without fuel, tolls, parking, driver food and accommodation. Traffic challans customer responsibility if vehicle goes to Northern Area.",
+  },
 ] as const;
 
 export type FleetVehicle = (typeof fleet)[number];

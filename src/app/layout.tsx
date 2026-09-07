@@ -18,15 +18,29 @@ export const metadata: Metadata = {
     images: [{ url: "/images/honda-civic-rs.jpg", width: 1024, height: 576, alt: "Rajana Car Rental Lahore" }],
   },
   twitter: { card: "summary_large_image", title: "Rajana Car Rental Lahore", description: "Reliable car rental with professional drivers in Lahore.", images: ["/images/honda-civic-rs.jpg"] },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/images/rajana-logo.jpg",
+  },
   robots: { index: true, follow: true },
   category: "travel",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b2235" };
 
+const googleTagId = process.env.NEXT_PUBLIC_GOOGLE_TAG_ID || "AW-6880083258";
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-PK">
+      <head>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleTagId}');`,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

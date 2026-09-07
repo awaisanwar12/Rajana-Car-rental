@@ -256,6 +256,20 @@ p {
   text-transform: uppercase;
 }
 
+.fleet-rate-note {
+  margin: -10px 0 6px;
+  color: var(--navy);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.fleet-card-terms {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
 .fleet-card-action {
   width: 100%;
   min-height: 44px;

@@ -8,9 +8,10 @@ const filters = ["All", "Sedan", "SUV", "7 Seater", "Van"] as const;
 type Filter = (typeof filters)[number];
 
 function vehicleGroup(category: string): Exclude<Filter, "All"> {
-  if (category.toLowerCase().includes("sedan")) return "Sedan";
-  if (category.toLowerCase().includes("7-seater")) return "7 Seater";
-  if (category.toLowerCase().includes("van")) return "Van";
+  const lower = category.toLowerCase();
+  if (lower.includes("sedan") || lower.includes("economy") || lower.includes("car")) return "Sedan";
+  if (lower.includes("7-seater")) return "7 Seater";
+  if (lower.includes("van") || lower.includes("coaster")) return "Van";
   return "SUV";
 }
 
