@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b2235" };
 
 const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-37CKB9WDK1";
-const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-6880083258";
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-16844172040";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
