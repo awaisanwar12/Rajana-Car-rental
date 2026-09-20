@@ -50,8 +50,9 @@ export function Header() {
     <>
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <div className="shell header-inner">
-          <Link className="wordmark" href="/" aria-label="Rajana Car Rental home">
-            <Image className="brand-logo brand-logo-header" src="/images/rajana-logo.jpg" alt="Rajana Car Rental" width={541} height={357} priority />
+          <Link className="wordmark brand-wordmark" href="/" aria-label={`${site.name} home`}>
+            <Image className="brand-symbol" src="/icon.svg" alt="" width={56} height={56} priority />
+            <span className="brand-name"><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span>
           </Link>
           <nav id={menuId} className={`main-nav ${open ? "is-open" : ""}`} aria-label="Main navigation">
             {nav.map(([label, href], index) => (
@@ -66,10 +67,10 @@ export function Header() {
               </Link>
             ))}
             <div className="nav-actions">
-              <a className="button nav-call" href={`tel:${site.phoneHref}`} aria-label={`Call Rajana Car Rental at ${site.phoneDisplay}`}>
+              <a className="button nav-call" href={`tel:${site.phoneHref}`} aria-label={`Call Get Car at ${site.phoneDisplay}`}>
                 <PhoneIcon size={16} /> Call
               </a>
-              <a className="button button-whatsapp nav-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I would like to book a car.")} target="_blank" rel="noreferrer">
+              <a className="button button-whatsapp nav-whatsapp" href={whatsappUrl("Hello Get Car, I would like to book a car.")} target="_blank" rel="noreferrer">
                 <WhatsAppIcon size={17} /> Book now on WhatsApp
               </a>
             </div>

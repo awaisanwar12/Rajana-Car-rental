@@ -1,6 +1,6 @@
-# Rajana Car Rental — Next.js website
+# Get Car — Next.js website
 
-A fast, static website for Rajana Car Rental Lahore. Bookings open directly in WhatsApp and authenticated invoice generation runs in the owner's browser.
+A fast, static website for Get Car Lahore. Bookings open directly in WhatsApp and authenticated invoice generation runs in the owner's browser.
 
 ## Run locally
 

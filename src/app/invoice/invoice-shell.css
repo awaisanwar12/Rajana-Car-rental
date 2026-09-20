@@ -29,8 +29,7 @@
   margin-top: 4px;
 }
 
-.invoice-tool-header .wordmark-wheel {
-  font-size: 1rem;
+.invoice-tool-header .brand-symbol {
   height: 36px;
   width: 36px;
 }
@@ -40,17 +39,35 @@
   overflow: visible;
 }
 
+.invoice-brand {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+}
+
+.invoice-brand strong {
+  color: var(--navy);
+  display: block;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+.invoice-brand small {
+  color: var(--red);
+  display: block;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
 .invoice-logo-mark {
   align-items: center;
-  background: #f8f7f2;
-  border: 2px solid var(--navy);
   border-radius: 50%;
   display: flex;
   flex: 0 0 94px;
   height: 94px;
   justify-content: center;
   overflow: hidden;
-  padding: 9px;
   position: relative;
   width: 94px;
 }

@@ -12,7 +12,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const message = [
-      "Hello Rajana Car Rental, I would like a quote.",
+      "Hello Get Car, I would like a quote.",
       "",
       `Name: ${form.get("name")}`,
       `Phone: ${form.get("phone")}`,

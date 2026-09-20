@@ -7,7 +7,7 @@ import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, Use
 import { whatsappUrl } from "@/lib/site";
 
 const faqs = [
-  ["Do your rental cars come with a driver?", "Yes. Rajana provides chauffeur-driven car rental so you can travel without worrying about routes, parking or driving fatigue."],
+  ["Do your rental cars come with a driver?", "Yes. Get Car provides chauffeur-driven car rental so you can travel without worrying about routes, parking or driving fatigue."],
   ["Can I book a Lahore Airport pickup?", "Yes. Share your flight time, pickup date and passenger count on WhatsApp. We will confirm the car, driver and final price before the trip."],
   ["Do you offer one-way Lahore to Islamabad trips?", "Yes. One-way intercity drops are available. The public starting price is updated regularly; confirm the final all-inclusive quote before booking."],
   ["How do I reserve a vehicle?", "Send your route, date, passenger count and preferred vehicle on WhatsApp or call us. We will confirm availability and any advance required."],
@@ -25,7 +25,7 @@ export default function Home() {
             <h1>Rent a car in Lahore.<br /><em>Driver included.</em></h1>
             <p className="hero-lead">Clean cars, experienced drivers and honest trip pricing—available 24/7 for airport pickups, family travel, business trips and one-way drops.</p>
             <div className="hero-actions">
-              <a className="button button-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I need a car in Lahore. Please share availability and price.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a WhatsApp quote</a>
+              <a className="button button-whatsapp" href={whatsappUrl("Hello Get Car, I need a car in Lahore. Please share availability and price.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a WhatsApp quote</a>
               <Link className="button button-ghost" href="/fleet/">View fleet & rates <ArrowIcon /></Link>
             </div>
             <div className="route-card">
@@ -40,7 +40,7 @@ export default function Home() {
           </div>
           <div className="hero-visual">
             <div className="hero-image-wrap">
-              <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Rajana Car Rental on the road" fill preload sizes="(max-width: 900px) 100vw, 50vw" />
+              <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Get Car on the road" fill preload sizes="(max-width: 900px) 100vw, 50vw" />
             </div>
             <span className="hero-index" aria-hidden="true">24/7</span>
           </div>
@@ -86,13 +86,13 @@ export default function Home() {
       <section className="section about-section">
         <div className="shell about-grid">
           <div className="about-image">
-            <Image src="/images/rajana-driver.jpg" alt="Clean Toyota interior prepared for a Rajana Car Rental journey" fill sizes="(max-width: 850px) 100vw, 50vw" />
+            <Image src="/images/rajana-driver.jpg" alt="Clean Toyota interior prepared for a Get Car journey" fill sizes="(max-width: 850px) 100vw, 50vw" />
             <div><strong>DHA Lahore</strong><span>Local team. Pakistan-wide travel.</span></div>
           </div>
           <div className="about-copy">
-            <p className="eyebrow"><span /> Why Rajana</p>
+            <p className="eyebrow"><span /> Why Get Car</p>
             <h2>Local knowledge makes every journey easier.</h2>
-            <p>Rajana is a Lahore-based car rental service focused on practical, comfortable travel. Our drivers know the city routes and major intercity roads, helping families, visitors and business travellers reach their destination without the usual transport stress.</p>
+            <p>Get Car is a Lahore-based car rental service focused on practical, comfortable travel. Our drivers know the city routes and major intercity roads, helping families, visitors and business travellers reach their destination without the usual transport stress.</p>
             <div className="feature-list">
               <div><ShieldIcon /><span><strong>Reliable vehicles</strong><small>Options for city, family, group and executive travel.</small></span></div>
               <div><UsersIcon /><span><strong>Driver-led service</strong><small>No route planning, parking or unfamiliar-road worries.</small></span></div>
@@ -131,7 +131,7 @@ export default function Home() {
       <section className="cta-band">
         <div className="shell cta-band-inner">
           <div><small>Need a car today?</small><h2>Tell us your route. We’ll handle the ride.</h2></div>
-          <a className="button button-whatsapp" href={whatsappUrl("Hello Rajana Car Rental, I need a car today. My pickup location is: ")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Message on WhatsApp</a>
+          <a className="button button-whatsapp" href={whatsappUrl("Hello Get Car, I need a car today. My pickup location is: ")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Message on WhatsApp</a>
         </div>
       </section>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />

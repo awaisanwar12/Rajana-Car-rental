@@ -8,8 +8,9 @@ export function Footer() {
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div className="footer-brand">
-          <Link className="wordmark brand-logo-footer" href="/">
-            <Image className="brand-logo" src="/images/rajana-logo.jpg" alt="Rajana Car Rental" width={541} height={357} />
+          <Link className="wordmark brand-wordmark brand-wordmark-light" href="/" aria-label={`${site.name} home`}>
+            <Image className="brand-symbol" src="/icon.svg" alt="" width={60} height={60} />
+            <span className="brand-name"><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span>
           </Link>
           <p>Reliable chauffeur-driven car rental for Lahore, airport transfers, intercity drops, weddings and business travel.</p>
         </div>
@@ -24,14 +25,14 @@ export function Footer() {
         <div>
           <h2>Contact</h2>
           <a href={`tel:${site.phoneHref}`}><PhoneIcon /> {site.phoneDisplay}</a>
-          <a href={whatsappUrl("Hello Rajana Car Rental, I need information about a booking.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> WhatsApp us</a>
+          <a href={whatsappUrl("Hello Get Car, I need information about a booking.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> WhatsApp us</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
           <p className="footer-icon-line"><MapPinIcon /> {site.shortAddress}</p>
           <p className="footer-icon-line"><ClockIcon /> Open 24 hours, 7 days</p>
         </div>
       </div>
       <div className="shell footer-bottom">
-        <span>© {new Date().getFullYear()} Rajana Car Rental</span>
+        <span>© {new Date().getFullYear()} {site.name}</span>
         <span>Serving Lahore and major cities across Pakistan</span>
       </div>
     </footer>

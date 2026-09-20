@@ -39,18 +39,18 @@ const emptyInvoice = (): InvoiceData => ({
   city: "", pickupLocation: "", dropoffLocation: "",
   pickupDate: "", pickupTime: "", dropoffDate: "", dropoffTime: "",
   carName: "", driverName: "", driverContact: "",
-  notes: "Thank you for choosing Rajana Car Rental.",
+  notes: "Thank you for choosing Get Car.",
   advancePayments: [{ id: Date.now(), description: "", amount: "" }],
   items: [{ id: Date.now(), description: "", quantity: 1, rate: "" }],
 });
 
 const numberValue = (value: NumericInput) => value === "" ? 0 : value;
 const money = (value: NumericInput) => new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(numberValue(value));
-const logoPath = "/images/rajana-logo.jpg";
+const logoPath = "/icon.svg";
 const maxAdvancePayments = 3;
 
 function invoiceFilename(invoiceNumber: string) {
-  return `${invoiceNumber || "Rajana-Invoice"}.pdf`.replace(/[^a-z0-9-_.]/gi, "-");
+  return `${invoiceNumber || "Get-Car-Invoice"}.pdf`.replace(/[^a-z0-9-_.]/gi, "-");
 }
 
 function downloadBlob(blob: Blob, filename: string) {
@@ -203,6 +203,8 @@ export function InvoiceBuilder() {
       const addPageHeader = () => {
         doc.setFillColor(255, 255, 255); doc.rect(0, 0, pageWidth, 40, "F");
         doc.addImage(logo, "JPEG", 18, 4, 32, 32);
+        doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(17); doc.text(site.name.toUpperCase(), 54, 20);
+        doc.setTextColor(...red); doc.setFontSize(7); doc.text("RENT A CAR LAHORE", 54, 26);
         doc.setFillColor(...navy); doc.rect(137, 0, 73, 40, "F");
         doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.text("INVOICE", 194, 23, { align: "right" });
         doc.setFillColor(...red); doc.rect(0, 40, pageWidth, 2, "F");
@@ -239,7 +241,7 @@ export function InvoiceBuilder() {
       };
 
       doc.setFont("helvetica", "normal"); doc.setFontSize(7.5);
-      const noteLines = doc.splitTextToSize(data.notes || "Thank you for choosing Rajana Car Rental.", 105) as string[];
+      const noteLines = doc.splitTextToSize(data.notes || "Thank you for choosing Get Car.", 105) as string[];
       const noteBlockHeight = 6 + noteLines.length * 3.4;
       const summaryRows = [
         { label: "Total bill", amount: total, kind: "total" },
@@ -355,10 +357,10 @@ export function InvoiceBuilder() {
       const advanceSummary = populatedAdvancePayments.length
         ? populatedAdvancePayments.map((payment) => `${payment.description.trim() || "Advance payment"}: Rs ${money(payment.amount)}`).join(", ")
         : "No advance payment";
-      const message = [`Invoice ${data.invoiceNumber} from Rajana Car Rental.`, tripSummary, `Total: Rs ${money(total)}. Advance: Rs ${money(advanceTotal)} (${advanceSummary}). Remaining: Rs ${money(balance)}.`, paymentSummary].filter(Boolean).join("\n");
+      const message = [`Invoice ${data.invoiceNumber} from Get Car.`, tripSummary, `Total: Rs ${money(total)}. Advance: Rs ${money(advanceTotal)} (${advanceSummary}). Remaining: Rs ${money(balance)}.`, paymentSummary].filter(Boolean).join("\n");
 
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-        await navigator.share({ title: `Rajana invoice ${data.invoiceNumber}`, text: message, files: [file] });
+        await navigator.share({ title: `Get Car invoice ${data.invoiceNumber}`, text: message, files: [file] });
         setStatus("Invoice shared. Choose WhatsApp from your phone's share menu.");
         return;
       }
@@ -436,14 +438,14 @@ export function InvoiceBuilder() {
 
       <section className="invoice-preview" aria-label="Invoice preview">
         <div className="invoice-paper">
-          <div className="invoice-paper-head"><div className="invoice-logo-mark"><Image className="invoice-logo" src={logoPath} alt="Rajana Car Rental" width={559} height={400} priority /></div><h2>INVOICE</h2></div>
+          <div className="invoice-paper-head"><div className="invoice-brand"><div className="invoice-logo-mark"><Image className="invoice-logo" src={logoPath} alt="" width={128} height={128} priority /></div><span><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span></div><h2>INVOICE</h2></div>
           <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.email}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}
           <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item, index) => <tr key={item.id}><td>{itemDescription(item, index, "Service description")}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>
           <div className="invoice-summary"><small>PAYMENT SUMMARY</small><dl><dt>Total bill</dt><dd>Rs {money(total)}</dd>{populatedAdvancePayments.length ? populatedAdvancePayments.map((payment) => <div className="advance-summary-line" key={payment.id}><dt>{payment.description.trim() ? `Advance: ${payment.description}` : "Advance payment"}</dt><dd>- Rs {money(payment.amount)}</dd></div>) : <><dt>Advance payment</dt><dd>Rs 0</dd></>}<dt className="balance-label">Remaining payment</dt><dd className="balance-value">Rs {money(balance)}</dd></dl></div>
           <div className="invoice-payment-methods"><small>PAYMENT METHODS</small><div><section><span>Bank transfer</span><strong>{paymentDetails.bankName}</strong><p className="payment-account-title">Account title: {paymentDetails.accountTitle}</p><p className="payment-account-number">Account number: <strong>{paymentDetails.bankAccountNumber}</strong></p></section><section><span>JazzCash</span><strong>JazzCash</strong><p className="payment-account-title">Account title: {paymentDetails.accountTitle}</p><p className="payment-account-number">Account number: <strong>{paymentDetails.jazzCashNumber}</strong></p></section></div></div>
-          <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Rajana Car Rental."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
+          <div className="invoice-paper-foot"><div><small>PLEASE NOTE</small><p>{data.notes || "Thank you for choosing Get Car."}</p></div><div className="signature"><strong>Mian Waqas</strong><span>Authorized signature</span></div></div>
         </div>
       </section>
     </div>

@@ -57,7 +57,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
             {service.planningCopy.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
           <aside className="service-highlights" aria-label="Service highlights">
-            <h2>What Rajana confirms</h2>
+            <h2>What Get Car confirms</h2>
             <ul>{service.highlights.map((highlight) => <li key={highlight}><CheckIcon /> {highlight}</li>)}</ul>
             <a href={`tel:${site.phoneHref}`}>Prefer to call? {site.phoneDisplay}</a>
           </aside>
@@ -69,7 +69,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
           <div>
             <p className="eyebrow eyebrow-light"><span /> Send these details</p>
             <h2>Get a useful quote, not a vague estimate.</h2>
-            <p>Rajana can confirm the right vehicle and the full journey details faster when the booking request includes:</p>
+            <p>Get Car can confirm the right vehicle and the full journey details faster when the booking request includes:</p>
             <ul className="plain-checks service-booking-points">{service.bookingPoints.map((point) => <li key={point}><CheckIcon /> {point}</li>)}</ul>
             <a className="button button-whatsapp" href={whatsappUrl(service.whatsAppMessage)} target="_blank" rel="noreferrer"><WhatsAppIcon /> Start the booking on WhatsApp</a>
           </div>
@@ -86,7 +86,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
 
       <section className="service-related">
         <div className="shell">
-          <div className="section-heading"><p className="eyebrow"><span /> Explore Rajana services</p><h2>Planning a different kind of trip?</h2></div>
+          <div className="section-heading"><p className="eyebrow"><span /> Explore Get Car services</p><h2>Planning a different kind of trip?</h2></div>
           <div className="service-related-grid">{relatedServices.map((item) => <Link key={item.slug} href={`/${item.slug}/`}><small>{item.eyebrow}</small><strong>{item.title}</strong><span>Explore service <ArrowIcon /></span></Link>)}</div>
         </div>
       </section>

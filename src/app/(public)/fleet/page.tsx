@@ -6,7 +6,7 @@ import { whatsappUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Car Rental Fleet & Rates in Lahore",
-  description: "Compare Rajana Car Rental Lahore rates for Honda Civic, Toyota Corolla, Yaris, BR-V, Fortuner, Land Cruiser and group vans with driver.",
+  description: "Compare Get Car Lahore rates for Honda Civic, Toyota Corolla, Yaris, BR-V, Fortuner, Land Cruiser and group vans with driver.",
   alternates: { canonical: "/fleet/" },
 };
 
@@ -16,7 +16,7 @@ export default function FleetPage() {
       <section className="inner-hero">
         <div className="shell inner-hero-grid">
           <div><p className="eyebrow eyebrow-light"><span /> Fleet & starting rates</p><h1>A comfortable car for every journey.</h1><p>Choose an economy sedan, family 7-seater, premium SUV or group van. Every booking is confirmed with a driver and a final trip quote.</p></div>
-          <div className="inner-hero-note"><strong>Not sure what fits?</strong><p>Share your passenger count, luggage and route. We will recommend the right vehicle.</p><a href={whatsappUrl("Hello Rajana Car Rental, please recommend a vehicle for my trip.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Ask on WhatsApp</a></div>
+          <div className="inner-hero-note"><strong>Not sure what fits?</strong><p>Share your passenger count, luggage and route. We will recommend the right vehicle.</p><a href={whatsappUrl("Hello Get Car, please recommend a vehicle for my trip.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Ask on WhatsApp</a></div>
         </div>
       </section>
       <section className="section fleet-page-section">

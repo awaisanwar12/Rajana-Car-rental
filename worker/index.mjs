@@ -27,7 +27,7 @@ function unauthorized() {
     headers: {
       "Cache-Control": "private, no-store",
       "Content-Type": "text/plain; charset=utf-8",
-      "WWW-Authenticate": 'Basic realm="Rajana Business Tools", charset="UTF-8"',
+      "WWW-Authenticate": 'Basic realm="Get Car Business Tools", charset="UTF-8"',
       "X-Robots-Tag": "noindex, nofollow, noarchive",
     },
   });

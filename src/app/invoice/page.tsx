@@ -3,7 +3,7 @@ import { InvoiceBuilder } from "@/components/InvoiceBuilder";
 
 export const metadata: Metadata = {
   title: "Invoice Maker",
-  description: "Create and download Rajana Car Rental PDF invoices from your browser.",
+  description: "Create and download Get Car PDF invoices from your browser.",
   robots: { index: false, follow: true },
 };
 

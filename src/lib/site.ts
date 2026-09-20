@@ -1,6 +1,6 @@
 export const site = {
-  name: "Rajana Car Rental",
-  shortName: "Rajana",
+  name: "Get Car",
+  shortName: "Get Car",
   url: "https://getcarlahore.com",
   phoneDisplay: "+92 303 6565672",
   phoneHref: "+923036565672",
