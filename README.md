@@ -43,7 +43,7 @@ prices editable without giving the business owner GitHub or Cloudflare access.
 
 ## Production hosting — lowest-cost option
 
-Use Cloudflare Workers with static assets and the existing domain. This project is a static export, so the normal hosting bill should be **Rs 0/month** at this traffic level. The only recurring cost should be the existing domain renewal.
+Use Cloudflare Workers with static assets on `getcarlahore.com`. This project is a static export, so the normal hosting bill should be **Rs 0/month** at this traffic level. The domain renewal is a separate recurring cost.
 
 Cloudflare Workers Builds settings:
 
@@ -52,7 +52,7 @@ Cloudflare Workers Builds settings:
 - Production branch: `master`
 - Environment variable: `NEXT_PUBLIC_WHATSAPP_NUMBER=923036565672`
 
-The `wrangler.jsonc` file publishes the generated `out` directory as static assets and disables direct `workers.dev` and preview URLs. Connect `www.rajanacarrental.com` as the custom domain and redirect the root domain to it.
+The `wrangler.jsonc` file publishes the generated `out` directory as static assets and disables direct `workers.dev` and preview URLs. Connect `getcarlahore.com` as the custom domain.
 
 ## Checks
 

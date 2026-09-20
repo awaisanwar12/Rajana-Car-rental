@@ -29,7 +29,7 @@ const authorization = (username, password) =>
 
 test("denies invoice access when secrets are missing", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/invoice/"),
+    new Request("https://getcarlahore.com/invoice/"),
     { ASSETS: assets },
   );
 
@@ -38,7 +38,7 @@ test("denies invoice access when secrets are missing", async () => {
 
 test("challenges invoice requests without credentials", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/invoice/"),
+    new Request("https://getcarlahore.com/invoice/"),
     configuredEnvironment,
   );
 
@@ -48,7 +48,7 @@ test("challenges invoice requests without credentials", async () => {
 
 test("rejects incorrect credentials", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/invoice/", {
+    new Request("https://getcarlahore.com/invoice/", {
       headers: { Authorization: authorization("waqas", "wrong") },
     }),
     configuredEnvironment,
@@ -59,7 +59,7 @@ test("rejects incorrect credentials", async () => {
 
 test("serves the invoice after valid authentication", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/invoice/", {
+    new Request("https://getcarlahore.com/invoice/", {
       headers: {
         Authorization: authorization("waqas", "correct horse battery staple"),
       },
@@ -72,10 +72,10 @@ test("serves the invoice after valid authentication", async () => {
 });
 
 test("protects the admin dashboard with the same credentials as invoices", async () => {
-  const denied = await worker.fetch(new Request("https://rajanacarrental.com/admin/"), configuredEnvironment);
+  const denied = await worker.fetch(new Request("https://getcarlahore.com/admin/"), configuredEnvironment);
   assert.equal(denied.status, 401);
 
-  const allowed = await worker.fetch(new Request("https://rajanacarrental.com/admin/", {
+  const allowed = await worker.fetch(new Request("https://getcarlahore.com/admin/", {
     headers: { Authorization: authorization("waqas", "correct horse battery staple") },
   }), configuredEnvironment);
   assert.equal(allowed.status, 200);
@@ -84,7 +84,7 @@ test("protects the admin dashboard with the same credentials as invoices", async
 
 test("allows authenticated rate updates and returns them to the public fleet", async () => {
   const environment = { ...configuredEnvironment, RATES_KV: createRateStore() };
-  const request = new Request("https://rajanacarrental.com/admin/api/rates", {
+  const request = new Request("https://getcarlahore.com/admin/api/rates", {
     method: "PUT",
     headers: { Authorization: authorization("waqas", "correct horse battery staple"), "Content-Type": "application/json" },
     body: JSON.stringify({ rates: { "toyota-corolla-altis-x": 8500, "honda-civic-rs": 11000, "lahore-to-islamabad": 28000 } }),
@@ -93,7 +93,7 @@ test("allows authenticated rate updates and returns them to the public fleet", a
   assert.equal(saved.status, 200);
   assert.equal((await saved.json()).rates["toyota-corolla-altis-x"], 8500);
 
-  const publicRates = await worker.fetch(new Request("https://rajanacarrental.com/api/rates"), environment);
+  const publicRates = await worker.fetch(new Request("https://getcarlahore.com/api/rates"), environment);
   assert.equal(publicRates.status, 200);
   const publicRatePayload = await publicRates.json();
   assert.equal(publicRatePayload.rates["honda-civic-rs"], 11000);
@@ -102,10 +102,10 @@ test("allows authenticated rate updates and returns them to the public fleet", a
 
 test("refuses unauthenticated or invalid rate updates", async () => {
   const environment = { ...configuredEnvironment, RATES_KV: createRateStore() };
-  const denied = await worker.fetch(new Request("https://rajanacarrental.com/admin/api/rates", { method: "PUT", body: "{}" }), environment);
+  const denied = await worker.fetch(new Request("https://getcarlahore.com/admin/api/rates", { method: "PUT", body: "{}" }), environment);
   assert.equal(denied.status, 401);
 
-  const invalid = await worker.fetch(new Request("https://rajanacarrental.com/admin/api/rates", {
+  const invalid = await worker.fetch(new Request("https://getcarlahore.com/admin/api/rates", {
     method: "PUT",
     headers: { Authorization: authorization("waqas", "correct horse battery staple"), "Content-Type": "application/json" },
     body: JSON.stringify({ rates: { "toyota-corolla-altis-x": 1 } }),
@@ -115,7 +115,7 @@ test("refuses unauthenticated or invalid rate updates", async () => {
 
 test("passes public pages through to static assets", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/"),
+    new Request("https://getcarlahore.com/"),
     configuredEnvironment,
   );
 
@@ -124,7 +124,7 @@ test("passes public pages through to static assets", async () => {
 
 test("adds long-lived browser caching to hashed Next.js assets", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/_next/static/chunks/example.js"),
+    new Request("https://getcarlahore.com/_next/static/chunks/example.js"),
     configuredEnvironment,
   );
 
@@ -135,28 +135,15 @@ test("adds long-lived browser caching to hashed Next.js assets", async () => {
   );
 });
 
-test("redirects www to the canonical bare domain", async () => {
-  const response = await worker.fetch(
-    new Request("http://www.rajanacarrental.com/fleet/?source=google"),
-    configuredEnvironment,
-  );
-
-  assert.equal(response.status, 301);
-  assert.equal(
-    response.headers.get("Location"),
-    "https://rajanacarrental.com/fleet/?source=google",
-  );
-});
-
 test("permanently redirects the legacy contact page to the homepage", async () => {
   const response = await worker.fetch(
-    new Request("https://rajanacarrental.com/contact-us/?source=legacy"),
+    new Request("https://getcarlahore.com/contact-us/?source=legacy"),
     configuredEnvironment,
   );
 
   assert.equal(response.status, 301);
   assert.equal(
     response.headers.get("Location"),
-    "https://rajanacarrental.com/?source=legacy",
+    "https://getcarlahore.com/?source=legacy",
   );
 });

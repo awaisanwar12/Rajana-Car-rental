@@ -117,13 +117,6 @@ const worker = {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (url.hostname === "www.rajanacarrental.com") {
-      url.protocol = "https:";
-      url.hostname = "rajanacarrental.com";
-      url.port = "";
-      return Response.redirect(url.toString(), 301);
-    }
-
     const { pathname } = url;
 
     if (pathname === "/contact-us" || pathname === "/contact-us/") {

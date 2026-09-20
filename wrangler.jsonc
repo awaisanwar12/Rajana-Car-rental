@@ -8,12 +8,8 @@
   "preview_urls": false,
   "routes": [
     {
-      "pattern": "www.rajanacarrental.com",
+      "pattern": "getcarlahore.com",
       "custom_domain": true
-    },
-    {
-      "pattern": "rajanacarrental.com/*",
-      "zone_name": "rajanacarrental.com"
     }
   ],
   "assets": {
