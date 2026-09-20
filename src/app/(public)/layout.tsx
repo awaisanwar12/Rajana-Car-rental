@@ -13,13 +13,58 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     url: site.url,
     telephone: site.phoneHref,
     email: site.email,
-    image: `${site.url}/images/get-car-apple.png`,
+    image: `${site.url}/images/honda-civic-rs.jpg`,
     logo: `${site.url}/images/get-car-apple.png`,
     priceRange: "PKR 5,000 to 25,000",
-    address: { "@type": "PostalAddress", streetAddress: "123 H Block Market, DHA Phase 1", addressLocality: "Lahore", addressRegion: "Punjab", addressCountry: "PK" },
+    currenciesAccepted: "PKR",
+    paymentAccepted: "Cash, Bank Transfer, JazzCash",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "123 H Block Market, DHA Phase 1",
+      addressLocality: "Lahore",
+      addressRegion: "Punjab",
+      postalCode: "54792",
+      addressCountry: "PK",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 31.4707,
+      longitude: 74.3789,
+    },
     areaServed: ["Lahore", "Islamabad", "Faisalabad", "Karachi", "Pakistan"],
-    openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "00:00", closes: "23:59" }],
-    contactPoint: { "@type": "ContactPoint", telephone: site.phoneHref, contactType: "reservations", availableLanguage: ["English", "Urdu"] },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "00:00",
+        closes: "23:59",
+      },
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: site.phoneHref,
+      contactType: "reservations",
+      availableLanguage: ["English", "Urdu"],
+    },
+  };
+
+  const websiteData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site.url}/#website`,
+    url: site.url,
+    name: site.name,
+    publisher: {
+      "@id": `${site.url}/#business`,
+    },
   };
 
   return (
@@ -30,6 +75,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
       <Footer />
       <WhatsAppFloat />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteData).replace(/</g, "\\u003c") }} />
     </>
   );
 }

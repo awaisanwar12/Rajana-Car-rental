@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { site } from "@/lib/site";
 import "./invoice-shell.css";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function InvoiceLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
