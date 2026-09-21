@@ -211,7 +211,7 @@ export function InvoiceBuilder() {
       };
       addPageHeader();
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-      doc.text([site.address, site.phoneDisplay, site.email, site.url], margin, 49);
+      doc.text([site.address, site.phoneDisplay, site.url], margin, 49);
       doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("BILL TO", margin, 70);
       doc.setFontSize(12); doc.text(data.customerName || "Customer", margin, 78);
       doc.setTextColor(...muted); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
@@ -439,7 +439,7 @@ export function InvoiceBuilder() {
       <section className="invoice-preview" aria-label="Invoice preview">
         <div className="invoice-paper">
           <div className="invoice-paper-head"><div className="invoice-brand"><div className="invoice-logo-mark"><Image className="invoice-logo" src={logoPath} alt="" width={128} height={128} priority /></div><span><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span></div><h2>INVOICE</h2></div>
-          <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.email}<br />{site.url}</p></div>
+          <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}
           <div className="invoice-table-wrap"><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>{data.items.map((item, index) => <tr key={item.id}><td>{itemDescription(item, index, "Service description")}</td><td>{numberValue(item.quantity)}</td><td>{money(item.rate)}</td><td>{money(numberValue(item.quantity) * numberValue(item.rate))}</td></tr>)}</tbody></table></div>

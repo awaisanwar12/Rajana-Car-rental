@@ -6,7 +6,6 @@ export const site = {
   phoneHref: "+923036565672",
   whatsapp:
     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "923036565672",
-  email: "booknow@rajanacarrental.com",
   address: "123 H Block Market, DHA Phase 1, Lahore, Pakistan",
   shortAddress: "H Block Market, DHA Phase 1, Lahore",
 };

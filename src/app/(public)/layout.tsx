@@ -12,7 +12,6 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     name: site.name,
     url: site.url,
     telephone: site.phoneHref,
-    email: site.email,
     image: `${site.url}/images/honda-civic-rs.jpg`,
     logo: `${site.url}/images/get-car-apple.png`,
     priceRange: "PKR 5,000 to 25,000",

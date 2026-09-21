@@ -26,7 +26,6 @@ export function Footer() {
           <h2>Contact</h2>
           <a href={`tel:${site.phoneHref}`}><PhoneIcon /> {site.phoneDisplay}</a>
           <a href={whatsappUrl("Hello Get Car, I need information about a booking.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> WhatsApp us</a>
-          <a href={`mailto:${site.email}`}>{site.email}</a>
           <p className="footer-icon-line"><MapPinIcon /> {site.shortAddress}</p>
           <p className="footer-icon-line"><ClockIcon /> Open 24 hours, 7 days</p>
         </div>
