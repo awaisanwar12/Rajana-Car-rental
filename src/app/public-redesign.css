@@ -43,6 +43,26 @@ p {
   backdrop-filter: blur(16px);
 }
 
+.brand-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand-logo {
+  display: block;
+  height: 54px;
+  width: auto;
+  max-width: 175px;
+  object-fit: contain;
+}
+
+.brand-logo-footer {
+  height: 56px;
+  width: auto;
+  max-width: 185px;
+}
+
 .wordmark-wheel {
   width: 38px;
   height: 38px;
@@ -780,6 +800,16 @@ p {
   .site-header,
   .site-header.is-scrolled {
     height: 68px;
+  }
+
+  .brand-logo {
+    height: 46px;
+    max-width: 145px;
+  }
+
+  .brand-logo-footer {
+    height: 50px;
+    max-width: 160px;
   }
 
   .main-nav {

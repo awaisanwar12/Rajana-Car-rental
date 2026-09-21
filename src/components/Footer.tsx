@@ -8,9 +8,8 @@ export function Footer() {
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div className="footer-brand">
-          <Link className="wordmark brand-wordmark brand-wordmark-light" href="/" aria-label={`${site.name} home`}>
-            <Image className="brand-symbol" src="/icon.svg" alt="" width={60} height={60} />
-            <span className="brand-name"><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span>
+          <Link className="wordmark brand-logo-link" href="/" aria-label={`${site.name} home`}>
+            <Image className="brand-logo brand-logo-footer" src="/images/get-car-logo-white.png" alt="Get Car: Rent a Car Lahore" width={168} height={112} />
           </Link>
           <p>Reliable chauffeur-driven car rental for Lahore, airport transfers, intercity drops, weddings and business travel.</p>
         </div>

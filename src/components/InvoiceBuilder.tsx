@@ -46,7 +46,7 @@ const emptyInvoice = (): InvoiceData => ({
 
 const numberValue = (value: NumericInput) => value === "" ? 0 : value;
 const money = (value: NumericInput) => new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 }).format(numberValue(value));
-const logoPath = "/icon.svg";
+const logoPath = "/images/get-car-logo.png";
 const maxAdvancePayments = 3;
 
 function invoiceFilename(invoiceNumber: string) {
@@ -92,7 +92,7 @@ async function loadCircularLogoDataUrl(path: string) {
     context.clip();
     context.fillStyle = "#f8f7f2";
     context.fillRect(0, 0, size, size);
-    const logoWidth = 364;
+    const logoWidth = 320;
     const logoHeight = logoWidth * (image.height / image.width);
     context.drawImage(image, (size - logoWidth) / 2, (size - logoHeight) / 2, logoWidth, logoHeight);
     context.restore();
@@ -438,7 +438,7 @@ export function InvoiceBuilder() {
 
       <section className="invoice-preview" aria-label="Invoice preview">
         <div className="invoice-paper">
-          <div className="invoice-paper-head"><div className="invoice-brand"><div className="invoice-logo-mark"><Image className="invoice-logo" src={logoPath} alt="" width={128} height={128} priority /></div><span><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span></div><h2>INVOICE</h2></div>
+          <div className="invoice-paper-head"><div className="invoice-brand"><div className="invoice-logo-mark"><Image className="invoice-logo" src={logoPath} alt="Get Car" width={168} height={114} priority /></div><span><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span></div><h2>INVOICE</h2></div>
           <div className="invoice-business"><p>{site.address}<br />{site.phoneDisplay}<br />{site.url}</p></div>
           <div className="invoice-party"><div><small>BILL TO</small><strong>{data.customerName || "Customer name"}</strong><p>{[data.customerPhone, data.customerEmail, data.customerAddress].filter(Boolean).join(" · ") || "Customer contact details"}</p></div><dl><dt>INVOICE NO.</dt><dd>{data.invoiceNumber}</dd><dt>DATE</dt><dd>{data.date}</dd></dl></div>
           {hasTripDetails && <div className="invoice-trip-details"><small>TRIP DETAILS</small><div className="invoice-trip-grid">{data.city && <div className="invoice-trip-city"><span>City</span><strong>{data.city}</strong></div>}{(pickupDateTime || data.pickupLocation) && <div><span>Pickup</span><strong>{pickupDateTime || "Date and time not provided"}</strong><p>{data.pickupLocation || "Location not provided"}</p></div>}{(dropoffDateTime || data.dropoffLocation) && <div><span>Drop-off</span><strong>{dropoffDateTime || "Date and time not provided"}</strong><p>{data.dropoffLocation || "Location not provided"}</p></div>}</div></div>}

@@ -13,7 +13,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     url: site.url,
     telephone: site.phoneHref,
     image: `${site.url}/images/honda-civic-rs.jpg`,
-    logo: `${site.url}/images/get-car-apple.png`,
+    logo: `${site.url}/images/get-car-logo.png`,
     priceRange: "PKR 5,000 to 25,000",
     currenciesAccepted: "PKR",
     paymentAccepted: "Cash, Bank Transfer, JazzCash",

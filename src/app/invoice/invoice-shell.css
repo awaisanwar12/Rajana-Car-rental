@@ -62,21 +62,19 @@
 
 .invoice-logo-mark {
   align-items: center;
-  border-radius: 50%;
   display: flex;
-  flex: 0 0 94px;
-  height: 94px;
+  flex: 0 0 auto;
+  height: 64px;
   justify-content: center;
-  overflow: hidden;
   position: relative;
-  width: 94px;
+  width: auto;
 }
 
 .invoice-logo-mark .invoice-logo {
-  height: auto;
+  height: 64px;
   max-width: none;
   object-fit: contain;
-  width: 100%;
+  width: auto;
 }
 
 .invoice-payment-methods {
@@ -227,10 +225,14 @@
   }
 
   .invoice-logo-mark {
-    flex-basis: 29mm;
-    height: 29mm;
-    padding: 2.5mm;
-    width: 29mm;
+    flex-basis: auto;
+    height: 24mm;
+    width: auto;
+  }
+
+  .invoice-logo-mark .invoice-logo {
+    height: 24mm;
+    width: auto;
   }
 
   .invoice-payment-methods {

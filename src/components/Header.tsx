@@ -50,9 +50,8 @@ export function Header() {
     <>
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <div className="shell header-inner">
-          <Link className="wordmark brand-wordmark" href="/" aria-label={`${site.name} home`}>
-            <Image className="brand-symbol" src="/icon.svg" alt="" width={56} height={56} priority />
-            <span className="brand-name"><strong>{site.name.toUpperCase()}</strong><small>RENT A CAR LAHORE</small></span>
+          <Link className="wordmark brand-logo-link" href="/" aria-label={`${site.name} home`}>
+            <Image className="brand-logo" src="/images/get-car-logo.png" alt="Get Car: Rent a Car Lahore" width={168} height={112} priority />
           </Link>
           <nav id={menuId} className={`main-nav ${open ? "is-open" : ""}`} aria-label="Main navigation">
             {nav.map(([label, href], index) => (
