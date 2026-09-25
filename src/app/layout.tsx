@@ -19,9 +19,14 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: "Get Car Lahore", description: "Reliable car rental with professional drivers in Lahore.", images: ["/images/honda-civic-rs.jpg"] },
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "48x48" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
     shortcut: "/favicon.ico",
-    apple: "/images/get-car-apple.png",
+    apple: "/apple-touch-icon.png",
   },
   robots: {
     index: true,
@@ -44,11 +49,17 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 
 const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-37CKB9WDK1";
 const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-16844172040";
+const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "GTM-5Z5GH8VK";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-PK">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`,
+          }}
+        />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`} />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
         <script
@@ -57,7 +68,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }
