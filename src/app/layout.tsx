@@ -47,8 +47,6 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0b2235" };
 
-const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-37CKB9WDK1";
-const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-16844172040";
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "GTM-5Z5GH8VK";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -58,13 +56,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`,
-          }}
-        />
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`} />
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleAdsId}');gtag('config','${gaMeasurementId}');document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('tel:')===0){gtag('event','phone_call',{event_category:'Contact',event_label:h,value:1});gtag('event','generate_lead',{method:'phone',phone_number:h});}else if(h.indexOf('wa.me')!==-1||h.indexOf('whatsapp.com')!==-1){gtag('event','whatsapp_click',{event_category:'Contact',event_label:a.getAttribute('aria-label')||'WhatsApp',value:1});gtag('event','generate_lead',{method:'whatsapp'});}},true);`,
           }}
         />
       </head>
