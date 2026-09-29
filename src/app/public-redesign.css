@@ -51,14 +51,14 @@ p {
 
 .brand-logo {
   display: block;
-  height: 54px;
+  height: 64px;
   width: auto;
   max-width: 175px;
   object-fit: contain;
 }
 
 .brand-logo-footer {
-  height: 56px;
+  height: 96px;
   width: auto;
   max-width: 185px;
 }
@@ -970,12 +970,12 @@ p {
   }
 
   .brand-logo {
-    height: 46px;
+    height: 56px;
     max-width: 145px;
   }
 
   .brand-logo-footer {
-    height: 50px;
+    height: 88px;
     max-width: 160px;
   }
 

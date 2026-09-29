@@ -9,7 +9,7 @@ export function Footer() {
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Link className="wordmark brand-logo-link" href="/" aria-label={`${site.name} home`}>
-            <Image className="brand-logo brand-logo-footer" src="/images/get-car-logo-white.png" alt="Get Car: Rent a Car Lahore" width={168} height={112} />
+            <Image className="brand-logo brand-logo-footer" src="/images/get-car-logo-white.png" alt="Get Car: Rent a Car Lahore" width={84} height={105} />
           </Link>
           <p>Reliable chauffeur-driven car rental for Lahore, airport transfers, intercity drops, weddings and business travel.</p>
         </div>

@@ -51,7 +51,7 @@ export function Header() {
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <div className="shell header-inner">
           <Link className="wordmark brand-logo-link" href="/" aria-label={`${site.name} home`}>
-            <Image className="brand-logo" src="/images/get-car-logo.webp" alt="Get Car: Rent a Car Lahore" width={168} height={112} priority />
+            <Image className="brand-logo" src="/images/get-car-logo.webp" alt="Get Car: Rent a Car Lahore" width={84} height={105} priority />
           </Link>
           <nav id={menuId} className={`main-nav ${open ? "is-open" : ""}`} aria-label="Main navigation">
             {nav.map(([label, href], index) => (
