@@ -12,6 +12,8 @@ export type ServicePage = {
   highlights: readonly string[];
   planningTitle: string;
   planningCopy: readonly string[];
+  detailsTitle: string;
+  details: readonly (readonly [string, string])[];
   bookingPoints: readonly string[];
   whatsAppMessage: string;
   faqs: readonly (readonly [string, string])[];
@@ -32,6 +34,13 @@ export const services = [
     highlights: ["City and intercity travel", "Economy cars, SUVs and group vans", "Direct WhatsApp booking", "Exact price confirmed before travel"],
     planningTitle: "What to share when booking a driver-led car",
     planningCopy: ["Send your pickup point, destination, date, pickup time, passenger count and luggage details. This helps Get Car recommend the right sedan, SUV or van instead of giving a generic estimate.", "If the trip includes multiple stops, waiting time or a return journey, mention that in the first message. The final quote can then cover the complete requirement before the booking is confirmed."],
+    detailsTitle: "Choose the right Lahore rental for the day",
+    details: [
+      ["Local pickup coverage", "Request pickup in DHA, Gulberg, Johar Town, Model Town, Cantt, Bahria Town, Wapda Town, Garden Town, Faisal Town and surrounding Lahore areas, subject to availability."],
+      ["Hours and stops", "Tell the team how long you expect to keep the car and whether the driver will wait or visit several stops. These details affect the final quote."],
+      ["Vehicle and driver", "Every public fleet booking includes a professional driver. Choose from economy cars, sedans, seven-seaters, SUVs and group vehicles."],
+      ["Costs confirmed first", "Fuel, tolls, parking, taxes, waiting time and any outstation driver expenses are confirmed with the route before the booking is accepted."],
+    ],
     bookingPoints: ["Your pickup location and destination", "Travel date and pickup time", "Passenger and luggage count", "Preferred car or request for a recommendation"],
     whatsAppMessage: "Hello Get Car, I need a car with driver in Lahore. My route is: ",
     faqs: [
@@ -54,6 +63,13 @@ export const services = [
     highlights: ["Airport pickup and drop-off", "Space planned for passengers and luggage", "Early and late travel requests", "Vehicle confirmed before the journey"],
     planningTitle: "Details that make airport booking smoother",
     planningCopy: ["For an airport pickup, send the flight number or arrival time, the terminal if known, and the number of passengers with luggage. For an airport drop-off, share your pickup address and the time you need to arrive at the airport.", "Get Car confirms the vehicle and final price in writing before the journey. This keeps the booking clear for both the traveller and the driver."],
+    detailsTitle: "Plan the airport journey from door to door",
+    details: [
+      ["Arrivals pickup", "Share the flight number, expected landing time, passenger name, mobile number and Lahore destination so the pickup instructions can be confirmed before arrival."],
+      ["Departure drop-off", "Send the home, hotel or office pickup address and the time you need to reach Allama Iqbal International Airport."],
+      ["Passengers and luggage", "A sedan may suit one or two travellers, while families and larger luggage loads may need a seven-seater, SUV or Grand Cabin."],
+      ["Waiting and delays", "Confirm airport waiting time and flight-delay terms in the written quote so there is no uncertainty after landing."],
+    ],
     bookingPoints: ["Airport pickup or airport drop-off", "Flight number or required airport arrival time", "Pickup address", "Passengers and luggage"],
     whatsAppMessage: "Hello Get Car, I need a Lahore Airport transfer. My flight/travel timing is: ",
     faqs: [
@@ -76,6 +92,13 @@ export const services = [
     highlights: ["Direct Lahore to Islamabad travel", "One-way or return journey", "Cars for family and business travel", "Final terms confirmed before booking"],
     planningTitle: "Plan an intercity trip before the car is confirmed",
     planningCopy: ["Send the exact Lahore pickup point, Islamabad destination, travel date, preferred departure time and passenger count. For a return journey, include the return date, departure time and any expected waiting time.", "The current starting price is shown on the website. Fuel, tolls, taxes, waiting time, vehicle choice and final route requirements must be confirmed in the final written quote."],
+    detailsTitle: "Confirm the complete Lahore to Islamabad journey",
+    details: [
+      ["One-way drop", "Book a direct pickup in Lahore and drop at the confirmed home, hotel, office or other Islamabad destination."],
+      ["Return journey", "Share the return date, departure time and any waiting requirement so the same request covers both directions."],
+      ["Stops and luggage", "Mention planned stops, passenger count and luggage before selecting a sedan, seven-seater, SUV or group vehicle."],
+      ["Route costs", "The displayed rate is a starting price. Confirm fuel, motorway tolls, taxes, waiting time and driver expenses in the final quote."],
+    ],
     bookingPoints: ["Lahore pickup and Islamabad destination", "One-way or return journey", "Departure and return timing", "Passengers, luggage and preferred car"],
     whatsAppMessage: "Hello Get Car, I need a Lahore to Islamabad car with driver. My travel date and route are: ",
     faqs: [
@@ -98,6 +121,13 @@ export const services = [
     highlights: ["Couple, family and guest transport", "Sedans, SUVs and group vehicles", "Timing and pickup plan confirmed first", "Direct contact with the booking team"],
     planningTitle: "What to include in a wedding car request",
     planningCopy: ["Share the event date, pickup areas, venue, start and finish times, number of people travelling and whether one car or multiple vehicles are needed. This allows Get Car to check the right vehicle options and availability.", "If there are separate pickup points, venue changes or waiting periods, list them in the first WhatsApp message. The written confirmation should include the agreed vehicle, driver plan and pricing terms."],
+    detailsTitle: "Build the booking around the event schedule",
+    details: [
+      ["Couple transport", "Share the preparation location, ceremony venue, reception venue and required arrival times when one car is reserved for the couple."],
+      ["Family and guests", "For several passengers or pickup points, request suitable sedans, SUVs, Grand Cabins or Coasters and list each journey in order."],
+      ["Waiting time", "Include photography, venue changes and expected waiting periods so the driver schedule and quote cover the full event."],
+      ["Vehicle presentation", "Confirm the exact model, colour preference and any decoration arrangement before paying an advance."],
+    ],
     bookingPoints: ["Event date and venue", "Pickup locations and required times", "Number of passengers or vehicles", "Vehicle preference and waiting requirements"],
     whatsAppMessage: "Hello Get Car, I need wedding transport in Lahore. My event date and requirements are: ",
     faqs: [
@@ -120,6 +150,13 @@ export const services = [
     highlights: ["Client pickup and office travel", "Airport and intercity business journeys", "Executive sedans and SUVs", "Clear route and timing confirmation"],
     planningTitle: "Make a corporate booking easy to coordinate",
     planningCopy: ["Send the company contact name, trip date, pickup point, destinations, passenger count and required times. For a multi-stop day, include each stop in order and any expected waiting time.", "Get Car confirms the available vehicle, driver plan and final price directly before the booking. For recurring travel, use the same WhatsApp contact so the team has a clear written record of each trip."],
+    detailsTitle: "Keep business travel clear for every passenger",
+    details: [
+      ["Airport and guest pickup", "Provide the traveller name, mobile number, arrival details and final destination when arranging transport for a visitor or client."],
+      ["Meetings and office travel", "List each office, meeting venue and required arrival time for a multi-stop booking across Lahore."],
+      ["Vehicle selection", "Choose an executive sedan or SUV for individual travellers, or a larger vehicle when a team and luggage travel together."],
+      ["Recurring requirements", "For repeated journeys, send the dates, routes and passenger requirements together so availability and pricing can be confirmed consistently."],
+    ],
     bookingPoints: ["Company contact and traveller details", "Pickup, destinations and schedule", "Number of passengers and luggage", "One-time, multi-stop or intercity requirement"],
     whatsAppMessage: "Hello Get Car, I need a corporate car in Lahore. My travel schedule is: ",
     faqs: [

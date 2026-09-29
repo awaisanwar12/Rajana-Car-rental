@@ -21,10 +21,23 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
     "@context": "https://schema.org",
     "@type": "Service",
     name: service.title,
+    description: service.description,
     serviceType: service.serviceType,
-    areaServed: { "@type": "City", name: "Lahore" },
+    areaServed: [
+      { "@type": "City", name: "Lahore" },
+      ...site.serviceAreas.map((name) => ({ "@type": "Place", name: `${name}, Lahore` })),
+    ],
     provider: { "@id": `${site.url}/#business` },
     url: `${site.url}/${service.slug}/`,
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
+      { "@type": "ListItem", position: 2, name: service.title, item: `${site.url}/${service.slug}/` },
+    ],
   };
 
   const relatedServices = services.filter((item) => item.slug !== service.slug).slice(0, 3);
@@ -34,6 +47,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
       <section className="service-hero">
         <div className="shell service-hero-grid">
           <div className="service-hero-copy">
+            <nav className="service-breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><span>{service.title}</span></nav>
             <p className="eyebrow eyebrow-light"><span /> {service.eyebrow}</p>
             <h1>{service.heading}</h1>
             <p>{service.introduction}</p>
@@ -61,6 +75,15 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
             <ul>{service.highlights.map((highlight) => <li key={highlight}><CheckIcon /> {highlight}</li>)}</ul>
             <a href={`tel:${site.phoneHref}`}>Prefer to call? {site.phoneDisplay}</a>
           </aside>
+        </div>
+      </section>
+
+      <section className="section service-details-section">
+        <div className="shell">
+          <div className="section-heading"><p className="eyebrow"><span /> Local booking guidance</p><h2>{service.detailsTitle}</h2></div>
+          <div className="service-details-grid">
+            {service.details.map(([title, copy]) => <article key={title}><h3>{title}</h3><p>{copy}</p></article>)}
+          </div>
         </div>
       </section>
 
@@ -93,6 +116,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
     </>
   );
 }

@@ -4,13 +4,16 @@ import { BookingForm } from "@/components/BookingForm";
 import { FleetPreview } from "@/components/FleetPreview";
 import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, UsersIcon, WhatsAppIcon } from "@/components/Icons";
-import { whatsappUrl } from "@/lib/site";
+import { serviceAreas, site, whatsappUrl } from "@/lib/site";
 
 const faqs = [
   ["Do your rental cars come with a driver?", "Yes. Get Car provides chauffeur-driven car rental so you can travel without worrying about routes, parking or driving fatigue."],
   ["Can I book a Lahore Airport pickup?", "Yes. Share your flight time, pickup date and passenger count on WhatsApp. We will confirm the car, driver and final price before the trip."],
   ["Do you offer one-way Lahore to Islamabad trips?", "Yes. One-way intercity drops are available. The public starting price is updated regularly; confirm the final all-inclusive quote before booking."],
   ["How do I reserve a vehicle?", "Send your route, date, passenger count and preferred vehicle on WhatsApp or call us. We will confirm availability and any advance required."],
+  ["Which areas of Lahore do you serve?", `Pickup can be requested across Lahore, including ${serviceAreas.join(", ")}. Availability and the final pickup time are confirmed for each booking.`],
+  ["What is included in the displayed rental rate?", "The vehicle and professional driver are included. Fuel, motorway tolls, parking, taxes, waiting time and driver accommodation may be quoted separately depending on the route."],
+  ["Was Get Car previously Rajana Car Rental?", "Yes. Get Car is the current name and website for the Lahore car rental service previously known as Rajana Car Rental."],
 ];
 
 export default function Home() {
@@ -36,6 +39,7 @@ export default function Home() {
               <span><CheckIcon /> 24/7 booking</span>
               <span><CheckIcon /> Professional drivers</span>
               <span><CheckIcon /> Clear quote first</span>
+              <a className="google-review-link" href={site.mapsUrl} target="_blank" rel="noreferrer">Google rating {site.googleRating} from {site.googleReviewCount} reviews</a>
             </div>
           </div>
           <div className="hero-visual">
@@ -93,6 +97,7 @@ export default function Home() {
             <p className="eyebrow"><span /> Why Get Car</p>
             <h2>Local knowledge makes every journey easier.</h2>
             <p>Get Car is a Lahore-based car rental service focused on practical, comfortable travel. Our drivers know the city routes and major intercity roads, helping families, visitors and business travellers reach their destination without the usual transport stress.</p>
+            <p>Previously known as {site.formerName}, the service now operates online as Get Car at getcarlahore.com. The official website and Google Business Profile use the same booking number.</p>
             <div className="feature-list">
               <div><ShieldIcon /><span><strong>Reliable vehicles</strong><small>Options for city, family, group and executive travel.</small></span></div>
               <div><UsersIcon /><span><strong>Driver-led service</strong><small>No route planning, parking or unfamiliar-road worries.</small></span></div>
@@ -100,6 +105,31 @@ export default function Home() {
             </div>
             <Link className="button button-dark" href="/rent-a-car-lahore/">Explore Lahore services <ArrowIcon /></Link>
           </div>
+        </div>
+      </section>
+
+      <section className="section local-proof-section">
+        <div className="shell local-proof-grid">
+          <div>
+            <p className="eyebrow"><span /> Lahore pickup areas</p>
+            <h2>Request a rental car from your part of Lahore.</h2>
+            <p>Get Car arranges chauffeur-driven pickups for homes, hotels, offices, wedding venues and Allama Iqbal International Airport. Send the exact pickup point so the team can confirm the available car, arrival time and complete quote.</p>
+            <div className="area-list" aria-label="Lahore car rental service areas">
+              {serviceAreas.map((area) => <span key={area}>{area}</span>)}
+            </div>
+            <a className="local-address-link" href={site.mapsUrl} target="_blank" rel="noreferrer"><MapPinIcon /> {site.address}</a>
+          </div>
+          <aside className="booking-terms-card">
+            <p className="eyebrow"><span /> Clear rental terms</p>
+            <h2>Know what your quote covers.</h2>
+            <ul>
+              <li><CheckIcon /> The listed starting rate includes the vehicle and driver.</li>
+              <li><CheckIcon /> The final price depends on the route, date, duration and selected vehicle.</li>
+              <li><CheckIcon /> Fuel, tolls, parking, taxes and waiting time are confirmed before booking.</li>
+              <li><CheckIcon /> Intercity and group trips may include driver food or accommodation.</li>
+            </ul>
+            <a className="google-profile-card" href={site.mapsUrl} target="_blank" rel="noreferrer"><strong>{site.googleRating} Google rating</strong><span>Based on {site.googleReviewCount} customer reviews. View the profile.</span></a>
+          </aside>
         </div>
       </section>
 

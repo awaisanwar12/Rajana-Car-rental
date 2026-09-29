@@ -1,13 +1,32 @@
+export const serviceAreas = [
+  "DHA",
+  "Gulberg",
+  "Johar Town",
+  "Model Town",
+  "Lahore Cantt",
+  "Bahria Town",
+  "Wapda Town",
+  "Garden Town",
+  "Faisal Town",
+] as const;
+
 export const site = {
   name: "Get Car",
   shortName: "Get Car",
+  formerName: "Rajana Car Rental",
   url: "https://getcarlahore.com",
+  mapsUrl: "https://maps.app.goo.gl/LthigekKvtWpafvS9?g_st=awb",
   phoneDisplay: "+92 303 6565672",
   phoneHref: "+923036565672",
   whatsapp:
     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "923036565672",
-  address: "123 H Block Market, DHA Phase 1, Lahore, Pakistan",
-  shortAddress: "H Block Market, DHA Phase 1, Lahore",
+  address: "Street 145, H Block, Sector H, DHA Phase 1, Lahore, Pakistan",
+  shortAddress: "Street 145, H Block, DHA Phase 1, Lahore",
+  latitude: 31.4824528,
+  longitude: 74.3943188,
+  googleRating: 4.8,
+  googleReviewCount: 190,
+  serviceAreas,
 };
 
 export const paymentDetails = {
@@ -107,7 +126,7 @@ export const fleet = [
     seats: "4 passengers",
     price: 5000,
     priceLabel: "From Rs 5,000/day",
-    image: "/images/suzuki-wagon-r.jpg",
+    image: "/images/suzuki-wagon-r.webp",
     alt: "Suzuki Wagon R and Cultus rental with driver in Lahore",
     rateNote: "Local: Rs 5,000/day · Out of city: Rs 6,000/day",
     terms: "Without fuel, tolls, parking, driver food and accommodation",

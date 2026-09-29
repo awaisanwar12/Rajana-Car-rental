@@ -25,13 +25,13 @@ export function Footer() {
           <h2>Contact</h2>
           <a href={`tel:${site.phoneHref}`}><PhoneIcon /> {site.phoneDisplay}</a>
           <a href={whatsappUrl("Hello Get Car, I need information about a booking.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> WhatsApp us</a>
-          <p className="footer-icon-line"><MapPinIcon /> {site.shortAddress}</p>
+          <a className="footer-icon-line" href={site.mapsUrl} target="_blank" rel="noreferrer"><MapPinIcon /> {site.shortAddress}</a>
           <p className="footer-icon-line"><ClockIcon /> Open 24 hours, 7 days</p>
         </div>
       </div>
       <div className="shell footer-bottom">
         <span>© {new Date().getFullYear()} {site.name}</span>
-        <span>Serving Lahore and major cities across Pakistan</span>
+        <span>Formerly {site.formerName}. Serving Lahore and major cities across Pakistan.</span>
       </div>
     </footer>
   );

@@ -3,10 +3,10 @@ import Image from "next/image";
 import { BookingForm } from "@/components/BookingForm";
 import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, WhatsAppIcon } from "@/components/Icons";
-import { whatsappUrl } from "@/lib/site";
+import { serviceAreas, site, whatsappUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Rent a Car Lahore with Driver — 24/7 Booking",
+  title: "Rent a Car Lahore with Driver, 24/7 Booking",
   description: "Book a chauffeur-driven car in Lahore for airport transfers, DHA travel, weddings, business trips and one-way intercity drops. WhatsApp Get Car 24/7.",
   alternates: { canonical: "/rent-a-car-lahore/" },
 };
@@ -29,6 +29,22 @@ export default function LahoreServicePage() {
             <article><ClockIcon /><span>03</span><h3>One-way intercity drops</h3><p>Driver-led travel from Lahore to Islamabad, Faisalabad and other major cities without arranging a return vehicle.</p></article>
             <article><ShieldIcon /><span>04</span><h3>Business & wedding cars</h3><p>Executive sedans and premium SUVs for guests, corporate movement, events and wedding transport.</p></article>
           </div>
+        </div>
+      </section>
+      <section className="section lahore-area-section">
+        <div className="shell">
+          <div className="section-heading heading-split">
+            <div><p className="eyebrow"><span /> Lahore coverage</p><h2>Driver-led pickup across the city.</h2></div>
+            <div><p>Share the exact address, pickup time, destination, passengers and luggage. Availability is confirmed for each area before the booking.</p></div>
+          </div>
+          <div className="area-list" aria-label="Areas served in Lahore">{serviceAreas.map((area) => <span key={area}>{area}</span>)}</div>
+          <div className="service-details-grid lahore-booking-details">
+            <article><h3>What the rate includes</h3><p>The public starting price includes the vehicle and professional driver. The written quote confirms the complete trip price.</p></article>
+            <article><h3>Costs that depend on the trip</h3><p>Fuel, motorway tolls, parking, taxes, waiting time and outstation driver expenses may be added according to the route.</p></article>
+            <article><h3>Choosing the vehicle</h3><p>Passenger count, luggage and journey type determine whether an economy car, sedan, seven-seater, SUV or group vehicle is suitable.</p></article>
+            <article><h3>Local business details</h3><p>Get Car, formerly {site.formerName}, is based at {site.shortAddress} and is available for booking 24 hours a day.</p></article>
+          </div>
+          <a className="google-profile-card inline-google-profile" href={site.mapsUrl} target="_blank" rel="noreferrer"><strong>{site.googleRating} Google rating</strong><span>Read {site.googleReviewCount} customer reviews and view the Lahore location.</span></a>
         </div>
       </section>
       <section className="section route-section">

@@ -24,8 +24,14 @@ export default function FleetPage() {
           <div className="fleet-page-intro"><p>Filter by vehicle type, then open WhatsApp from any car to check its availability for your route and date.</p></div>
           <FleetExplorer />
           <div className="rate-box">
-            <div><p className="eyebrow"><span /> Before you book</p><h2>What affects the final price?</h2></div>
-            <ul><li><CheckIcon /> Pickup and destination</li><li><CheckIcon /> Trip duration and dates</li><li><CheckIcon /> Fuel, tolls and applicable taxes</li><li><CheckIcon /> Vehicle availability and waiting time</li></ul>
+            <div><p className="eyebrow"><span /> Before you book</p><h2>What affects the final price?</h2><p>Every displayed rate includes the vehicle and professional driver. The final written quote confirms every route-specific cost before travel.</p></div>
+            <ul><li><CheckIcon /> Pickup and destination</li><li><CheckIcon /> Trip duration and dates</li><li><CheckIcon /> Fuel, tolls, parking and taxes</li><li><CheckIcon /> Vehicle availability and waiting time</li><li><CheckIcon /> Passenger and luggage capacity</li><li><CheckIcon /> Driver food or accommodation for eligible trips</li></ul>
+          </div>
+          <div className="service-details-grid fleet-choice-guide">
+            <article><h3>Economy cars</h3><p>Wagon R, Cultus and Yaris options suit local travel, airport transfers and smaller passenger groups.</p></article>
+            <article><h3>Comfort and executive sedans</h3><p>Corolla Altis and Honda Civic options suit business travel, family journeys and formal events.</p></article>
+            <article><h3>Seven-seaters and SUVs</h3><p>BR-V, Fortuner, Prado, Jaecoo and Land Cruiser options provide more passenger room and road presence.</p></article>
+            <article><h3>Group vehicles</h3><p>Grand Cabin and Coaster bookings suit wedding guests, business teams and larger intercity groups.</p></article>
           </div>
           <div className="center-action"><Link className="button button-primary" href="/#book">Get your exact trip quote <ArrowIcon /></Link></div>
         </div>

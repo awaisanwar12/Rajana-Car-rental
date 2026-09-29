@@ -591,6 +591,173 @@ p {
   font-weight: 800;
 }
 
+.google-review-link {
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--red);
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.local-proof-section,
+.service-details-section,
+.lahore-area-section {
+  background: var(--cream);
+}
+
+.local-proof-grid {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: clamp(42px, 8vw, 110px);
+  align-items: start;
+}
+
+.local-proof-grid h2,
+.service-details-section h2,
+.lahore-area-section h2 {
+  color: var(--navy);
+}
+
+.local-proof-grid > div > p:not(.eyebrow),
+.lahore-area-section .heading-split p {
+  color: var(--muted);
+}
+
+.area-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 28px 0;
+}
+
+.area-list span {
+  padding: 8px 12px;
+  border: 1px solid #ccd5d9;
+  background: #fff;
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.local-address-link {
+  display: inline-flex;
+  gap: 8px;
+  align-items: flex-start;
+  max-width: 560px;
+  color: var(--navy);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.local-address-link svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  color: var(--red);
+}
+
+.booking-terms-card {
+  padding: 34px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.booking-terms-card h2 {
+  color: #fff;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+}
+
+.booking-terms-card ul {
+  display: grid;
+  gap: 15px;
+  margin: 25px 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-terms-card li {
+  display: flex;
+  gap: 10px;
+  color: #d9e2e7;
+  font-size: 0.86rem;
+}
+
+.booking-terms-card li svg {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  color: #ef555d;
+}
+
+.google-profile-card {
+  display: grid;
+  gap: 3px;
+  padding: 16px 18px;
+  border-left: 4px solid var(--red);
+  background: #fff;
+  color: var(--navy);
+}
+
+.google-profile-card strong {
+  font-size: 1rem;
+}
+
+.google-profile-card span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.service-breadcrumb {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 24px;
+  color: #aebfc8;
+  font-size: 0.74rem;
+}
+
+.service-breadcrumb a {
+  color: #fff;
+  font-weight: 800;
+}
+
+.service-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.service-details-grid article {
+  min-height: 180px;
+  padding: 28px;
+  border: 1px solid #d8dfe2;
+  border-top: 4px solid var(--red);
+  background: #fff;
+}
+
+.service-details-grid h3 {
+  margin-bottom: 14px;
+  color: var(--navy);
+}
+
+.service-details-grid p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.lahore-booking-details,
+.fleet-choice-guide {
+  margin-top: 38px;
+}
+
+.inline-google-profile {
+  max-width: 520px;
+  margin-top: 24px;
+}
+
+.rate-box > div > p:last-child {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
 .service-booking-section {
   background: var(--navy-2);
   color: #fff;
@@ -873,7 +1040,8 @@ p {
   }
 
   .service-hero-grid,
-  .service-overview-grid {
+  .service-overview-grid,
+  .local-proof-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1028,8 +1196,18 @@ p {
   }
 
   .service-related-grid,
-  .home-service-links {
+  .home-service-links,
+  .service-details-grid {
     grid-template-columns: 1fr;
+  }
+
+  .service-details-grid article {
+    min-height: 0;
+    padding: 24px 20px;
+  }
+
+  .booking-terms-card {
+    padding: 28px 20px;
   }
 
   .service-related-grid a,
