@@ -52,15 +52,17 @@ p {
 .brand-logo {
   display: block;
   height: 64px;
-  width: auto;
-  max-width: 175px;
+  width: 64px;
+  border: 2px solid var(--navy);
+  border-radius: 50%;
+  background: #fafaf6;
   object-fit: contain;
 }
 
 .brand-logo-footer {
-  height: 96px;
-  width: auto;
-  max-width: 185px;
+  height: 88px;
+  width: 88px;
+  border-color: #fff;
 }
 
 .wordmark-wheel {
@@ -971,12 +973,12 @@ p {
 
   .brand-logo {
     height: 56px;
-    max-width: 145px;
+    width: 56px;
   }
 
   .brand-logo-footer {
-    height: 88px;
-    max-width: 160px;
+    height: 80px;
+    width: 80px;
   }
 
   .main-nav {
