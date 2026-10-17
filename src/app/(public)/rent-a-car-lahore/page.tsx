@@ -42,7 +42,7 @@ export default function LahoreServicePage() {
             <article><h3>What the rate includes</h3><p>The public starting price includes the vehicle and professional driver. The written quote confirms the complete trip price.</p></article>
             <article><h3>Costs that depend on the trip</h3><p>Fuel, motorway tolls, parking, taxes, waiting time and outstation driver expenses may be added according to the route.</p></article>
             <article><h3>Choosing the vehicle</h3><p>Passenger count, luggage and journey type determine whether an economy car, sedan, seven-seater, SUV or group vehicle is suitable.</p></article>
-            <article><h3>Local business details</h3><p>Get Car, formerly {site.formerName}, is based at {site.shortAddress} and is available for booking 24 hours a day.</p></article>
+            <article><h3>Local business details</h3><p>Get Car is based at {site.shortAddress} and is available for booking 24 hours a day.</p></article>
           </div>
           <a className="google-profile-card inline-google-profile" href={site.mapsUrl} target="_blank" rel="noreferrer"><strong>{site.googleRating} Google rating</strong><span>Read {site.googleReviewCount} customer reviews and view the Lahore location.</span></a>
         </div>

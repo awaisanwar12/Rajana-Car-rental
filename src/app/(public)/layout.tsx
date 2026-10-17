@@ -10,7 +10,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     "@type": ["LocalBusiness", "AutoRental"],
     "@id": `${site.url}/#business`,
     name: site.name,
-    alternateName: ["GetCar", site.formerName],
+    alternateName: ["GetCar", "GetCar Rent A Car Lahore"],
     description: "Chauffeur-driven car rental in Lahore for local travel, airport transfers, weddings, corporate journeys and intercity trips.",
     url: site.url,
     hasMap: site.mapsUrl,

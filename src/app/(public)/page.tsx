@@ -13,7 +13,6 @@ const faqs = [
   ["How do I reserve a vehicle?", "Send your route, date, passenger count and preferred vehicle on WhatsApp or call us. We will confirm availability and any advance required."],
   ["Which areas of Lahore do you serve?", `Pickup can be requested across Lahore, including ${serviceAreas.join(", ")}. Availability and the final pickup time are confirmed for each booking.`],
   ["What is included in the displayed rental rate?", "The vehicle and professional driver are included. Fuel, motorway tolls, parking, taxes, waiting time and driver accommodation may be quoted separately depending on the route."],
-  ["Was Get Car previously Rajana Car Rental?", "Yes. Get Car is the current name and website for the Lahore car rental service previously known as Rajana Car Rental."],
 ];
 
 export default function Home() {
@@ -90,14 +89,14 @@ export default function Home() {
       <section className="section about-section">
         <div className="shell about-grid">
           <div className="about-image">
-            <Image src="/images/rajana-driver.jpg" alt="Clean Toyota interior prepared for a Get Car journey" fill sizes="(max-width: 850px) 100vw, 50vw" />
+            <Image src="/images/get-car-driver.jpg" alt="Clean Toyota interior prepared for a Get Car journey" fill sizes="(max-width: 850px) 100vw, 50vw" />
             <div><strong>DHA Lahore</strong><span>Local team. Pakistan-wide travel.</span></div>
           </div>
           <div className="about-copy">
             <p className="eyebrow"><span /> Why Get Car</p>
             <h2>Local knowledge makes every journey easier.</h2>
             <p>Get Car is a Lahore-based car rental service focused on practical, comfortable travel. Our drivers know the city routes and major intercity roads, helping families, visitors and business travellers reach their destination without the usual transport stress.</p>
-            <p>Previously known as {site.formerName}, the service now operates online as Get Car at getcarlahore.com. The official website and Google Business Profile use the same booking number.</p>
+            <p>The service operates online as Get Car at getcarlahore.com. The official website and Google Business Profile use the same booking number.</p>
             <div className="feature-list">
               <div><ShieldIcon /><span><strong>Reliable vehicles</strong><small>Options for city, family, group and executive travel.</small></span></div>
               <div><UsersIcon /><span><strong>Driver-led service</strong><small>No route planning, parking or unfamiliar-road worries.</small></span></div>

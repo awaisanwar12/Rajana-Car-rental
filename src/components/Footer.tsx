@@ -31,7 +31,7 @@ export function Footer() {
       </div>
       <div className="shell footer-bottom">
         <span>© {new Date().getFullYear()} {site.name}</span>
-        <span>Formerly {site.formerName}. Serving Lahore and major cities across Pakistan.</span>
+        <span>Serving Lahore and major cities across Pakistan.</span>
       </div>
     </footer>
   );

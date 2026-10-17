@@ -13,7 +13,6 @@ export const serviceAreas = [
 export const site = {
   name: "Get Car",
   shortName: "Get Car",
-  formerName: "Rajana Car Rental",
   url: "https://getcarlahore.com",
   mapsUrl: "https://maps.app.goo.gl/LthigekKvtWpafvS9?g_st=awb",
   phoneDisplay: "+92 303 6565672",
