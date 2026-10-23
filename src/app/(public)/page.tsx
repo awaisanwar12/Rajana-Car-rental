@@ -102,7 +102,7 @@ export default function Home() {
               <div><UsersIcon /><span><strong>Driver-led service</strong><small>No route planning, parking or unfamiliar-road worries.</small></span></div>
               <div><ClockIcon /><span><strong>Responsive booking</strong><small>Direct contact by phone and business WhatsApp.</small></span></div>
             </div>
-            <Link className="button button-dark" href="/rent-a-car-lahore/">Explore Lahore services <ArrowIcon /></Link>
+            <Link className="button button-dark" href="/car-rental-with-driver-lahore/">Explore Lahore services <ArrowIcon /></Link>
           </div>
         </div>
       </section>

@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { site, whatsappUrl } from "@/lib/site";
+import { site, trackEvent, whatsappUrl } from "@/lib/site";
 import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 
 const nav = [
   ["Home", "/"],
   ["Fleet & rates", "/fleet/"],
-  ["Rent a car Lahore", "/rent-a-car-lahore/"],
+  ["Car with driver", "/car-rental-with-driver-lahore/"],
 ] as const;
 
 export function Header() {
@@ -23,8 +23,22 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
+    const handleClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest("a[href]");
+      if (!(link instanceof HTMLAnchorElement)) return;
+      if (link.href.startsWith("tel:")) {
+        trackEvent("contact_click", { contact_method: "phone", link_url: link.href });
+      } else if (link.href.includes("wa.me/")) {
+        trackEvent("contact_click", { contact_method: "whatsapp", link_url: link.href });
+      }
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    document.addEventListener("click", handleClick);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("click", handleClick);
+    };
   }, []);
 
   useEffect(() => {

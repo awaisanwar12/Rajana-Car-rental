@@ -1,14 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { defaultLahoreIslamabadRouteRate, lahoreIslamabadRouteRateKey, type FleetVehicle, type PublishedRateKey, type VehicleRateMap } from "@/lib/site";
+import {
+  coasterOutstationRateKey,
+  defaultCoasterOutstationRate,
+  defaultLahoreIslamabadRouteRate,
+  defaultWagonROutstationRate,
+  lahoreIslamabadRouteRateKey,
+  type FleetVehicle,
+  type PublishedRateKey,
+  type VehicleRateMap,
+  wagonROutstationRateKey,
+} from "@/lib/site";
 
 type RateManagerProps = { vehicles: readonly FleetVehicle[] };
 type ApiPayload = { rates?: VehicleRateMap; updatedAt?: string | null; error?: string };
 type RateDraft = Partial<Record<PublishedRateKey, string>>;
 
 function toRateMap(vehicles: readonly FleetVehicle[]) {
-  return { ...Object.fromEntries(vehicles.map((vehicle) => [vehicle.id, vehicle.price])), [lahoreIslamabadRouteRateKey]: defaultLahoreIslamabadRouteRate } as VehicleRateMap;
+  return {
+    ...Object.fromEntries(vehicles.map((vehicle) => [vehicle.id, vehicle.price])),
+    [lahoreIslamabadRouteRateKey]: defaultLahoreIslamabadRouteRate,
+    [coasterOutstationRateKey]: defaultCoasterOutstationRate,
+    [wagonROutstationRateKey]: defaultWagonROutstationRate,
+  } as VehicleRateMap;
 }
 
 function toDraft(rates: VehicleRateMap): RateDraft {
@@ -84,7 +99,11 @@ export function RateManager({ vehicles }: RateManagerProps) {
     <section className="rate-manager" aria-label="Vehicle rate management">
       <div className="rate-manager-heading"><div><span>Starting prices</span><h2>Update rates</h2><p>Only change the rate. Vehicle names, photos and categories stay unchanged.</p></div><p className="rate-manager-note">Final trip prices may still vary by route, fuel, tolls, timing and availability.</p></div>
       <div className="route-rate-editor"><label><span><strong>Popular one-way route</strong><small>Lahore → Islamabad</small></span><span className="rate-input"><small>Starting price (Rs)</small><input aria-label="Lahore to Islamabad starting rate" type="number" min="1000" max="500000" step="500" value={draftRates[lahoreIslamabadRouteRateKey] ?? String(defaultLahoreIslamabadRouteRate)} onChange={(event) => changeRate(lahoreIslamabadRouteRateKey, event.target.value)} /></span></label><p>This one price updates every public Lahore → Islamabad route mention.</p></div>
-      <div className="rate-list">{vehicles.map((vehicle) => <label key={vehicle.id}><span><strong>{vehicle.name}</strong><small>{vehicle.category} · {vehicle.seats}</small></span><span className="rate-input"><small>Rs / day</small><input aria-label={`${vehicle.name} daily starting rate`} type="number" min="1000" max="500000" step="500" value={draftRates[vehicle.id] ?? String(vehicle.price)} onChange={(event) => changeRate(vehicle.id, event.target.value)} /></span></label>)}</div>
+      <div className="rate-list">
+        {vehicles.map((vehicle) => <label key={vehicle.id}><span><strong>{vehicle.name}</strong><small>{vehicle.category} · {vehicle.seats}</small></span><span className="rate-input"><small>Rs / day</small><input aria-label={`${vehicle.name} daily starting rate`} type="number" min="1000" max="500000" step="500" value={draftRates[vehicle.id] ?? String(vehicle.price)} onChange={(event) => changeRate(vehicle.id, event.target.value)} /></span></label>)}
+        <label><span><strong>Toyota Coaster (Out of city)</strong><small>Group van · Outstation rate note</small></span><span className="rate-input"><small>Rs / day</small><input aria-label="Toyota Coaster out of city daily starting rate" type="number" min="1000" max="500000" step="500" value={draftRates[coasterOutstationRateKey] ?? String(defaultCoasterOutstationRate)} onChange={(event) => changeRate(coasterOutstationRateKey, event.target.value)} /></span></label>
+        <label><span><strong>Suzuki Wagon R / Cultus (Out of city)</strong><small>Economy car · Outstation rate note</small></span><span className="rate-input"><small>Rs / day</small><input aria-label="Suzuki Wagon R and Cultus out of city daily starting rate" type="number" min="1000" max="500000" step="500" value={draftRates[wagonROutstationRateKey] ?? String(defaultWagonROutstationRate)} onChange={(event) => changeRate(wagonROutstationRateKey, event.target.value)} /></span></label>
+      </div>
       <div className="rate-manager-actions"><button className="button button-primary" type="button" onClick={saveRates} disabled={saving}>{saving ? "Saving…" : "Save published rates"}</button><p role="status">{status}</p></div>
     </section>
   );

@@ -113,6 +113,17 @@ test("refuses unauthenticated or invalid rate updates", async () => {
   assert.equal(invalid.status, 400);
 });
 
+test("reports missing KV storage when loading admin rates", async () => {
+  const response = await worker.fetch(
+    new Request("https://getcarlahore.com/admin/api/rates", {
+      headers: { Authorization: authorization("waqas", "correct horse battery staple") },
+    }),
+    configuredEnvironment,
+  );
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error, "Rate storage is not configured yet.");
+});
+
 test("passes public pages through to static assets", async () => {
   const response = await worker.fetch(
     new Request("https://getcarlahore.com/"),
@@ -146,4 +157,14 @@ test("permanently redirects the legacy contact page to the homepage", async () =
     response.headers.get("Location"),
     "https://getcarlahore.com/?source=legacy",
   );
+});
+
+test("permanently redirects the duplicate Lahore page to the homepage", async () => {
+  const response = await worker.fetch(
+    new Request("https://getcarlahore.com/rent-a-car-lahore/"),
+    configuredEnvironment,
+  );
+
+  assert.equal(response.status, 301);
+  assert.equal(response.headers.get("Location"), "https://getcarlahore.com/");
 });

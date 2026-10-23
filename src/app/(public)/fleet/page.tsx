@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: "Car Rental Fleet & Rates in Lahore",
   description: "Compare Get Car Lahore rates for Honda Civic, Toyota Corolla, Yaris, BR-V, Fortuner, Land Cruiser and group vans with driver.",
   alternates: { canonical: "/fleet/" },
+  openGraph: {
+    title: "Car Rental Fleet & Rates in Lahore | Get Car",
+    description: "Compare Get Car Lahore rates for Honda Civic, Toyota Corolla, Yaris, BR-V, Fortuner, Land Cruiser and group vans with driver.",
+    url: "/fleet/",
+  },
 };
 
 export default function FleetPage() {

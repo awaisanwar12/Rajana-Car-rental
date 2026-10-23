@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { fleet, type FleetVehicle, type VehicleRateMap, withLiveRates } from "@/lib/site";
 import { FleetCard } from "./FleetCard";
 
-export function FleetPreview({ vehicles = fleet.slice(0, 6) }: { vehicles?: readonly FleetVehicle[] }) {
+export function FleetPreview({ vehicles = fleet }: { vehicles?: readonly FleetVehicle[] }) {
   const [rates, setRates] = useState<VehicleRateMap>({});
 
   useEffect(() => {

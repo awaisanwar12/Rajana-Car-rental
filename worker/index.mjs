@@ -2,7 +2,7 @@ const encoder = new TextEncoder();
 const rateKeys = new Set([
   "honda-civic-rs", "toyota-corolla-altis-x", "toyota-yaris-corolla-gli", "jaecoo-j5-2026",
   "honda-br-v", "toyota-fortuner-prado", "grand-cabin", "land-cruiser-v8", "lahore-to-islamabad",
-  "suzuki-wagon-r-cultus", "toyota-coaster",
+  "suzuki-wagon-r-cultus", "toyota-coaster", "suzuki-wagon-r-cultus-outstation",
 ]);
 
 async function secureEqual(left, right) {
@@ -119,7 +119,12 @@ const worker = {
 
     const { pathname } = url;
 
-    if (pathname === "/contact-us" || pathname === "/contact-us/") {
+    if (
+      pathname === "/contact-us" ||
+      pathname === "/contact-us/" ||
+      pathname === "/rent-a-car-lahore" ||
+      pathname === "/rent-a-car-lahore/"
+    ) {
       url.protocol = "https:";
       url.pathname = "/";
       url.port = "";
@@ -155,9 +160,11 @@ const worker = {
     }
 
     if (pathname === "/admin/api/rates") {
-      if (request.method === "GET") return privateResponse(json(await readRates(env)));
-      if (request.method !== "PUT") return privateResponse(new Response("Method not allowed.", { status: 405, headers: { Allow: "GET, PUT" } }));
+      if (request.method !== "GET" && request.method !== "PUT") {
+        return privateResponse(new Response("Method not allowed.", { status: 405, headers: { Allow: "GET, PUT" } }));
+      }
       if (!env.RATES_KV) return privateResponse(json({ error: "Rate storage is not configured yet." }, 503));
+      if (request.method === "GET") return privateResponse(json(await readRates(env)));
 
       try {
         const body = await request.json();

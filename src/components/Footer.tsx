@@ -16,7 +16,6 @@ export function Footer() {
         <div>
           <h2>Explore</h2>
           <Link href="/fleet/">Fleet & rates</Link>
-          <Link href="/rent-a-car-lahore/">Rent a car Lahore</Link>
           <Link href="/lahore-airport-car-rental/">Lahore airport transfer</Link>
           <Link href="/car-rental-with-driver-lahore/">Car with driver</Link>
           <Link href="/lahore-to-islamabad-car-rental/">Lahore to Islamabad</Link>

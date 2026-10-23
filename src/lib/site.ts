@@ -135,18 +135,50 @@ export const fleet = [
 export type FleetVehicle = (typeof fleet)[number];
 export const lahoreIslamabadRouteRateKey = "lahore-to-islamabad";
 export const defaultLahoreIslamabadRouteRate = 25000;
-export type PublishedRateKey = FleetVehicle["id"] | typeof lahoreIslamabadRouteRateKey;
+export const coasterOutstationRateKey = "toyota-coaster";
+export const defaultCoasterOutstationRate = 25000;
+export const wagonROutstationRateKey = "suzuki-wagon-r-cultus-outstation";
+export const defaultWagonROutstationRate = 6000;
+export type PublishedRateKey =
+  | FleetVehicle["id"]
+  | typeof lahoreIslamabadRouteRateKey
+  | typeof coasterOutstationRateKey
+  | typeof wagonROutstationRateKey;
 export type VehicleRateMap = Partial<Record<PublishedRateKey, number>>;
 
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+  }
+}
+
+function formatPkr(price: number) {
+  return new Intl.NumberFormat("en-PK").format(price);
+}
+
 export function rateLabel(price: number) {
-  return `From Rs ${new Intl.NumberFormat("en-PK").format(price)}/day`;
+  return `From Rs ${formatPkr(price)}/day`;
 }
 
 export function withLiveRates<T extends readonly FleetVehicle[]>(vehicles: T, rates: VehicleRateMap) {
+  const coasterRate = rates[coasterOutstationRateKey] ?? defaultCoasterOutstationRate;
+  const wagonROutstationRate = rates[wagonROutstationRateKey] ?? defaultWagonROutstationRate;
   return vehicles.map((vehicle) => {
     const price = rates[vehicle.id] ?? vehicle.price;
-    return { ...vehicle, price, priceLabel: rateLabel(price) };
+    const rateNote =
+      vehicle.id === "grand-cabin"
+        ? `Grand Cabin from Rs ${formatPkr(price)}/day · Coaster (Out of city) Rs ${formatPkr(coasterRate)}/day`
+        : vehicle.id === "suzuki-wagon-r-cultus"
+          ? `Local: Rs ${formatPkr(price)}/day · Out of city: Rs ${formatPkr(wagonROutstationRate)}/day`
+          : undefined;
+    return { ...vehicle, price, priceLabel: rateLabel(price), ...(rateNote ? { rateNote } : {}) };
   });
+}
+
+export function trackEvent(event: string, params: Record<string, string>) {
+  if (typeof window === "undefined") return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event, ...params });
 }
 
 export const whatsappUrl = (message: string) =>

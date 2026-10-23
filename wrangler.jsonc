@@ -12,6 +12,11 @@
       "custom_domain": true
     }
   ],
+  "kv_namespaces": [
+    {
+      "binding": "RATES_KV"
+    }
+  ],
   "assets": {
     "directory": "./out",
     "not_found_handling": "404-page",

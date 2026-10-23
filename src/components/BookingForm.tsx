@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { fleet, whatsappUrl } from "@/lib/site";
+import { fleet, trackEvent, whatsappUrl } from "@/lib/site";
 import { ArrowIcon, WhatsAppIcon } from "./Icons";
 
 export function BookingForm({ compact = false }: { compact?: boolean }) {
@@ -11,6 +11,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const car = String(form.get("car") || "");
     const message = [
       "Hello Get Car, I would like a quote.",
       "",
@@ -19,9 +20,10 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
       `Pickup: ${form.get("pickup")}`,
       `Destination: ${form.get("destination")}`,
       `Pickup date: ${form.get("date")}`,
-      `Car: ${form.get("car")}`,
+      `Car: ${car}`,
       `Details: ${form.get("details") || "Not provided"}`,
     ].join("\n");
+    trackEvent("booking_form_submit", { contact_method: "whatsapp", vehicle: car });
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
     setStatus("Your trip details are ready in WhatsApp. Send the message to request confirmation.");
   }
