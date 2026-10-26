@@ -33,7 +33,9 @@ export function FleetRateTable() {
         <tbody>
           {vehiclesByPrice.map((car) => (
             <tr key={car.id}>
-              <th scope="row">{car.name}</th>
+              <th scope="row">
+                <Link href={`/${car.slug}/`}>{car.name}</Link>
+              </th>
               <td>{car.category}</td>
               <td>{car.seats}</td>
               <td className="rate-table-price">{car.priceLabel}</td>

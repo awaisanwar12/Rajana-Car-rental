@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ServiceLandingPage } from "@/components/ServiceLandingPage";
 import { serviceBySlug, services } from "@/lib/services";
 import { site } from "@/lib/site";
+import { vehiclePageBySlug, vehiclePages } from "@/lib/vehicle-pages";
 
 export const dynamicParams = false;
 
@@ -11,12 +12,12 @@ type ServiceRouteProps = {
 };
 
 export function generateStaticParams() {
-  return services.map(({ slug }) => ({ service: slug }));
+  return [...services, ...vehiclePages].map(({ slug }) => ({ service: slug }));
 }
 
 export async function generateMetadata({ params }: ServiceRouteProps): Promise<Metadata> {
   const { service: slug } = await params;
-  const service = serviceBySlug.get(slug);
+  const service = serviceBySlug.get(slug) ?? vehiclePageBySlug.get(slug);
 
   if (!service) return {};
 
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: ServiceRouteProps): Promise<M
 
 export default async function ServicePage({ params }: ServiceRouteProps) {
   const { service: slug } = await params;
-  const service = serviceBySlug.get(slug);
+  const service = serviceBySlug.get(slug) ?? vehiclePageBySlug.get(slug);
 
   if (!service) notFound();
 

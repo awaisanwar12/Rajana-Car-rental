@@ -37,11 +37,13 @@ export function Footer() {
           <Link href="/outstation-northern-areas-car-rental-lahore/">Outstation &amp; Northern tours</Link>
         </div>
         <div>
-          <h2>Contact</h2>
+          <h2>Contact &amp; info</h2>
           <a href={`tel:${site.phoneHref}`}><PhoneIcon /> {site.phoneDisplay}</a>
           <a href={whatsappUrl("Hello Get Car, I need information about a booking.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> WhatsApp us</a>
           <a className="footer-icon-line" href={site.mapsUrl} target="_blank" rel="noreferrer"><MapPinIcon /> {site.shortAddress}</a>
           <p className="footer-icon-line"><ClockIcon /> Open 24 hours, 7 days</p>
+          <Link href="/about/">About Get Car</Link>
+          <Link href="/terms/">Rental terms &amp; policy</Link>
         </div>
       </div>
       <div className="shell footer-bottom">

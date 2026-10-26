@@ -1,9 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import { site, whatsappUrl } from "@/lib/site";
 import { PhoneIcon, UsersIcon, WhatsAppIcon } from "./Icons";
 
 type FleetCardProps = {
   car: {
+    slug: string;
     name: string;
     category: string;
     seats: string;
@@ -24,7 +26,9 @@ export function FleetCard({ car, featured = false }: FleetCardProps) {
         <span>{car.category}</span>
       </div>
       <div className="fleet-content">
-        <div className="fleet-card-heading"><h3>{car.name}</h3></div>
+        <div className="fleet-card-heading">
+          <h3><Link href={`/${car.slug}/`}>{car.name}</Link></h3>
+        </div>
         <p className="fleet-meta"><UsersIcon size={17} /> {car.seats} <span aria-hidden="true">·</span> Driver included</p>
         <strong className="fleet-price"><small>Starting at</small>{car.priceLabel.replace("From ", "")}</strong>
         {car.rateNote && <p className="fleet-rate-note">{car.rateNote}</p>}

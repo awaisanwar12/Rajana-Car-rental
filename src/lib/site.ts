@@ -49,6 +49,7 @@ export const paymentDetails = {
 export const fleet = [
   {
     id: "honda-civic-rs",
+    slug: "honda-civic-rs-for-rent-lahore",
     name: "Honda Civic RS",
     category: "Executive sedan",
     seats: "4 passengers",
@@ -59,6 +60,7 @@ export const fleet = [
   },
   {
     id: "toyota-corolla-altis-x",
+    slug: "toyota-corolla-altis-for-rent-lahore",
     name: "Toyota Corolla Altis X",
     category: "Comfort sedan",
     seats: "4 passengers",
@@ -69,6 +71,7 @@ export const fleet = [
   },
   {
     id: "toyota-yaris-corolla-gli",
+    slug: "toyota-yaris-corolla-gli-for-rent-lahore",
     name: "Toyota Yaris / Corolla GLi",
     category: "Economy sedan",
     seats: "4 passengers",
@@ -79,6 +82,7 @@ export const fleet = [
   },
   {
     id: "jaecoo-j5-2026",
+    slug: "jaecoo-j5-for-rent-lahore",
     name: "Jaecoo J5 2026",
     category: "Modern SUV",
     seats: "5 passengers",
@@ -89,6 +93,7 @@ export const fleet = [
   },
   {
     id: "honda-br-v",
+    slug: "honda-brv-for-rent-lahore",
     name: "Honda BR-V",
     category: "Family 7-seater",
     seats: "6 passengers",
@@ -99,6 +104,7 @@ export const fleet = [
   },
   {
     id: "toyota-fortuner-prado",
+    slug: "toyota-fortuner-prado-for-rent-lahore",
     name: "Toyota Fortuner / Prado",
     category: "Premium SUV",
     seats: "6 passengers",
@@ -109,6 +115,7 @@ export const fleet = [
   },
   {
     id: "grand-cabin",
+    slug: "grand-cabin-coaster-rental-lahore",
     name: "Grand Cabin / Coaster",
     category: "Group van",
     seats: "13 to 29 passengers",
@@ -121,6 +128,7 @@ export const fleet = [
   },
   {
     id: "land-cruiser-v8",
+    slug: "land-cruiser-v8-for-rent-lahore",
     name: "Land Cruiser V8",
     category: "Luxury SUV",
     seats: "6 passengers",
@@ -131,6 +139,7 @@ export const fleet = [
   },
   {
     id: "suzuki-wagon-r-cultus",
+    slug: "suzuki-wagon-r-cultus-for-rent-lahore",
     name: "Suzuki Wagon R / Cultus",
     category: "Economy car",
     seats: "4 passengers",

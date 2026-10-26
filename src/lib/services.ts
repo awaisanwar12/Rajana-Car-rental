@@ -13,6 +13,7 @@ export type ServicePage = {
   imageAlt: string;
   imageNote: string;
   serviceType: string;
+  primaryVehicleId?: FleetVehicle["id"];
   vehicleIds: readonly FleetVehicle["id"][];
   highlights: readonly string[];
   planningTitle: string;
@@ -245,6 +246,7 @@ export const services = [
     imageAlt: "Toyota Hiace Grand Cabin and Coaster available for group rental in Lahore",
     imageNote: "13 to 29 passenger seating",
     serviceType: "Group van and Coaster rental",
+    primaryVehicleId: "grand-cabin",
     vehicleIds: [
       "grand-cabin",
       "honda-br-v",

@@ -285,6 +285,10 @@ p {
   font-size: 1.22rem;
 }
 
+.fleet-card-heading h3 a:hover {
+  color: var(--red);
+}
+
 .fleet-meta {
   min-height: 24px;
   margin: 10px 0 0;

@@ -55,12 +55,13 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
           "@type": "Offer",
           priceCurrency: "PKR",
           price: vehicle.price,
-          url: `${site.url}/fleet/`,
+          url: `${site.url}/${vehicle.slug}/`,
           itemOffered: {
             "@type": "Car",
             name: vehicle.name,
             description: `${vehicle.category} (${vehicle.seats}) with driver in Lahore`,
             image: `${site.url}${vehicle.image}`,
+            url: `${site.url}/${vehicle.slug}/`,
           },
         })),
         ...services.map((service) => ({

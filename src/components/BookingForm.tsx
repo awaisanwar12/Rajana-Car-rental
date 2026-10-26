@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { fleet, trackEvent, whatsappUrl } from "@/lib/site";
 import { ArrowIcon, WhatsAppIcon } from "./Icons";
 
-export function BookingForm({ compact = false }: { compact?: boolean }) {
+export function BookingForm({ compact = false, defaultCar = "" }: { compact?: boolean; defaultCar?: string }) {
   const [status, setStatus] = useState("");
   const idPrefix = compact ? "compact-booking" : "booking";
 
@@ -41,7 +41,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
         <label htmlFor={`${idPrefix}-pickup`}>Pickup location<input id={`${idPrefix}-pickup`} name="pickup" autoComplete="street-address" placeholder="e.g. DHA Lahore" required /></label>
         <label htmlFor={`${idPrefix}-destination`}>Destination<input id={`${idPrefix}-destination`} name="destination" placeholder="e.g. Lahore Airport" required /></label>
         <label htmlFor={`${idPrefix}-date`}>Pickup date<input id={`${idPrefix}-date`} name="date" type="date" required /></label>
-        <label htmlFor={`${idPrefix}-car`}>Choose a car<select id={`${idPrefix}-car`} name="car" defaultValue=""><option value="" disabled>Select a vehicle</option>{fleet.map((car) => <option key={car.name}>{car.name}</option>)}<option>Other / recommend a car</option></select></label>
+        <label htmlFor={`${idPrefix}-car`}>Choose a car<select id={`${idPrefix}-car`} name="car" defaultValue={defaultCar}><option value="" disabled>Select a vehicle</option>{fleet.map((car) => <option key={car.name}>{car.name}</option>)}<option>Other / recommend a car</option></select></label>
         {!compact && <label className="field-wide" htmlFor={`${idPrefix}-details`}>Trip details<textarea id={`${idPrefix}-details`} name="details" rows={3} placeholder="Passengers, return date, special requests" /></label>}
       </div>
       <button className="button button-whatsapp button-block" type="submit"><WhatsAppIcon /> Continue on WhatsApp <ArrowIcon /></button>

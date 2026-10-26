@@ -6,14 +6,18 @@ import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/Icons";
 import { services, type ServicePage } from "@/lib/services";
 import { fleet, site, whatsappUrl } from "@/lib/site";
+import { vehiclePageBySlug, vehiclePages } from "@/lib/vehicle-pages";
 
 const vehicleById = new Map(fleet.map((vehicle) => [vehicle.id, vehicle]));
 
 export function ServiceLandingPage({ service }: { service: ServicePage }) {
+  const isVehicleModelPage = vehiclePageBySlug.has(service.slug);
+  const primaryVehicle = service.primaryVehicleId ? vehicleById.get(service.primaryVehicleId) : undefined;
   const serviceVehicles = service.vehicleIds
     .map((id) => vehicleById.get(id))
     .filter((vehicle): vehicle is (typeof fleet)[number] => Boolean(vehicle));
   const prices = serviceVehicles.map((vehicle) => vehicle.price);
+  const pageUrl = `${site.url}/${service.slug}/`;
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -37,7 +41,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
       ...site.serviceAreas.map((name) => ({ "@type": "Place", name: `${name}, Lahore` })),
     ],
     provider: { "@id": `${site.url}/#business` },
-    url: `${site.url}/${service.slug}/`,
+    url: pageUrl,
     ...(prices.length > 0
       ? {
           offers: {
@@ -51,20 +55,59 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
       : {}),
   };
 
+  const carSchema = primaryVehicle
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Car",
+        name: primaryVehicle.name,
+        description: service.description,
+        image: `${site.url}${primaryVehicle.image}`,
+        url: pageUrl,
+        seatingCapacity: primaryVehicle.seats,
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "PKR",
+          price: primaryVehicle.price,
+          availability: "https://schema.org/InStock",
+          url: pageUrl,
+          seller: { "@id": `${site.url}/#business` },
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            priceCurrency: "PKR",
+            price: primaryVehicle.price,
+            unitCode: "DAY",
+          },
+        },
+      }
+    : null;
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
-      { "@type": "ListItem", position: 2, name: service.shortLabel, item: `${site.url}/${service.slug}/` },
-    ],
+    itemListElement: isVehicleModelPage
+      ? [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
+          { "@type": "ListItem", position: 2, name: "Fleet & daily rates", item: `${site.url}/fleet/` },
+          { "@type": "ListItem", position: 3, name: service.shortLabel, item: pageUrl },
+        ]
+      : [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
+          { "@type": "ListItem", position: 2, name: service.shortLabel, item: pageUrl },
+        ],
   };
 
   const currentIndex = services.findIndex((item) => item.slug === service.slug);
-  const relatedServices = Array.from({ length: Math.min(6, services.length - 1) }, (_, offset) => {
-    const nextIndex = (currentIndex + offset + 1) % services.length;
-    return services[nextIndex];
-  });
+  const vehicleIndex = vehiclePages.findIndex((item) => item.slug === service.slug);
+  const relatedServices =
+    vehicleIndex >= 0
+      ? [
+          ...Array.from({ length: 3 }, (_, offset) => vehiclePages[(vehicleIndex + offset + 1) % vehiclePages.length]),
+          ...Array.from({ length: 3 }, (_, offset) => services[(vehicleIndex + offset) % services.length]),
+        ]
+      : Array.from({ length: Math.min(6, services.length - 1) }, (_, offset) => {
+          const nextIndex = (currentIndex + offset + 1) % services.length;
+          return services[nextIndex];
+        });
 
   return (
     <>
@@ -74,6 +117,12 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
             <nav className="service-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link>
               <span>/</span>
+              {isVehicleModelPage && (
+                <>
+                  <Link href="/fleet/">Fleet &amp; daily rates</Link>
+                  <span>/</span>
+                </>
+              )}
               <span>{service.shortLabel}</span>
             </nav>
             <p className="eyebrow eyebrow-light"><span /> {service.eyebrow}</p>
@@ -142,7 +191,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
             <ul className="plain-checks service-booking-points">{service.bookingPoints.map((point) => <li key={point}><CheckIcon /> {point}</li>)}</ul>
             <a className="button button-whatsapp" href={whatsappUrl(service.whatsAppMessage)} target="_blank" rel="noreferrer"><WhatsAppIcon /> Start the booking on WhatsApp</a>
           </div>
-          <BookingForm compact />
+          <BookingForm compact defaultCar={primaryVehicle?.name} />
         </div>
       </section>
 
@@ -160,6 +209,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
         </div>
       </section>
 
+      {carSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(carSchema).replace(/</g, "\\u003c") }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
