@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/lib/services";
-import { site } from "@/lib/site";
+import { fleet, site } from "@/lib/site";
 
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
+  const fleetImages = Array.from(new Set(fleet.map((vehicle) => `${site.url}${vehicle.image}`)));
 
   return [
     {
@@ -13,18 +14,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "weekly",
       priority: 1,
+      images: [`${site.url}/images/honda-civic-rs.jpg`, `${site.url}/images/get-car-driver.jpg`],
     },
     {
       url: `${site.url}/fleet/`,
       lastModified,
       changeFrequency: "weekly",
-      priority: 0.8,
+      priority: 0.9,
+      images: fleetImages,
     },
     ...services.map((service) => ({
       url: `${site.url}/${service.slug}/`,
       lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
+      changeFrequency: "weekly" as const,
+      priority: 0.85,
+      images: [`${site.url}${service.image}`],
     })),
   ];
 }

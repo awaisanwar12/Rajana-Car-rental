@@ -10,7 +10,9 @@ import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 const nav = [
   ["Home", "/"],
   ["Fleet & rates", "/fleet/"],
-  ["Car with driver", "/car-rental-with-driver-lahore/"],
+  ["Airport", "/lahore-airport-car-rental/"],
+  ["Islamabad", "/lahore-to-islamabad-car-rental/"],
+  ["With driver", "/car-rental-with-driver-lahore/"],
 ] as const;
 
 export function Header() {

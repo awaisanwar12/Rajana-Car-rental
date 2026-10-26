@@ -844,7 +844,7 @@ p {
 }
 
 .home-service-links {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .home-service-links a {
@@ -853,7 +853,161 @@ p {
 }
 
 .home-service-links strong {
-  font-size: 1.07rem;
+  font-size: 1.14rem;
+}
+
+.service-fleet-section {
+  background: #fff;
+  border-top: 1px solid var(--line);
+}
+
+.fleet-choice-guide article {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fleet-choice-guide .text-link {
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.rate-summary-block {
+  margin-top: 56px;
+}
+
+.rate-summary-header {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(24px, 5vw, 72px);
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.rate-summary-header h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.65rem, 2.8vw, 2.35rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.rate-summary-header > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.rate-table-wrap {
+  position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid #d5dde1;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(9, 31, 50, 0.045);
+}
+
+.rate-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.84rem;
+}
+
+.rate-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.rate-table thead th {
+  padding: 14px 16px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rate-table tbody th,
+.rate-table tbody td {
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.rate-table tbody th {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.rate-table tbody th a {
+  border-bottom: 1px solid var(--red);
+}
+
+.rate-table tbody td {
+  color: var(--muted);
+}
+
+.rate-table tbody tr:nth-child(even) {
+  background: #faf9f6;
+}
+
+.rate-table td.rate-table-price {
+  color: var(--navy);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rate-table-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: var(--green);
+  color: var(--green-ink);
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rate-table-cta:hover {
+  background: #20c962;
+}
+
+.local-nap-details {
+  display: grid;
+  gap: 10px;
+}
+
+.local-proof-grid > * {
+  min-width: 0;
+}
+
+.local-map-frame {
+  margin-top: 24px;
+  border: 1px solid #cbd5da;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e7ecef;
+  height: 250px;
+}
+
+.local-map-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .faq-list summary {
@@ -870,8 +1024,8 @@ p {
 }
 
 .footer-grid {
-  grid-template-columns: 1.25fr 0.65fr 1.2fr;
-  gap: clamp(36px, 7vw, 90px);
+  grid-template-columns: 1.2fr 0.9fr 0.95fr 1.05fr;
+  gap: clamp(28px, 4.5vw, 56px);
 }
 
 .footer-grid > div:last-child {
@@ -880,6 +1034,28 @@ p {
 
 .footer-grid p {
   margin-bottom: 0;
+}
+
+.footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.footer-socials a {
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #dfe8ed;
+}
+
+.footer-socials a:hover {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
 
 .desktop-contact-float {
@@ -941,7 +1117,11 @@ p {
 
 @media (max-width: 1050px) {
   .main-nav {
-    gap: 15px;
+    gap: 14px;
+  }
+
+  .main-nav > a:not(.button) {
+    white-space: nowrap;
   }
 
   .fleet-grid-all {
@@ -949,7 +1129,11 @@ p {
   }
 
   .footer-grid {
-    grid-template-columns: 1.1fr 0.7fr 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
   }
 
   .footer-grid > div:last-child {
@@ -958,6 +1142,11 @@ p {
 
   .home-service-links {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rate-summary-header {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 

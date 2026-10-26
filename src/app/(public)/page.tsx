@@ -1,22 +1,48 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BookingForm } from "@/components/BookingForm";
 import { FleetPreview } from "@/components/FleetPreview";
+import { FleetRateTable } from "@/components/FleetRateTable";
 import { RouteStartingRate } from "@/components/RouteStartingRate";
-import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PlaneIcon, ShieldIcon, UsersIcon, WhatsAppIcon } from "@/components/Icons";
+import { ArrowIcon, CheckIcon, ClockIcon, MapPinIcon, PhoneIcon, PlaneIcon, ShieldIcon, UsersIcon, WhatsAppIcon } from "@/components/Icons";
+import { services } from "@/lib/services";
 import { serviceAreas, site, whatsappUrl } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_PK",
+    siteName: site.name,
+    url: "/",
+    title: "Rent a Car in Lahore with Driver | 24/7 Rates | Get Car",
+    description: "24/7 chauffeur-driven cars, SUVs and Grand Cabins in Lahore from Rs 5,000/day. Request an exact quote on WhatsApp.",
+    images: [{ url: "/images/honda-civic-rs.jpg", width: 1024, height: 576, alt: "Get Car Lahore chauffeur car rental" }],
+  },
+};
 
 const faqs = [
   ["Do your rental cars come with a driver?", "Yes. Get Car provides chauffeur-driven car rental so you can travel without worrying about routes, parking or driving fatigue."],
-  ["Can I book a Lahore Airport pickup?", "Yes. Share your flight time, pickup date and passenger count on WhatsApp. We will confirm the car, driver and final price before the trip."],
-  ["Do you offer one-way Lahore to Islamabad trips?", "Yes. One-way intercity drops are available. The public starting price is updated regularly; confirm the final all-inclusive quote before booking."],
-  ["How do I reserve a vehicle?", "Send your route, date, passenger count and preferred vehicle on WhatsApp or call us. We will confirm availability and any advance required."],
+  ["What is the lowest daily car rental rate in Lahore?", "Chauffeur-driven Suzuki Wagon R and Cultus rentals start from Rs 5,000/day within Lahore and Rs 6,000/day out of city, while Toyota Yaris and Corolla GLi start from Rs 6,000/day."],
+  ["Can I book a Lahore Airport pickup or drop-off?", "Yes. Share your flight time, pickup date and passenger count on WhatsApp. We confirm the car, driver and final price before your flight."],
+  ["Do you offer one-way Lahore to Islamabad trips?", "Yes. One-way and return intercity trips are available 24/7. The starting rate is displayed on the site; confirm your all-inclusive quote before booking."],
+  ["Do you have Grand Cabins, Coasters and SUVs for families or tours?", "Yes. Our fleet includes Honda BR-V (6 passengers), Toyota Fortuner, Prado, Land Cruiser V8, and 13 to 29 passenger Toyota Grand Cabins and Coasters for weddings, corporate teams and Northern Area tours."],
   ["Which areas of Lahore do you serve?", `Pickup can be requested across Lahore, including ${serviceAreas.join(", ")}. Availability and the final pickup time are confirmed for each booking.`],
-  ["What is included in the displayed rental rate?", "The vehicle and professional driver are included. Fuel, motorway tolls, parking, taxes, waiting time and driver accommodation may be quoted separately depending on the route."],
+  ["What is included in the displayed rental rate?", "The vehicle and professional driver are included. Fuel, motorway tolls, parking, taxes, waiting time and outstation driver food or accommodation are quoted according to your route."],
+  ["How do I reserve a vehicle?", "Send your route, date, passenger count and preferred vehicle on WhatsApp or call +92 303 6565672. We confirm availability and any advance required in writing."],
 ];
 
 export default function Home() {
-  const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map(([question, answer]) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) };
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  };
 
   return (
     <>
@@ -25,10 +51,10 @@ export default function Home() {
           <div className="hero-copy">
             <p className="eyebrow"><span /> Lahore · Airport · All Pakistan</p>
             <h1>Rent a car in Lahore.<br /><em>Driver included.</em></h1>
-            <p className="hero-lead">Clean cars, experienced drivers and honest trip pricing—available 24/7 for airport pickups, family travel, business trips and one-way drops.</p>
+            <p className="hero-lead">Clean cars, experienced drivers and clear trip pricing, available 24/7 from Rs 5,000/day for city travel, airport transfers, weddings, Northern Areas tours and one-way intercity drops.</p>
             <div className="hero-actions">
               <a className="button button-whatsapp" href={whatsappUrl("Hello Get Car, I need a car in Lahore. Please share availability and price.")} target="_blank" rel="noreferrer"><WhatsAppIcon /> Get a WhatsApp quote</a>
-              <Link className="button button-ghost" href="/fleet/">View fleet & rates <ArrowIcon /></Link>
+              <Link className="button button-ghost" href="/fleet/">View fleet &amp; rates <ArrowIcon /></Link>
             </div>
             <div className="route-card">
               <span className="route-icon"><MapPinIcon /></span>
@@ -43,7 +69,7 @@ export default function Home() {
           </div>
           <div className="hero-visual">
             <div className="hero-image-wrap">
-              <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Get Car on the road" fill preload sizes="(max-width: 900px) 100vw, 50vw" />
+              <Image src="/images/honda-civic-rs.jpg" alt="Black Honda Civic RS from Get Car on the road in Lahore" fill preload sizes="(max-width: 900px) 100vw, 50vw" />
             </div>
             <span className="hero-index" aria-hidden="true">24/7</span>
           </div>
@@ -62,10 +88,20 @@ export default function Home() {
       <section className="section fleet-section" id="fleet">
         <div className="shell">
           <div className="section-heading heading-split">
-            <div><p className="eyebrow"><span /> Choose your ride</p><h2>Cars for every kind of trip</h2></div>
-            <div><p>Economy sedans, family 7-seaters, premium SUVs and group vans—all available with a professional driver.</p><Link className="text-link" href="/fleet/">View the full fleet <ArrowIcon /></Link></div>
+            <div><p className="eyebrow"><span /> Choose your ride</p><h2>Cars &amp; daily rates in Lahore</h2></div>
+            <div><p>Economy hatchbacks, sedans, family 7-seaters, luxury 4x4 SUVs and 13 to 29 passenger group vans, all with a professional driver.</p><Link className="text-link" href="/fleet/">Filter the full fleet <ArrowIcon /></Link></div>
           </div>
           <FleetPreview />
+          <div className="rate-summary-block" id="rates">
+            <div className="rate-summary-header">
+              <div>
+                <p className="eyebrow"><span /> Transparent rate card</p>
+                <h3>Compare Lahore daily &amp; intercity starting prices</h3>
+              </div>
+              <p>Rates include the vehicle and driver. Confirm fuel, motorway tolls, parking and route specifics on WhatsApp before booking.</p>
+            </div>
+            <FleetRateTable />
+          </div>
           <p className="price-note">*Displayed rates are starting prices from the current rate card. Fuel, tolls, taxes, route and seasonal availability may affect the final quote.</p>
         </div>
       </section>
@@ -96,27 +132,38 @@ export default function Home() {
             <p className="eyebrow"><span /> Why Get Car</p>
             <h2>Local knowledge makes every journey easier.</h2>
             <p>Get Car is a Lahore-based car rental service focused on practical, comfortable travel. Our drivers know the city routes and major intercity roads, helping families, visitors and business travellers reach their destination without the usual transport stress.</p>
-            <p>The service operates online as Get Car at getcarlahore.com. The official website and Google Business Profile use the same booking number.</p>
+            <p>The service operates online as Get Car at getcarlahore.com from DHA Phase 1, Lahore. The official website and Google Business Profile share the same 24/7 booking number.</p>
             <div className="feature-list">
-              <div><ShieldIcon /><span><strong>Reliable vehicles</strong><small>Options for city, family, group and executive travel.</small></span></div>
+              <div><ShieldIcon /><span><strong>Reliable vehicles</strong><small>Economy cars, Corolla, Civic RS, BR-V, Fortuner, V8 and Grand Cabin.</small></span></div>
               <div><UsersIcon /><span><strong>Driver-led service</strong><small>No route planning, parking or unfamiliar-road worries.</small></span></div>
-              <div><ClockIcon /><span><strong>Responsive booking</strong><small>Direct contact by phone and business WhatsApp.</small></span></div>
+              <div><ClockIcon /><span><strong>Responsive booking</strong><small>Direct contact by phone and business WhatsApp 24 hours a day.</small></span></div>
             </div>
             <Link className="button button-dark" href="/car-rental-with-driver-lahore/">Explore Lahore services <ArrowIcon /></Link>
           </div>
         </div>
       </section>
 
-      <section className="section local-proof-section">
+      <section className="section local-proof-section" id="location">
         <div className="shell local-proof-grid">
           <div>
-            <p className="eyebrow"><span /> Lahore pickup areas</p>
+            <p className="eyebrow"><span /> Lahore pickup areas &amp; office</p>
             <h2>Request a rental car from your part of Lahore.</h2>
             <p>Get Car arranges chauffeur-driven pickups for homes, hotels, offices, wedding venues and Allama Iqbal International Airport. Send the exact pickup point so the team can confirm the available car, arrival time and complete quote.</p>
             <div className="area-list" aria-label="Lahore car rental service areas">
               {serviceAreas.map((area) => <span key={area}>{area}</span>)}
             </div>
-            <a className="local-address-link" href={site.mapsUrl} target="_blank" rel="noreferrer"><MapPinIcon /> {site.address}</a>
+            <div className="local-nap-details">
+              <a className="local-address-link" href={site.mapsUrl} target="_blank" rel="noreferrer"><MapPinIcon /> {site.address}</a>
+              <a className="local-address-link" href={`tel:${site.phoneHref}`}><PhoneIcon size={17} /> {site.phoneDisplay} (Open 24/7)</a>
+            </div>
+            <div className="local-map-frame">
+              <iframe
+                src={site.mapEmbedUrl}
+                title="Get Car office location in DHA Phase 1, Lahore"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
           </div>
           <aside className="booking-terms-card">
             <p className="eyebrow"><span /> Clear rental terms</p>
@@ -132,18 +179,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section home-services-section">
+      <section className="section home-services-section" id="services">
         <div className="shell">
           <div className="section-heading heading-split">
-            <div><p className="eyebrow"><span /> Travel services</p><h2>Choose the page that fits your trip.</h2></div>
-            <div><p>Useful booking guidance for airport travel, driver-led rentals, weddings, corporate travel and Lahore to Islamabad journeys.</p></div>
+            <div><p className="eyebrow"><span /> Travel services</p><h2>Choose the service that fits your trip.</h2></div>
+            <div><p>Dedicated Lahore car rental guides and starting rates for airport transfers, economy cars, SUVs, group vans, weddings, corporate travel and outstation trips.</p></div>
           </div>
           <div className="home-service-links">
-            <Link href="/car-rental-with-driver-lahore/"><strong>Car rental with driver</strong><span>City and intercity travel <ArrowIcon /></span></Link>
-            <Link href="/lahore-airport-car-rental/"><strong>Lahore airport transfer</strong><span>Pickup and drop-off planning <ArrowIcon /></span></Link>
-            <Link href="/lahore-to-islamabad-car-rental/"><strong>Lahore to Islamabad</strong><span>One-way and return travel <ArrowIcon /></span></Link>
-            <Link href="/wedding-car-rental-lahore/"><strong>Wedding car rental</strong><span>Transport for events and guests <ArrowIcon /></span></Link>
-            <Link href="/corporate-car-rental-lahore/"><strong>Corporate car rental</strong><span>Client, office and business travel <ArrowIcon /></span></Link>
+            {services.map((service) => (
+              <Link key={service.slug} href={`/${service.slug}/`}>
+                <strong>{service.shortLabel}</strong>
+                <span>{service.cardSummary} <ArrowIcon /></span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

@@ -1,7 +1,8 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
-import { site } from "@/lib/site";
+import { services } from "@/lib/services";
+import { fleet, site, socialLinks } from "@/lib/site";
 import "../public-redesign.css";
 
 export default function PublicLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -10,13 +11,20 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     "@type": ["LocalBusiness", "AutoRental"],
     "@id": `${site.url}/#business`,
     name: site.name,
-    alternateName: ["GetCar", "GetCar Rent A Car Lahore"],
-    description: "Chauffeur-driven car rental in Lahore for local travel, airport transfers, weddings, corporate journeys and intercity trips.",
+    alternateName: ["GetCar", "Get Car Lahore", "GetCar Rent A Car Lahore"],
+    description: "24/7 chauffeur-driven car rental in Lahore from Rs 5,000/day for city travel, airport transfers, weddings, corporate journeys, Northern Areas tours and intercity drops.",
     url: site.url,
     hasMap: site.mapsUrl,
-    sameAs: [site.mapsUrl],
+    sameAs: [site.mapsUrl, ...socialLinks.map((profile) => profile.url)],
     telephone: site.phoneHref,
-    image: `${site.url}/images/honda-civic-rs.jpg`,
+    image: [
+      `${site.url}/images/honda-civic-rs.jpg`,
+      `${site.url}/images/toyota-fortuner.jpg`,
+      `${site.url}/images/land-cruiser.jpeg`,
+      `${site.url}/images/toyota-altis.webp`,
+      `${site.url}/images/grand-cabin.jpg`,
+      `${site.url}/images/get-car-driver.jpg`,
+    ],
     logo: `${site.url}/images/get-car-logo.webp`,
     priceRange: "PKR 5,000 to 25,000",
     currenciesAccepted: "PKR",
@@ -35,8 +43,38 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     },
     areaServed: [
       { "@type": "City", name: "Lahore" },
+      { "@type": "City", name: "Islamabad" },
+      { "@type": "Country", name: "Pakistan" },
       ...site.serviceAreas.map((name) => ({ "@type": "Place", name: `${name}, Lahore` })),
     ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Lahore Chauffeur Car Rental Fleet & Services",
+      itemListElement: [
+        ...fleet.map((vehicle) => ({
+          "@type": "Offer",
+          priceCurrency: "PKR",
+          price: vehicle.price,
+          url: `${site.url}/fleet/`,
+          itemOffered: {
+            "@type": "Car",
+            name: vehicle.name,
+            description: `${vehicle.category} (${vehicle.seats}) with driver in Lahore`,
+            image: `${site.url}${vehicle.image}`,
+          },
+        })),
+        ...services.map((service) => ({
+          "@type": "Offer",
+          url: `${site.url}/${service.slug}/`,
+          itemOffered: {
+            "@type": "Service",
+            name: service.title,
+            serviceType: service.serviceType,
+            url: `${site.url}/${service.slug}/`,
+          },
+        })),
+      ],
+    },
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

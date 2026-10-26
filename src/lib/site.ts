@@ -10,6 +10,14 @@ export const serviceAreas = [
   "Faisal Town",
 ] as const;
 
+export const socialLinks = [
+  { name: "Facebook", url: "https://www.facebook.com/GetCarLahore" },
+  { name: "Instagram", url: "https://www.instagram.com/getcarlahore/" },
+  { name: "TikTok", url: "https://www.tiktok.com/@getcarlahore" },
+  { name: "Threads", url: "https://www.threads.com/@getcarlahore" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/getcar-lahore-a619a729b/" },
+] as const;
+
 export const site = {
   name: "Get Car",
   shortName: "Get Car",
@@ -23,9 +31,12 @@ export const site = {
   shortAddress: "Street 145, H Block, DHA Phase 1, Lahore",
   latitude: 31.4824528,
   longitude: 74.3943188,
+  mapEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3402.55!2d74.3943188!3d31.4824528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392319bedce10537%3A0xffc6b2fb1f87e8ac!2sGetCar%20-%20Rent%20A%20Car%20Lahore!5e0!3m2!1sen!2spk!4v1700000000000!5m2!1sen!2spk",
   googleRating: 4.8,
   googleReviewCount: 190,
   serviceAreas,
+  socialLinks,
 };
 
 export const paymentDetails = {
@@ -152,7 +163,7 @@ declare global {
   }
 }
 
-function formatPkr(price: number) {
+export function formatPkr(price: number) {
   return new Intl.NumberFormat("en-PK").format(price);
 }
 

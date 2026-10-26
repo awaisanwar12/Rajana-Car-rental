@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { fleet, type VehicleRateMap, withLiveRates } from "@/lib/site";
+import { useState } from "react";
+import { fleet, withLiveRates } from "@/lib/site";
+import { useLiveRates } from "@/lib/use-live-rates";
 import { FleetCard } from "./FleetCard";
 
 const filters = ["All", "Sedan", "SUV", "7 Seater", "Van"] as const;
@@ -17,20 +18,9 @@ function vehicleGroup(category: string): Exclude<Filter, "All"> {
 
 export function FleetExplorer() {
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
-  const [rates, setRates] = useState<VehicleRateMap>({});
+  const rates = useLiveRates();
   const liveFleet = withLiveRates(fleet, rates);
   const visibleFleet = activeFilter === "All" ? liveFleet : liveFleet.filter((car) => vehicleGroup(car.category) === activeFilter);
-
-  useEffect(() => {
-    let active = true;
-    fetch("/api/rates", { cache: "no-store" })
-      .then((response) => response.ok ? response.json() : null)
-      .then((payload: { rates?: VehicleRateMap } | null) => {
-        if (active && payload?.rates) setRates(payload.rates);
-      })
-      .catch(() => undefined);
-    return () => { active = false; };
-  }, []);
 
   return (
     <div className="fleet-explorer">

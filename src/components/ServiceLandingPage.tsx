@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookingForm } from "@/components/BookingForm";
+import { FleetPreview } from "@/components/FleetPreview";
 import { RouteStartingRate } from "@/components/RouteStartingRate";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/Icons";
 import { services, type ServicePage } from "@/lib/services";
-import { site, whatsappUrl } from "@/lib/site";
+import { fleet, site, whatsappUrl } from "@/lib/site";
+
+const vehicleById = new Map(fleet.map((vehicle) => [vehicle.id, vehicle]));
 
 export function ServiceLandingPage({ service }: { service: ServicePage }) {
+  const serviceVehicles = service.vehicleIds
+    .map((id) => vehicleById.get(id))
+    .filter((vehicle): vehicle is (typeof fleet)[number] => Boolean(vehicle));
+  const prices = serviceVehicles.map((vehicle) => vehicle.price);
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -23,12 +31,24 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
     name: service.title,
     description: service.description,
     serviceType: service.serviceType,
+    image: `${site.url}${service.image}`,
     areaServed: [
       { "@type": "City", name: "Lahore" },
       ...site.serviceAreas.map((name) => ({ "@type": "Place", name: `${name}, Lahore` })),
     ],
     provider: { "@id": `${site.url}/#business` },
     url: `${site.url}/${service.slug}/`,
+    ...(prices.length > 0
+      ? {
+          offers: {
+            "@type": "AggregateOffer",
+            priceCurrency: "PKR",
+            lowPrice: Math.min(...prices),
+            highPrice: Math.max(...prices),
+            offerCount: prices.length,
+          },
+        }
+      : {}),
   };
 
   const breadcrumbSchema = {
@@ -36,24 +56,32 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
-      { "@type": "ListItem", position: 2, name: service.title, item: `${site.url}/${service.slug}/` },
+      { "@type": "ListItem", position: 2, name: service.shortLabel, item: `${site.url}/${service.slug}/` },
     ],
   };
 
-  const relatedServices = services.filter((item) => item.slug !== service.slug).slice(0, 3);
+  const currentIndex = services.findIndex((item) => item.slug === service.slug);
+  const relatedServices = Array.from({ length: Math.min(6, services.length - 1) }, (_, offset) => {
+    const nextIndex = (currentIndex + offset + 1) % services.length;
+    return services[nextIndex];
+  });
 
   return (
     <>
       <section className="service-hero">
         <div className="shell service-hero-grid">
           <div className="service-hero-copy">
-            <nav className="service-breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><span>{service.title}</span></nav>
+            <nav className="service-breadcrumb" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span>/</span>
+              <span>{service.shortLabel}</span>
+            </nav>
             <p className="eyebrow eyebrow-light"><span /> {service.eyebrow}</p>
             <h1>{service.heading}</h1>
             <p>{service.introduction}</p>
             <div className="hero-actions">
               <a className="button button-whatsapp" href={whatsappUrl(service.whatsAppMessage)} target="_blank" rel="noreferrer"><WhatsAppIcon /> Request a WhatsApp quote</a>
-              <Link className="button button-ghost service-hero-secondary" href="/fleet/">Compare cars & rates <ArrowIcon /></Link>
+              <Link className="button button-ghost service-hero-secondary" href="/fleet/">Compare cars &amp; rates <ArrowIcon /></Link>
             </div>
           </div>
           <div className="service-hero-image">
@@ -77,6 +105,24 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
           </aside>
         </div>
       </section>
+
+      {serviceVehicles.length > 0 && (
+        <section className="section service-fleet-section">
+          <div className="shell">
+            <div className="section-heading heading-split">
+              <div>
+                <p className="eyebrow"><span /> Fleet &amp; starting rates</p>
+                <h2>Cars &amp; rates: {service.shortLabel}</h2>
+              </div>
+              <div>
+                <p>Every vehicle includes a professional driver. Share your exact route and timing on WhatsApp for a confirmed trip quote.</p>
+                <Link className="text-link" href="/fleet/">View all 9 fleet options <ArrowIcon /></Link>
+              </div>
+            </div>
+            <FleetPreview vehicles={serviceVehicles} />
+          </div>
+        </section>
+      )}
 
       <section className="section service-details-section">
         <div className="shell">
@@ -110,7 +156,7 @@ export function ServiceLandingPage({ service }: { service: ServicePage }) {
       <section className="service-related">
         <div className="shell">
           <div className="section-heading"><p className="eyebrow"><span /> Explore Get Car services</p><h2>Planning a different kind of trip?</h2></div>
-          <div className="service-related-grid">{relatedServices.map((item) => <Link key={item.slug} href={`/${item.slug}/`}><small>{item.eyebrow}</small><strong>{item.title}</strong><span>Explore service <ArrowIcon /></span></Link>)}</div>
+          <div className="service-related-grid">{relatedServices.map((item) => <Link key={item.slug} href={`/${item.slug}/`}><small>{item.eyebrow}</small><strong>{item.shortLabel}</strong><span>{item.cardSummary} <ArrowIcon /></span></Link>)}</div>
         </div>
       </section>
 
