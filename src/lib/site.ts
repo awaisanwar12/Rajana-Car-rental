@@ -27,8 +27,8 @@ export const site = {
   phoneHref: "+923036565672",
   whatsapp:
     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || "923036565672",
-  address: "Street 145, H Block, Sector H, DHA Phase 1, Lahore, Pakistan",
-  shortAddress: "Street 145, H Block, DHA Phase 1, Lahore",
+  address: "Building 126, Street 145, H Block Commercial Market, Sector H, DHA Phase 1, Lahore, Pakistan",
+  shortAddress: "Building 126, Street 145, H Block Commercial Market, Sector H, DHA Phase 1, Lahore",
   latitude: 31.4824528,
   longitude: 74.3943188,
   mapEmbedUrl:

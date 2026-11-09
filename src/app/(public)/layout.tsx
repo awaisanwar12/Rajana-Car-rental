@@ -31,7 +31,7 @@ export default function PublicLayout({ children }: Readonly<{ children: React.Re
     paymentAccepted: "Cash, Bank Transfer, JazzCash",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Street 145, H Block, Sector H, DHA Phase 1",
+      streetAddress: "Building 126, Street 145, H Block Commercial Market, Sector H, DHA Phase 1",
       addressLocality: "Lahore",
       addressRegion: "Punjab",
       addressCountry: "PK",
