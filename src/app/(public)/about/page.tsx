@@ -99,7 +99,7 @@ export default function AboutPage() {
             </article>
             <article>
               <h3>Fleet from economy to V8 &amp; Coaster</h3>
-              <p>Book Suzuki Wagon R, Cultus, Toyota Yaris, Corolla GLi, Corolla Altis X, Honda BR-V, Honda Civic RS, Jaecoo J5 2026, Toyota Fortuner, Prado, Land Cruiser V8, Grand Cabin or Coaster.</p>
+              <p>Book Suzuki Wagon R, Cultus, Toyota Yaris, Corolla GLi, Corolla Altis X, Honda BR-V, Honda Civic RS, Haval H6, Toyota Fortuner, Prado, Land Cruiser V8, Grand Cabin or Coaster.</p>
             </article>
             <article>
               <h3>City, airport &amp; all-Pakistan coverage</h3>

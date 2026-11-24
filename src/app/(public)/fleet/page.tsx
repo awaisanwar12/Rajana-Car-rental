@@ -111,7 +111,7 @@ export default function FleetPage() {
             </article>
             <article>
               <h3>Seven-seaters and SUVs</h3>
-              <p>BR-V, Jaecoo J5 2026, Fortuner, Prado and Land Cruiser V8 options provide extra passenger room and highway presence.</p>
+              <p>BR-V, Haval H6, Fortuner, Prado and Land Cruiser V8 options provide extra passenger room and highway presence.</p>
               <Link className="text-link" href="/suv-luxury-car-rental-lahore/">SUV &amp; luxury rental guide <ArrowIcon /></Link>
             </article>
             <article>

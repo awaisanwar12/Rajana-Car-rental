@@ -1,6 +1,6 @@
 const encoder = new TextEncoder();
 const rateKeys = new Set([
-  "honda-civic-rs", "toyota-corolla-altis-x", "toyota-yaris-corolla-gli", "jaecoo-j5-2026",
+  "honda-civic-rs", "toyota-corolla-altis-x", "toyota-yaris-corolla-gli", "haval-h6",
   "honda-br-v", "toyota-fortuner-prado", "grand-cabin", "land-cruiser-v8", "lahore-to-islamabad",
   "suzuki-wagon-r-cultus", "toyota-coaster", "suzuki-wagon-r-cultus-outstation",
 ]);
@@ -47,6 +47,10 @@ function json(data, status = 200, headers = {}) {
   });
 }
 
+function isValidRateAmount(amount) {
+  return typeof amount === "number" && Number.isFinite(amount) && amount >= 1000 && amount <= 500000;
+}
+
 function validRates(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const entries = Object.entries(value);
@@ -54,7 +58,7 @@ function validRates(value) {
 
   const cleaned = {};
   for (const [key, amount] of entries) {
-    if (!rateKeys.has(key) || typeof amount !== "number" || !Number.isFinite(amount) || amount < 1000 || amount > 500000) return null;
+    if (!rateKeys.has(key) || !isValidRateAmount(amount)) return null;
     cleaned[key] = Math.round(amount);
   }
   return cleaned;
@@ -64,7 +68,14 @@ async function readRates(env) {
   if (!env.RATES_KV) return { rates: {}, updatedAt: null };
   const saved = await env.RATES_KV.get("vehicle-rates", "json");
   if (!saved || typeof saved !== "object") return { rates: {}, updatedAt: null };
-  const rates = validRates(saved.rates) || {};
+  const rates = {};
+  if (saved.rates && typeof saved.rates === "object" && !Array.isArray(saved.rates)) {
+    for (const [key, amount] of Object.entries(saved.rates)) {
+      if (rateKeys.has(key) && isValidRateAmount(amount)) {
+        rates[key] = Math.round(amount);
+      }
+    }
+  }
   return { rates, updatedAt: typeof saved.updatedAt === "string" ? saved.updatedAt : null };
 }
 
@@ -127,6 +138,16 @@ const worker = {
     ) {
       url.protocol = "https:";
       url.pathname = "/";
+      url.port = "";
+      return Response.redirect(url.toString(), 301);
+    }
+
+    if (
+      pathname === "/jaecoo-j5-for-rent-lahore" ||
+      pathname === "/jaecoo-j5-for-rent-lahore/"
+    ) {
+      url.protocol = "https:";
+      url.pathname = "/haval-h6-for-rent-lahore/";
       url.port = "";
       return Response.redirect(url.toString(), 301);
     }

@@ -168,3 +168,30 @@ test("permanently redirects the duplicate Lahore page to the homepage", async ()
   assert.equal(response.status, 301);
   assert.equal(response.headers.get("Location"), "https://getcarlahore.com/");
 });
+
+test("permanently redirects the retired Jaecoo page to the Haval H6 page", async () => {
+  const response = await worker.fetch(
+    new Request("https://getcarlahore.com/jaecoo-j5-for-rent-lahore/"),
+    configuredEnvironment,
+  );
+
+  assert.equal(response.status, 301);
+  assert.equal(response.headers.get("Location"), "https://getcarlahore.com/haval-h6-for-rent-lahore/");
+});
+
+test("skips retired vehicle keys when reading stored rates", async () => {
+  const store = createRateStore();
+  await store.put("vehicle-rates", JSON.stringify({
+    rates: { "jaecoo-j5-2026": 12000, "haval-h6": 13000, "honda-civic-rs": 10500 },
+    updatedAt: "2026-10-24T00:00:00.000Z",
+  }));
+
+  const response = await worker.fetch(
+    new Request("https://getcarlahore.com/api/rates"),
+    { ...configuredEnvironment, RATES_KV: store },
+  );
+
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.deepEqual(payload.rates, { "haval-h6": 13000, "honda-civic-rs": 10500 });
+});
